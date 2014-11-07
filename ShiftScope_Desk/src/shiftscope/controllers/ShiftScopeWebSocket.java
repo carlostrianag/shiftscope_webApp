@@ -22,7 +22,7 @@ public class ShiftScopeWebSocket extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        
+        System.out.println("LLEGO FROM SERVER: " + message);
     }
 
     @Override
