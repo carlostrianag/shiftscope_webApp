@@ -7,7 +7,7 @@ function RequestHandler(_request) {
 
 
 	this.drawPlaylist = function(){
-			$('#playlist').empty();
+			$('#library').empty();
 			for (var i = 0; i < content.library.length; i++) {
 				str = "";
 				if (content.library[i].isFolder) {
@@ -16,7 +16,7 @@ function RequestHandler(_request) {
 					str = '<a href="#" class="list-group-item song" data-path="'+content.library[i].absolutePath+'" data-key="'+content.library[i].id+'"><i class="fa fa-music fa-1x"></i> '+content.library[i].title+' <span class="pull-right text-muted small"><em>'+content.library[i].artist+'</em> </span> </a>';
 				}
 				
-				$('#playlist').append(str);
+				$('#library').append(str);
 			}
 
 			$('.song').click(function(e) {

@@ -10,3 +10,4 @@ var NEXT = 12;
 var BACK = 13;
 var RESUME = 14;
 var BACK_FOLDER = 15;
+var SELECT_FOLDERS = 16;

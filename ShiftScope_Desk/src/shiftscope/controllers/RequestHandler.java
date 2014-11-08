@@ -57,6 +57,26 @@ public class RequestHandler {
                 r.setContent(m);
                 
                 break;
+            
+            case RequestTypes.SELECT_FOLDERS:
+                ViewHandler.selectFolders();
+                System.out.println("Fetching");
+                r.setUserId(124);
+                r.setType(1);
+                r.setFrom("DESKTOP");
+                if(ShiftScopePlayer.isPlaying()){
+                    String path = ShiftScopePlayer.getCurrentLocation();
+                    LibraryElement l = Handlers.getLibraryElementByAbsolutePath(path);
+                    m.setCurrentSong(l.getTitle());
+                    m.setCurrentArtist(l.getArtist());
+                    m.setIsPlaying(true);
+                }
+                JSONParser = new Gson();
+                obj = JSONParser.fromJson(JSONParser.toJson(content), Metadata.class);
+                m.setLibrary(Handlers.fetchLibraryByParentFolder(obj.getParentFolder()));
+                r.setContent(m);
+                break;
+                
             case RequestTypes.BACK_FOLDER:
                 System.out.println("Backing...");
                 r.setUserId(124);

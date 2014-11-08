@@ -24,5 +24,5 @@ public class RequestTypes {
     public static final int BACK = 13;
     public static final int RESUME = 13;
     public static final int BACK_FOLDER = 15;
-    
+    public static final int SELECT_FOLDERS = 16;
 }
