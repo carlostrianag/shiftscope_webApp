@@ -25,6 +25,7 @@ public class RequestHandler {
     private int response;
     private Metadata content;
     private Gson JSONParser;
+    private Metadata obj;
 
     public RequestHandler(Request request) {
         this.userId = request.getUserId();
@@ -40,35 +41,38 @@ public class RequestHandler {
         switch(type) {
             case RequestTypes.FETCH:
                 System.out.println("Fetching");
-                ArrayList<String> paths = new ArrayList();
-                paths.add("/home/carlos/Music/carlitos");
-                for (String path : paths) {
-                    Handlers.folderFetch(path);
-                }
                 r.setUserId(124);
                 r.setType(1);
                 r.setFrom("DESKTOP");
                 if(ShiftScopePlayer.isPlaying()){
-                    
-                    try {
-                        String path = ShiftScopePlayer.getCurrentLocation();
-                        File f = new File(path);
-                        MP3File tags = new MP3File(f);
-                        m.setCurrentSong(tags.getID3v1Tag().getSongTitle());
-                        m.setCurrentArtist(tags.getID3v1Tag().getArtist());
-                        m.setIsPlaying(true);
-                    } catch (IOException ex) {
-                        Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (TagException ex) {
-                        Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    String path = ShiftScopePlayer.getCurrentLocation();
+                    LibraryElement l = Handlers.getLibraryElementByAbsolutePath(path);
+                    m.setCurrentSong(l.getTitle());
+                    m.setCurrentArtist(l.getArtist());
+                    m.setIsPlaying(true);
                 }
-                m.setLibrary(Handlers.fetchLibrary());
+                JSONParser = new Gson();
+                obj = JSONParser.fromJson(JSONParser.toJson(content), Metadata.class);
+                m.setLibrary(Handlers.fetchLibraryByParentFolder(obj.getParentFolder()));
+                r.setContent(m);
+                
+                break;
+            case RequestTypes.BACK_FOLDER:
+                System.out.println("Backing...");
+                r.setUserId(124);
+                r.setType(15);
+                r.setFrom("DESKTOP");
+                JSONParser = new Gson();
+                obj = JSONParser.fromJson(JSONParser.toJson(content), Metadata.class);
+                String parent = Handlers.getParentFolderOf(obj.getCurrentFolder());
+                m.setCurrentFolder(parent);
+                m.setLibrary(Handlers.fetchLibraryByParentFolder(parent));
                 r.setContent(m);
                 break;
+               
             case RequestTypes.PLAY:
                 JSONParser = new Gson();
-                Metadata obj = JSONParser.fromJson(JSONParser.toJson(content), Metadata.class);
+                obj = JSONParser.fromJson(JSONParser.toJson(content), Metadata.class);
                 Handlers.playSong(obj.getId(), obj.getAbsolutePath());
                 LibraryElement l = Handlers.getLibraryElementById(obj.getId());
                 
@@ -79,7 +83,7 @@ public class RequestHandler {
                 m.setCurrentArtist(l.getArtist());
                 r.setContent(m);
                 break;
-                
+            
             case RequestTypes.PAUSE:
                 Handlers.pause();
                 r = null;

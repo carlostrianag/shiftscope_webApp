@@ -15,6 +15,7 @@ public class LibraryElement {
     private String artist;
     private String absolutePath;
     private String parentFolder;
+    private boolean isFolder;
 
     public LibraryElement() {
     }
@@ -49,14 +50,6 @@ public class LibraryElement {
     public void setAbsolutePath(String absolutePath) {
         this.absolutePath = absolutePath;
     }
-
-    /**
-     * @param parentFolder the parentFolder to set
-     */
-    public void setParentFolder(LibraryElement parentFolder) {
-        this.setParentFolder(parentFolder);
-    }
-
 
     /**
      * @param parentFolder the parentFolder to set
@@ -112,6 +105,20 @@ public class LibraryElement {
      */
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    /**
+     * @return the isFolder
+     */
+    public boolean isIsFolder() {
+        return isFolder;
+    }
+
+    /**
+     * @param isFolder the isFolder to set
+     */
+    public void setIsFolder(boolean isFolder) {
+        this.isFolder = isFolder;
     }
     
     

@@ -15,4 +15,12 @@ $(document).ready(function(){
 			s.send(JSON.stringify(request));
 		}
 	});
+
+	$('#back-folder').click(function(e){
+		if($(this).data("current").toString() !== "ROOT") {
+			request = new Request(124, "MOBILE", 15, 200, {currentFolder: $(this).data("current").toString()});
+			s.send(JSON.stringify(request));
+		}
+
+	});
 });

@@ -12,6 +12,8 @@ public class Metadata {
     private String absolutePath;
     private String currentSong;
     private String currentArtist;
+    private String currentFolder;
+    private String parentFolder;
     private ArrayList<LibraryElement> library;
     private boolean isPlaying;
 
@@ -97,6 +99,34 @@ public class Metadata {
      */
     public void setIsPlaying(boolean isPlaying) {
         this.isPlaying = isPlaying;
+    }
+
+    /**
+     * @return the parentFolder
+     */
+    public String getParentFolder() {
+        return parentFolder;
+    }
+
+    /**
+     * @param parentFolder the parentFolder to set
+     */
+    public void setParentFolder(String parentFolder) {
+        this.parentFolder = parentFolder;
+    }
+
+    /**
+     * @return the currentFolder
+     */
+    public String getCurrentFolder() {
+        return currentFolder;
+    }
+
+    /**
+     * @param currentFolder the currentFolder to set
+     */
+    public void setCurrentFolder(String currentFolder) {
+        this.currentFolder = currentFolder;
     }
     
 }

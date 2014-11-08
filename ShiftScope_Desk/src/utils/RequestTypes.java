@@ -11,6 +11,7 @@ package utils;
  * @author carlos
  */
 public class RequestTypes {
+    public static final int FETCH_FOLDER = 0;
     public static final int FETCH = 1;
     public static final int CONNECT = 2;
     public static final int CONNECTION_LOST = 5;
@@ -22,5 +23,6 @@ public class RequestTypes {
     public static final int NEXT = 12;
     public static final int BACK = 13;
     public static final int RESUME = 13;
+    public static final int BACK_FOLDER = 15;
     
 }

@@ -19,7 +19,7 @@ function openSocketConnection() {
 		};
 
 		s.onmessage = function (e) {
-			//console.log("Socket message:" + e.data);
+			console.log("Socket message:" + e.data);
 			request = JSON.parse(e.data);
 			handler = new RequestHandler(request);
 			handler.handle();
@@ -36,6 +36,6 @@ function openSocketConnection() {
 
 
 function initConnection(){
-	request = new Request(124, "MOBILE", 1, 200, {});
+	request = new Request(124, "MOBILE", 1, 200, {parentFolder: "ROOT"});
 	s.send(JSON.stringify(request));
 }
