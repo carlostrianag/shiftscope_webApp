@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import maryb.player.Player;
 import maryb.player.PlayerState;
 
-
 /**
  *
  * @author Carlos
@@ -27,17 +26,32 @@ public class ShiftScopePlayer {
 
     public static void play(String path) {
         if (PlayerState.PLAYING == player.getState()) {
+            try {
+                player.stopSync();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ShiftScopePlayer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             if (!player.isEndOfMediaReached()) {
                 try {
                     player.stopSync();
-                    
                 } catch (InterruptedException ex) {
                     Logger.getLogger(ShiftScopePlayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            player.setSourceLocation(path);
-            player.play();
+        }
+        player.setSourceLocation(path);
+        player.play();
+    }
+    
+    
+        public static void resume() {
+        if (PlayerState.PAUSED == player.getState()) {
+            try {
+                player.playSync();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ShiftScopePlayer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     
@@ -72,6 +86,14 @@ public class ShiftScopePlayer {
                 Logger.getLogger(ShiftScopePlayer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public static boolean isPlaying() {
+        return (player.getState() == PlayerState.PLAYING || player.getState() == PlayerState.PAUSED);
+    }
+    
+    public static String getCurrentLocation() {
+        return player.getSourceLocation();
     }
 
     public static void initPlayer() {
