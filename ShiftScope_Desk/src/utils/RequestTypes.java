@@ -25,4 +25,8 @@ public class RequestTypes {
     public static final int RESUME = 13;
     public static final int BACK_FOLDER = 15;
     public static final int SELECT_FOLDERS = 16;
+    public static final int ENQUEUE = 17;
+    public static final int PLAY_PLAYLIST = 18;
+    public static final int FETCH_PLAYLIST = 19;
+    public static final int PLAY_FROM_PLAYLIST = 20;
 }

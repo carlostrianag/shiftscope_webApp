@@ -15,7 +15,9 @@ public class Metadata {
     private String currentFolder;
     private String parentFolder;
     private ArrayList<LibraryElement> library;
+    private ArrayList<LibraryElement> playlist;
     private boolean isPlaying;
+    private int currentSongId;
 
     /**
      * @return the id
@@ -128,5 +130,34 @@ public class Metadata {
     public void setCurrentFolder(String currentFolder) {
         this.currentFolder = currentFolder;
     }
+
+    /**
+     * @return the playlist
+     */
+    public ArrayList<LibraryElement> getPlaylist() {
+        return playlist;
+    }
+
+    /**
+     * @param playlist the playlist to set
+     */
+    public void setPlaylist(ArrayList<LibraryElement> playlist) {
+        this.playlist = playlist;
+    }
+
+    /**
+     * @return the currentSongId
+     */
+    public int getCurrentSongId() {
+        return currentSongId;
+    }
+
+    /**
+     * @param currentSongId the currentSongId to set
+     */
+    public void setCurrentSongId(int currentSongId) {
+        this.currentSongId = currentSongId;
+    }
     
 }
+

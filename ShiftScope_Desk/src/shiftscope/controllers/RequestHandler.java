@@ -2,13 +2,6 @@
 package shiftscope.controllers;
 
 import com.google.gson.Gson;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.farng.mp3.MP3File;
-import org.farng.mp3.TagException;
 import shiftscope.model.LibraryElement;
 import utils.Metadata;
 import utils.Request;
@@ -38,6 +31,8 @@ public class RequestHandler {
     public Request handle() {
         Request r = new Request();
         Metadata m = new Metadata();
+        String path;
+        LibraryElement l;
         switch(type) {
             case RequestTypes.FETCH:
                 System.out.println("Fetching");
@@ -45,8 +40,8 @@ public class RequestHandler {
                 r.setType(1);
                 r.setFrom("DESKTOP");
                 if(ShiftScopePlayer.isPlaying()){
-                    String path = ShiftScopePlayer.getCurrentLocation();
-                    LibraryElement l = Handlers.getLibraryElementByAbsolutePath(path);
+                    path = ShiftScopePlayer.getCurrentLocation();
+                    l = Handlers.getLibraryElementByAbsolutePath(path);
                     m.setCurrentSong(l.getTitle());
                     m.setCurrentArtist(l.getArtist());
                     m.setIsPlaying(true);
@@ -65,8 +60,8 @@ public class RequestHandler {
                 r.setType(1);
                 r.setFrom("DESKTOP");
                 if(ShiftScopePlayer.isPlaying()){
-                    String path = ShiftScopePlayer.getCurrentLocation();
-                    LibraryElement l = Handlers.getLibraryElementByAbsolutePath(path);
+                    path = ShiftScopePlayer.getCurrentLocation();
+                    l = Handlers.getLibraryElementByAbsolutePath(path);
                     m.setCurrentSong(l.getTitle());
                     m.setCurrentArtist(l.getArtist());
                     m.setIsPlaying(true);
@@ -93,15 +88,15 @@ public class RequestHandler {
             case RequestTypes.PLAY:
                 JSONParser = new Gson();
                 obj = JSONParser.fromJson(JSONParser.toJson(content), Metadata.class);
-                Handlers.playSong(obj.getId(), obj.getAbsolutePath());
-                LibraryElement l = Handlers.getLibraryElementById(obj.getId());
-                
+                l = Handlers.getLibraryElementById(obj.getId());
+                Handlers.playSong(l);                
                 r.setUserId(124);
                 r.setType(10);
                 r.setFrom("DESKTOP");
                 m.setCurrentSong(l.getTitle());
                 m.setCurrentArtist(l.getArtist());
                 r.setContent(m);
+                l = null;
                 break;
             
             case RequestTypes.PAUSE:
@@ -113,7 +108,79 @@ public class RequestHandler {
                 Handlers.resume();
                 r = null;
                 break;
+                
+            case RequestTypes.ENQUEUE:
+                JSONParser = new Gson();
+                obj = JSONParser.fromJson(JSONParser.toJson(content), Metadata.class);
+                LibraryElement lib = Handlers.getLibraryElementById(obj.getId());
+                Handlers.enqueue(lib);
+                r = null;
+
+                break;
+                
+            case RequestTypes.FETCH_PLAYLIST:
+                r.setUserId(124);
+                r.setType(19);
+                r.setFrom("DESKTOP");
+                if(ShiftScopePlayer.isPlaying()){
+                    path = ShiftScopePlayer.getCurrentLocation();
+                    l = Handlers.getLibraryElementByAbsolutePath(path);
+                    m.setCurrentSongId(Handlers.getCurrentSongId());
+                    m.setCurrentSong(l.getTitle());
+                    m.setCurrentArtist(l.getArtist());
+                    m.setIsPlaying(true);
+                }
+                m.setPlaylist(Handlers.getPlayList());
+                m.setCurrentSongId(Handlers.getCurrentSongId());
+                r.setContent(m);
+                break;
+             
+            case RequestTypes.PLAY_PLAYLIST:
+                Handlers.playPlayList();
+                r.setUserId(124);
+                r.setType(19);
+                r.setFrom("DESKTOP");
+                m.setPlaylist(Handlers.getPlayList());
+                m.setCurrentSongId(Handlers.getCurrentSongId());
+                path = ShiftScopePlayer.getCurrentLocation();
+                l = Handlers.getLibraryElementByAbsolutePath(path);
+                m.setCurrentSongId(Handlers.getCurrentSongId());
+                m.setCurrentSong(l.getTitle());
+                m.setCurrentArtist(l.getArtist());
+                m.setIsPlaying(true);
+                r.setContent(m);
+                break;
+                
+            case RequestTypes.PLAY_FROM_PLAYLIST:
+                JSONParser = new Gson();
+                obj = JSONParser.fromJson(JSONParser.toJson(content), Metadata.class);
+                LibraryElement lk = Handlers.getLibraryElementById(obj.getId());
+                Handlers.playSong(lk);
+                Handlers.setIsPlayingPlaylist(true);
+                r.setUserId(124);
+                r.setType(19);
+                r.setFrom("DESKTOP");
+                m.setPlaylist(Handlers.getPlayList());
+                path = ShiftScopePlayer.getCurrentLocation();
+                l = Handlers.getLibraryElementByAbsolutePath(path);
+                m.setCurrentSong(l.getTitle());
+                m.setCurrentSongId(Handlers.getCurrentSongId());
+                m.setCurrentArtist(l.getArtist());
+                m.setIsPlaying(true);
+                r.setContent(m);
+                break;
         }
         return r;
     }
+    
+    public void send(){
+        Request r = new Request();
+        r.setUserId(userId);
+        r.setFrom(from);
+        r.setContent(content);
+        r.setType(type);
+        r.setResponse(response);
+        Main.s.send(JSONParser.toJson(r));
+    }
+    
 }

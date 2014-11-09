@@ -91,6 +91,10 @@ public class Handlers {
         }
 
     }
+    
+    public static ArrayList<LibraryElement> getPlayList(){
+        return ShiftScopePlayer.getQueuePaths();
+    }
 
     public static LibraryElement getLibraryElementById(int id) {
         for (LibraryElement l : Library.library) {
@@ -119,8 +123,9 @@ public class Handlers {
         return null;
     }
 
-    public static void playSong(int id, String path) {
-        ShiftScopePlayer.play(path);
+    public static void playSong(LibraryElement l) {
+        
+        ShiftScopePlayer.playSong(l.getId(), l.getAbsolutePath());
     }
 
     public static void pause() {
@@ -129,6 +134,18 @@ public class Handlers {
 
     public static void resume() {
         ShiftScopePlayer.resume();
+    }
+    
+    public static void enqueue(LibraryElement e) {
+        ShiftScopePlayer.enqueueSong(e);
+    }
+    
+    public static void playPlayList() {
+        ShiftScopePlayer.playPlaylist();
+    }
+    
+    public static int getCurrentSongId() {
+        return ShiftScopePlayer.getCurrentSongId();
     }
 
     public static ArrayList<LibraryElement> fetchLibraryByParentFolder(String parentFolder) {
@@ -147,7 +164,8 @@ public class Handlers {
 
     public static void addPaths(ArrayList<String> p) {
         paths.addAll(p);
-    }
+    }    
+    
 
     public static void buildLibraryTreeFromFile() {
         File f = new File("library.txt");
@@ -169,5 +187,9 @@ public class Handlers {
                 Logger.getLogger(Handlers.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public static void setIsPlayingPlaylist(boolean b){
+        ShiftScopePlayer.setIsPlaylistPlaying(b);
     }
 }

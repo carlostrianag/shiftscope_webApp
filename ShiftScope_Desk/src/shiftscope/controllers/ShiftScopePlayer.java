@@ -1,9 +1,12 @@
 package shiftscope.controllers;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import maryb.player.Player;
+import maryb.player.PlayerEventListener;
 import maryb.player.PlayerState;
+import shiftscope.model.LibraryElement;
 
 /**
  *
@@ -12,8 +15,35 @@ import maryb.player.PlayerState;
 public class ShiftScopePlayer {
 
     private static Player player;
+    private static ArrayList<LibraryElement> queuePaths;
+    private static int currentSongId;
+    private static int currentSong;
+    private static boolean isPlaylistPlaying;
+    
+    private static final PlayerEventListener playerListener = new PlayerEventListener() {
 
+        @Override
+        public void endOfMedia() {
+            currentSong++;
+            if(currentSong < getQueuePaths().size() && isIsPlaylistPlaying()){
+                LibraryElement l = Handlers.getLibraryElementByAbsolutePath(getQueuePaths().get(currentSong).getAbsolutePath());
+                playSong(l.getId(), l.getAbsolutePath());
+            }
+        }
 
+        @Override
+        public void stateChanged() {
+            
+        }
+
+        @Override
+        public void buffer() {
+            
+        }
+    };
+    
+    
+    
     public static void play() {
         if (PlayerState.PAUSED == player.getState()) {
             try {
@@ -40,6 +70,27 @@ public class ShiftScopePlayer {
                 }
             }
         }
+        player.setSourceLocation(path);
+        player.play();
+    }
+    
+    public static void playSong(int id, String path) {
+        if (PlayerState.PLAYING == player.getState()) {
+            try {
+                player.stopSync();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ShiftScopePlayer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            if (!player.isEndOfMediaReached()) {
+                try {
+                    player.stopSync();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ShiftScopePlayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        currentSongId = id;
         player.setSourceLocation(path);
         player.play();
     }
@@ -95,8 +146,48 @@ public class ShiftScopePlayer {
     public static String getCurrentLocation() {
         return player.getSourceLocation();
     }
+    
+    public static int getCurrentSongId() {
+        return currentSongId;
+    }
+    
+    public static void enqueueSong(LibraryElement q) {
+        getQueuePaths().add(q);
+    }
+    
+    public static void playPlaylist() {
+        setIsPlaylistPlaying(true);
+        currentSong = 0;
+        LibraryElement l = Handlers.getLibraryElementByAbsolutePath(getQueuePaths().get(currentSong).getAbsolutePath());
+        playSong(l.getId(), l.getAbsolutePath());
+    }
 
     public static void initPlayer() {
         player = new Player();
+        player.setListener(playerListener);
+        queuePaths = new ArrayList<>();
+        currentSong = 0;
+        setIsPlaylistPlaying(false);
+    }
+
+    /**
+     * @return the queuePaths
+     */
+    public static ArrayList<LibraryElement> getQueuePaths() {
+        return queuePaths;
+    }
+
+    /**
+     * @return the isPlaylistPlaying
+     */
+    public static boolean isIsPlaylistPlaying() {
+        return isPlaylistPlaying;
+    }
+
+    /**
+     * @param aIsPlaylistPlaying the isPlaylistPlaying to set
+     */
+    public static void setIsPlaylistPlaying(boolean aIsPlaylistPlaying) {
+        isPlaylistPlaying = aIsPlaylistPlaying;
     }
 }
