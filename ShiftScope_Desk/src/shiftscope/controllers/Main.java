@@ -1,6 +1,7 @@
 package shiftscope.controllers;
 
 import java.net.URI;
+import shiftscope.model.LibraryElement;
 
 /**
  *

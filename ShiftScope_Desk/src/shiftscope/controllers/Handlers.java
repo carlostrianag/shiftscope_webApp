@@ -13,12 +13,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.farng.mp3.MP3File;
 import shiftscope.model.LibraryElement;
-import utils.IDGenerator;
 
 public class Handlers {
 
     private static ArrayList<String> paths = new ArrayList<>();
-
     
     public static void savePathsOnDisk() throws FileNotFoundException, UnsupportedEncodingException{
         PrintWriter writer = null;
@@ -35,7 +33,7 @@ public class Handlers {
             LibraryElement folder = new LibraryElement();
             folder.setIsFolder(true);
             folder.setAbsolutePath(p);
-            folder.setId(IDGenerator.nextId());
+            folder.setId(Library.library.size()-1+1);
             folder.setParentFolder("ROOT");
             folder.setTitle(f.getName());
             Library.library.add(folder);
@@ -84,14 +82,14 @@ public class Handlers {
                         libraryElement.setTitle(file.getName());
                     }
 
-                    libraryElement.setId(IDGenerator.nextId());
+                    libraryElement.setId(Library.library.size()-1+1);
                     libraryElement.setParentFolder(parentFolder);
                     libraryElement.setAbsolutePath(file.getAbsolutePath());
                     libraryElement.setIsFolder(false);
                     Library.library.add(libraryElement);
                 } else if (file.isDirectory()) {
                     libraryElement = new LibraryElement();
-                    libraryElement.setId(IDGenerator.nextId());
+                    libraryElement.setId(Library.library.size()-1+1);
                     libraryElement.setParentFolder(parentFolder);
                     libraryElement.setAbsolutePath(file.getAbsolutePath());
                     libraryElement.setTitle(file.getName());

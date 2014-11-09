@@ -19,7 +19,7 @@ public class ViewHandler {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             mainScreen = new ShiftScope();
-            //mainScreen.setVisible(true);  
+            mainScreen.setVisible(true);  
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ViewHandler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
@@ -32,9 +32,9 @@ public class ViewHandler {
     }
     
     public static void selectFolders() {
-        mainScreen.setVisible(true);
+        //mainScreen.setVisible(true);
         Handlers.addPaths(mainScreen.openFileChooser());
-        mainScreen.setVisible(false);
+        //mainScreen.setVisible(false);
         Handlers.buildLibraryTree();
         Handlers.putFoldersFirst();
         try {
