@@ -1,5 +1,7 @@
 package shiftscope.controllers;
 
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
@@ -35,5 +37,12 @@ public class ViewHandler {
         mainScreen.setVisible(false);
         Handlers.buildLibraryTree();
         Handlers.putFoldersFirst();
+        try {
+            Handlers.savePathsOnDisk();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ViewHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(ViewHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

@@ -1,7 +1,10 @@
 package shiftscope.controllers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +19,15 @@ public class Handlers {
 
     private static ArrayList<String> paths = new ArrayList<>();
 
+    
+    public static void savePathsOnDisk() throws FileNotFoundException, UnsupportedEncodingException{
+        PrintWriter writer = null;
+        writer = new PrintWriter("library.txt", "UTF-8");
+        for (String p : paths){
+            writer.println(p);
+        }
+        writer.close();
+    }
     public static void buildLibraryTree() {
         Library.library = new ArrayList();
         for (String p : paths) {
@@ -51,7 +63,7 @@ public class Handlers {
         MP3File mp3;
         if (f.exists()) {
             for (File file : f.listFiles()) {
-
+                
                 if (file.getName().endsWith(".mp3") && (!file.isHidden())) {
                     libraryElement = new LibraryElement();
                     try {
