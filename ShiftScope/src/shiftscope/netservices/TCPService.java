@@ -6,7 +6,6 @@
 package shiftscope.netservices;
 
 import com.google.gson.Gson;
-import com.sun.prism.impl.PrismSettings;
 import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Level;
@@ -129,8 +128,9 @@ public class TCPService extends WebSocketClient {
     }
 
     public void sendRequest(Operation request) {
-        Gson JSONParser = new Gson();
+        
         try {
+            Gson JSONParser = new Gson();
             send(JSONParser.toJson(request, Operation.class));
         } catch(Exception ex){
             

@@ -1,10 +1,24 @@
 var ws = require("nodejs-websocket");
 
 
+
 function WebSocket() {
 	var server;
 	var devicesPool = {};
 	var mobilesPool = {};
+
+	deleteFromPool = function(conn) {
+		for(var i = 0; i < devicesPool.length; i++){
+			if(devicesPool[i] === conn) {
+				delete devicesPool[i];
+			}
+		}
+		for(var i = 0; i < mobilesPool.length; i++){
+			if(mobilesPool[i] === conn) {
+				delete mobilesPool[i];
+			}
+		}		
+	};
 
 	this.initialize = function() {
 		server = ws.createServer(function (conn) {
@@ -18,7 +32,7 @@ function WebSocket() {
 		        		try{
 							devicesPool[request.userId.toString()][request.to.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
-		        			continue;
+		        			
 		        		}
 		        	} else {
 		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
@@ -34,9 +48,7 @@ function WebSocket() {
 		        			mobilesPool[request.userId.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
 		        			//Delete from pool
-		        			continue;
 		        		}
-		        		
 		        	} else {
 		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
 		        	}
@@ -44,11 +56,10 @@ function WebSocket() {
 		    }),
 		    conn.on("close", function (code, reason) {
 		        console.log("Connection closed")
-		        //deleteFromPool(conn);
+		        deleteFromPool(conn);
 		    })
 		}).listen(8001)
 	}
-	
 };
 
 webSocket = new WebSocket()

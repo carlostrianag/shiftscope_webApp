@@ -10,10 +10,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
@@ -30,6 +32,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 import org.apache.http.HttpResponse;
 import org.farng.mp3.MP3File;
@@ -138,9 +141,9 @@ public class HomePage extends javax.swing.JFrame {
     
     public HomePage() {
         initComponents();
-        this.setSize(750, 690);
         this.setLocationRelativeTo(null);
         progressBar.setVisible(false);
+        foldersScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         initPlayer();
         try {
             webSocket = new TCPService(new URI(Constants.SOCKET_SERVER));
@@ -149,16 +152,11 @@ public class HomePage extends javax.swing.JFrame {
             Logger.getLogger(ShiftScope.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        this.addPropertyChangeListener("sync", new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                System.out.println("Cambio el objecto");
-            }
-        });
         getFolderContent(-1);
+        
     }
-    
+   
+
     public void playSong(Track t) {  
         if(player.isPlaying()){
             player.pause();
@@ -176,6 +174,7 @@ public class HomePage extends javax.swing.JFrame {
         sync.setIsPlaying(true);
         sync.setIsPaused(false);
         
+        currentSongLabel.setText(t.getTitle() + " - " + t.getArtist());
         
         if(timeCounter != null){
             timeCounter.cancel(true);
@@ -493,88 +492,89 @@ public class HomePage extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         searchTextField = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
-        currentSongTimeSlider = new javax.swing.JSlider();
-        elapsedTime = new javax.swing.JLabel();
-        totalTime = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        backButton = new javax.swing.JLabel();
+        selectFolderButton = new javax.swing.JLabel();
+        foldersScrollPane = new javax.swing.JScrollPane();
+        folderPane = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         backBtn = new javax.swing.JLabel();
-        nextBtn = new javax.swing.JLabel();
         pauseBtn = new javax.swing.JLabel();
         stopBtn = new javax.swing.JLabel();
+        nextBtn = new javax.swing.JLabel();
         volumeDownBtn = new javax.swing.JLabel();
         volumeUpBtn = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         songNameLabel = new javax.swing.JLabel();
-        foldersScrollPane = new javax.swing.JScrollPane();
-        folderPane = new javax.swing.JPanel();
-        selectFolderButton = new javax.swing.JLabel();
-        backButton = new javax.swing.JLabel();
-        jToolBar1 = new javax.swing.JToolBar();
+        jPanel1 = new javax.swing.JPanel();
+        elapsedTime = new javax.swing.JLabel();
+        currentSongTimeSlider = new javax.swing.JSlider();
+        totalTime = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        currentSongLabel = new javax.swing.JLabel();
+        toolBar = new javax.swing.JToolBar();
         progressBar = new javax.swing.JProgressBar();
-        jLabel19 = new javax.swing.JLabel();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
-        setResizable(false);
-        getContentPane().setLayout(null);
+        setBounds(new java.awt.Rectangle(0, 0, 865, 654));
+        setMinimumSize(new java.awt.Dimension(800, 600));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/icon.png"))); // NOI18N
-        jLabel1.setText("jLabel1");
-        getContentPane().add(jLabel1);
-        jLabel1.setBounds(50, 20, 50, 60);
+        jLabel1.setAlignmentX(-0.0F);
+        jPanel4.add(jLabel1);
 
         searchTextField.setForeground(new java.awt.Color(204, 204, 204));
         searchTextField.setText("Search");
+        searchTextField.setPreferredSize(new java.awt.Dimension(350, 27));
         searchTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchTextFieldActionPerformed(evt);
             }
         });
-        getContentPane().add(searchTextField);
-        searchTextField.setBounds(110, 30, 530, 30);
+        jPanel4.add(searchTextField);
 
-        elapsedTime.setText("0:00");
+        backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/Arrow.png"))); // NOI18N
+        backButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                backButtonMouseClicked(evt);
+            }
+        });
+        jPanel3.add(backButton);
 
-        totalTime.setText("0:00");
+        selectFolderButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/Folder.png"))); // NOI18N
+        selectFolderButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                selectFolderButtonMouseClicked(evt);
+            }
+        });
+        jPanel3.add(selectFolderButton);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(elapsedTime)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                .addComponent(currentSongTimeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
-                .addComponent(totalTime)
-                .addContainerGap())
+        foldersScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        folderPane.setBackground(new java.awt.Color(254, 254, 254));
+
+        javax.swing.GroupLayout folderPaneLayout = new javax.swing.GroupLayout(folderPane);
+        folderPane.setLayout(folderPaneLayout);
+        folderPaneLayout.setHorizontalGroup(
+            folderPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1497, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(currentSongTimeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(elapsedTime, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(totalTime, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
+        folderPaneLayout.setVerticalGroup(
+            folderPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 835, Short.MAX_VALUE)
         );
 
-        getContentPane().add(jPanel1);
-        jPanel1.setBounds(90, 510, 570, 50);
+        foldersScrollPane.setViewportView(folderPane);
 
-        jPanel2.setBackground(new java.awt.Color(255, 66, 49));
-        jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 66, 49), 1, true));
+        jPanel2.setBorder(null);
 
         backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/control_05.png"))); // NOI18N
-
-        nextBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/control_04.png"))); // NOI18N
+        jPanel2.add(backBtn);
 
         pauseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/pause-normal.png"))); // NOI18N
         pauseBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -582,6 +582,7 @@ public class HomePage extends javax.swing.JFrame {
                 pauseBtnMouseClicked(evt);
             }
         });
+        jPanel2.add(pauseBtn);
 
         stopBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/stop-normal.png"))); // NOI18N
         stopBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -589,6 +590,10 @@ public class HomePage extends javax.swing.JFrame {
                 stopBtnMouseClicked(evt);
             }
         });
+        jPanel2.add(stopBtn);
+
+        nextBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/control_04.png"))); // NOI18N
+        jPanel2.add(nextBtn);
 
         volumeDownBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/volumeDown.png"))); // NOI18N
         volumeDownBtn.setToolTipText("");
@@ -597,6 +602,7 @@ public class HomePage extends javax.swing.JFrame {
                 volumeDownBtnMouseClicked(evt);
             }
         });
+        jPanel2.add(volumeDownBtn);
 
         volumeUpBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/volumeUp.png"))); // NOI18N
         volumeUpBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -604,6 +610,7 @@ public class HomePage extends javax.swing.JFrame {
                 volumeUpBtnMouseClicked(evt);
             }
         });
+        jPanel2.add(volumeUpBtn);
 
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/Playlist.png"))); // NOI18N
         jLabel9.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -611,105 +618,67 @@ public class HomePage extends javax.swing.JFrame {
                 jLabel9MouseClicked(evt);
             }
         });
+        jPanel2.add(jLabel9);
 
         jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/focos.png"))); // NOI18N
+        jPanel2.add(jLabel10);
+        jPanel2.add(songNameLabel);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(0, 11, Short.MAX_VALUE)
-                .addComponent(backBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pauseBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(stopBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nextBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(volumeDownBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(volumeUpBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel10)
-                .addGap(18, 18, 18))
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        elapsedTime.setText("0:00");
+        jPanel1.add(elapsedTime);
+
+        currentSongTimeSlider.setToolTipText("");
+        currentSongTimeSlider.setValue(0);
+        currentSongTimeSlider.setPreferredSize(new java.awt.Dimension(640, 62));
+        jPanel1.add(currentSongTimeSlider);
+
+        totalTime.setText("0:00");
+        jPanel1.add(totalTime);
+
+        jPanel5.add(currentSongLabel);
+
+        toolBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        toolBar.setFloatable(false);
+        toolBar.setRollover(true);
+        toolBar.add(progressBar);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(songNameLabel)
-                .addContainerGap(416, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(foldersScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 787, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(songNameLabel)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(stopBtn)
-                            .addComponent(pauseBtn)
-                            .addComponent(backBtn)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(volumeDownBtn)
-                            .addComponent(nextBtn)
-                            .addComponent(volumeUpBtn)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel10))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(foldersScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-
-        getContentPane().add(jPanel2);
-        jPanel2.setBounds(170, 560, 430, 60);
-
-        javax.swing.GroupLayout folderPaneLayout = new javax.swing.GroupLayout(folderPane);
-        folderPane.setLayout(folderPaneLayout);
-        folderPaneLayout.setHorizontalGroup(
-            folderPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 648, Short.MAX_VALUE)
-        );
-        folderPaneLayout.setVerticalGroup(
-            folderPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 358, Short.MAX_VALUE)
-        );
-
-        foldersScrollPane.setViewportView(folderPane);
-
-        getContentPane().add(foldersScrollPane);
-        foldersScrollPane.setBounds(50, 140, 650, 360);
-
-        selectFolderButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/Folder.png"))); // NOI18N
-        selectFolderButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                selectFolderButtonMouseClicked(evt);
-            }
-        });
-        getContentPane().add(selectFolderButton);
-        selectFolderButton.setBounds(100, 110, 20, 15);
-
-        backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/Arrow.png"))); // NOI18N
-        backButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                backButtonMouseClicked(evt);
-            }
-        });
-        getContentPane().add(backButton);
-        backButton.setBounds(60, 110, 20, 18);
-
-        jToolBar1.setRollover(true);
-        jToolBar1.add(progressBar);
-
-        getContentPane().add(jToolBar1);
-        jToolBar1.setBounds(0, 630, 760, 30);
-
-        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/back-c.png"))); // NOI18N
-        getContentPane().add(jLabel19);
-        jLabel19.setBounds(0, 0, 770, 670);
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
@@ -760,17 +729,19 @@ public class HomePage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel backBtn;
     private javax.swing.JLabel backButton;
+    private javax.swing.JLabel currentSongLabel;
     private javax.swing.JSlider currentSongTimeSlider;
     private javax.swing.JLabel elapsedTime;
     private javax.swing.JPanel folderPane;
     private javax.swing.JScrollPane foldersScrollPane;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JLabel nextBtn;
     private javax.swing.JLabel pauseBtn;
     private javax.swing.JProgressBar progressBar;
@@ -778,6 +749,7 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JLabel selectFolderButton;
     private javax.swing.JLabel songNameLabel;
     private javax.swing.JLabel stopBtn;
+    private javax.swing.JToolBar toolBar;
     private javax.swing.JLabel totalTime;
     private javax.swing.JLabel volumeDownBtn;
     private javax.swing.JLabel volumeUpBtn;
