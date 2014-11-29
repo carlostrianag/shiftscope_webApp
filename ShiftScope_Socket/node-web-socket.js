@@ -1,68 +1,50 @@
 var ws = require("nodejs-websocket");
 
+
 function WebSocket() {
 	var server;
-	var connectionsPool = {};
-
-	var deleteFromPool = function(_conn) {
-		for (k in connectionsPool) {
-			if (connectionsPool[k] === _conn ) {
-				delete connectionsPool[k];
-				break;
-			}
-		}
-	}
+	var devicesPool = {};
+	var mobilesPool = {};
 
 	this.initialize = function() {
 		server = ws.createServer(function (conn) {
-
-		    //console.log("New connection")
-
 		    conn.on("text", function (str) {
 		        console.log("Received " + str)
 		        request = JSON.parse(str);
-		        if (request.from === "DESKTOP" && connectionsPool[request.userId.toString()+"_D"] === undefined) {
-		        	connectionsPool[request.userId.toString()+"_D"] = conn;
-		        } else if (request.from === "MOBILE" && connectionsPool[request.userId.toString()] === undefined) {
-		        	connectionsPool[request.userId.toString()] = conn;
-		        }
-
-		        if (request.from === "MOBILE") {
-		        	if (connectionsPool[request.userId.toString()+"_D"] !== undefined) {
-			        	desktopConnection = connectionsPool[request.userId.toString()+"_D"];
-			        	try {
-							desktopConnection.sendText(JSON.stringify(request))
-			        	} catch(e) {
-			        		delete connectionsPool[request.userId.toString()+"_D"];
-			        		conn.sendText(JSON.stringify({userId: request.userId, type: 5, response: 500, from: "SERVER", content: {message: "CONNECTION_LOST"} }));
-			        		console.log("DESKTOP_IS_NO_LONGER_AVAILABLE");
-			        	}
+		        if(request.deviceIdentifier === 1) {
+		        	if(request.operationType == 2) {
+		        		mobilesPool[request.userId.toString()] = conn;
+		        	} else if (devicesPool[request.userId.toString()] !== undefined && devicesPool[request.userId.toString()][request.to.toString()] !== undefined){
+		        		try{
+							devicesPool[request.userId.toString()][request.to.toString()].sendText(JSON.stringify(request));
+		        		}catch(ex){
+		        			continue;
+		        		}
 		        	} else {
-		        		conn.sendText(JSON.stringify({userId: request.userId, type: 6, response: 500, from: "SERVER", content: {message:"NO_PAIR_FOUND"}}));
-		        		console.log("NO_DESKTOP_CONNECTED");
+		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
 		        	}
-		        } else {
-		        	if (connectionsPool[request.userId.toString()] !== undefined) {
-			        	mobileConnection = connectionsPool[request.userId.toString()];
-			        	try {
-			        		mobileConnection.sendText(JSON.stringify(request));
-			        	}catch(e) {
-			        		delete connectionsPool[request.userId.toString()];
-			        		conn.sendText(JSON.stringify({userId: request.userId, type: 5, response: 500, from: "SERVER", content: {message: "CONNECTION_LOST"} }));
-			        		console.log("MOBILE_IS_NO_LONGER_AVAILABLE");
-			        	}
-			        	
-			 
+		        } else if(request.deviceIdentifier === 2){
+		        	if(request.operationType === 2){
+		        		if(devicesPool[request.userId.toString()] === undefined){
+		        			devicesPool[request.userId.toString()] = {};
+		        		}
+		        		devicesPool[request.userId.toString()][request.deviceId.toString()] = conn;
+		        	} else if(mobilesPool[request.userId.toString()] !== undefined){
+		        		try {
+		        			mobilesPool[request.userId.toString()].sendText(JSON.stringify(request));
+		        		}catch(ex){
+		        			//Delete from pool
+		        			continue;
+		        		}
+		        		
 		        	} else {
-		        		conn.sendText(JSON.stringify({userId: request.userId, type: 6, response: 500, from: "SERVER", content: {message:"NO_PAIR_FOUND"}}));
-		        		console.log("NO_MOBILE_CONNECTED");
+		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
 		        	}
 		        }
-
-		    });
+		    }),
 		    conn.on("close", function (code, reason) {
 		        console.log("Connection closed")
-		        deleteFromPool(conn);
+		        //deleteFromPool(conn);
 		    })
 		}).listen(8001)
 	}
