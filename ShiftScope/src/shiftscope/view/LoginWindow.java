@@ -61,11 +61,11 @@ public class LoginWindow extends javax.swing.JFrame {
         Device returnedDevice;
         Library returnedLibrary;
         LibraryCriteria libraryCriteria;
-        File f = new File("secure-key.shft");
+        File f = new File("secure-key_"+SessionConstants.USER_ID+".shft");
         JSONParser = new Gson();
         if (f.exists()) {
             try {
-                lines = Files.readAllLines(Paths.get("secure-key.shft"));
+                lines = Files.readAllLines(Paths.get("secure-key_"+SessionConstants.USER_ID+".shft"));
                 uuid = lines.get(0);
                 criteria = new DeviceCriteria();
                 criteria.setUUID(uuid);
@@ -86,7 +86,7 @@ public class LoginWindow extends javax.swing.JFrame {
                 do {
                     pcName = InetAddress.getLocalHost().getHostName();
                     f.createNewFile();
-                    PrintWriter writer = new PrintWriter("secure-key.shft", "UTF-8");
+                    PrintWriter writer = new PrintWriter("secure-key_"+SessionConstants.USER_ID+".shft", "UTF-8");
                     writer.println(uuid);
                     writer.close();
                     f.setReadOnly();

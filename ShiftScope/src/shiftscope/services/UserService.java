@@ -8,8 +8,8 @@ package shiftscope.services;
 
 import com.google.gson.Gson;
 import org.apache.http.HttpResponse;
+import shiftscope.model.User;
 import shiftscope.netservices.HTTPService;
-import shiftscope.util.Constants;
 import shiftscope.util.LoginCredentials;
 
 /**
@@ -23,5 +23,11 @@ public class UserService {
         JSONParser = new Gson();
         String object = JSONParser.toJson(credentials);
         return HTTPService.HTTPPost("/user/login", object);
+    }
+
+    public static HttpResponse createUser(User user) {
+        JSONParser = new Gson();
+        String object = JSONParser.toJson(user);
+        return HTTPService.HTTPPost("/user/create", object);        
     }
 }

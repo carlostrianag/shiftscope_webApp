@@ -56,30 +56,25 @@ public class ShiftScope extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
 
-        jButton2.setBackground(new java.awt.Color(255, 66, 49));
-        jButton2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Login With ShiftScope");
+        jButton2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jButton2.setText("Login");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
         getContentPane().add(jButton2);
-        jButton2.setBounds(180, 300, 220, 29);
+        jButton2.setBounds(180, 230, 220, 29);
 
-        jButton3.setBackground(new java.awt.Color(255, 66, 49));
-        jButton3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/fb transparence 2.jpeg"))); // NOI18N
-        jButton3.setText("Login with Facebook");
+        jButton3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jButton3.setText("Register");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
         getContentPane().add(jButton3);
-        jButton3.setBounds(180, 260, 220, 29);
+        jButton3.setBounds(180, 270, 220, 29);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/back-c.png"))); // NOI18N
         getContentPane().add(jLabel3);
@@ -95,7 +90,9 @@ public class ShiftScope extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        this.setVisible(false);
+        Register registerScreen = new Register();
+        registerScreen.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
