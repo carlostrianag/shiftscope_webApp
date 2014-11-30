@@ -40,7 +40,7 @@ module.exports = {
 		    { title: {'contains': word} },
 		    { artist: {'contains': word}}
 		  ]
-		}}).paginate({page: page, limit: 8}).exec(function(err, tracks){
+		}}).paginate({page: page, limit: 3}).exec(function(err, tracks){
 			if(err) {
 				res.serverError();
 			} else if(tracks.length !== 0){

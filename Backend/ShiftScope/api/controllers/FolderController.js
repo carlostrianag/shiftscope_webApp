@@ -34,7 +34,7 @@ module.exports = {
 			res.badRequest();
 		}
 
-		Folder.find({where: {parentFolder: id, library: libraryId}}).paginate({page: page, limit: 8}).exec(function(err, folders){
+		Folder.find({where: {parentFolder: id, library: libraryId}}).paginate({page: page, limit: 3}).exec(function(err, folders){
 			if(err){
 				res.serverError();
 			} else if(folders.length != 0){
@@ -52,7 +52,7 @@ module.exports = {
 			res.badRequest();
 		}
 
-		Track.find({where: {parentFolder: id}}).paginate({page: page, limit: 8}).exec(function(err, tracks){
+		Track.find({where: {parentFolder: id}}).paginate({page: page, limit: 3}).exec(function(err, tracks){
 			if(err){
 				res.serverError();
 			} else if(tracks.length != 0){
