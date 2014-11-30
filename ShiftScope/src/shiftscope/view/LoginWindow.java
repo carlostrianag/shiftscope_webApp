@@ -71,12 +71,18 @@ public class LoginWindow extends javax.swing.JFrame {
                 criteria.setUUID(uuid);
                 response = DeviceController.getDeviceByUUID(criteria);
                 returnedDevice = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Device.class);
+                
                 SessionConstants.DEVICE_ID = returnedDevice.getId();
+                criteria = new DeviceCriteria();
+                criteria.setId(SessionConstants.DEVICE_ID);
+                criteria.setOnline(true);
+                DeviceController.connectDevice(criteria);                
                 libraryCriteria = new LibraryCriteria();
                 libraryCriteria.setDevice(SessionConstants.DEVICE_ID);
                 response = LibraryController.getLibraryByDeviceId(libraryCriteria);
                 returnedLibrary = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Library.class);
                 SessionConstants.LIBRARY_ID = returnedLibrary.getId();
+
             } catch (IOException ex) {
                 Logger.getLogger(LoginWindow.class.getName()).log(Level.SEVERE, null, ex);
             }

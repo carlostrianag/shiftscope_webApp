@@ -7,7 +7,6 @@
 package shiftscope.services;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.http.HttpResponse;
 import shiftscope.criteria.DeviceCriteria;
 import shiftscope.model.Device;
@@ -28,4 +27,10 @@ public class DeviceService {
     public static HttpResponse getDeviceByUUID(DeviceCriteria criteria){
         return HTTPService.HTTPGet("/device/getDeviceByUUID?UUID="+criteria.getUUID());
     }    
+
+    public static HttpResponse connectDevice(DeviceCriteria criteria) {
+        JSONParser = new Gson();
+        String object = JSONParser.toJson(criteria);        
+        return HTTPService.HTTPPost("/device/connectDevice", object);
+    }
 }

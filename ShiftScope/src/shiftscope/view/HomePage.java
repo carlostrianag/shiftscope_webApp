@@ -100,6 +100,13 @@ public class HomePage extends javax.swing.JFrame {
 
         @Override
         protected void done() {
+            sync.setNewFolders(true);
+            Operation request = new Operation();
+            request.setOperationType(OperationType.SYNC);
+            request.setUserId(SessionConstants.USER_ID);
+            request.setSync(sync);
+            webSocket.sendRequest(request);
+            sync.setNewFolders(false);
             System.out.println("ShiftScope has finished...");
         }       
     }
@@ -115,16 +122,21 @@ public class HomePage extends javax.swing.JFrame {
             currentSecond = 0;
             currentSongTimeSlider.setMaximum((int)totalSeconds);
             currentSongTimeSlider.setValue(0);
-            while(isPlaying()){
-                int minutes = (int)(currentSecond/60);
-                int seconds = (int)(currentSecond%60);
-                String elapsedtTimeString = minutes+ ":"+String.format("%02d", seconds);
-                elapsedTime.setText(elapsedtTimeString);
-                Thread.sleep(1000);    
-                currentSecond++;
-                currentSongTimeSlider.setValue((int)currentSecond);
+            while(true){
+                if(isPlaying()) {
+                    int minutes = (int)(currentSecond/60);
+                    int seconds = (int)(currentSecond%60);
+                    String elapsedtTimeString = minutes+ ":"+String.format("%02d", seconds);
+                    elapsedTime.setText(elapsedtTimeString);                    
+                    currentSecond++;
+                    currentSongTimeSlider.setValue((int)currentSecond);
+                    Thread.sleep(1000);
+                } else if(isPaused()){
+                    Thread.sleep(1);
+                } else {
+                    break;
+                }
             }
-            System.out.println("Slaio");
             return null;
         }
 
@@ -141,6 +153,7 @@ public class HomePage extends javax.swing.JFrame {
         foldersScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         initPlayer();
         try {
+            System.out.println("Conectando........");
             webSocket = new TCPService(new URI(Constants.SOCKET_SERVER));
             webSocket.connect();
         } catch (URISyntaxException ex) {
@@ -211,11 +224,10 @@ public class HomePage extends javax.swing.JFrame {
         player.pause();
         sync.setIsPlaying(isPlaying());
         sync.setIsPaused(!isPlaying());
-        
     }
     
-    public static void stop() {
-
+    public void stop() {
+        player.stop();
     }
     
     public boolean next() {
@@ -256,6 +268,11 @@ public class HomePage extends javax.swing.JFrame {
     public boolean isPlaying() {
         return player.isPlaying();
     }
+    
+    public boolean isPaused() {
+        return player.isPaused();
+    }
+    
     
     public void enqueueSong(Track q) {
         queuePaths.add(q);

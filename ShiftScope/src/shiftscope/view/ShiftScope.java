@@ -6,13 +6,6 @@
 
 package shiftscope.view;
 
-import facebook4j.Facebook;
-import facebook4j.FacebookException;
-import facebook4j.FacebookFactory;
-import facebook4j.auth.AccessToken;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author carlos

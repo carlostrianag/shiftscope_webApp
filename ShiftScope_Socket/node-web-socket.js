@@ -1,18 +1,34 @@
 var ws = require("nodejs-websocket");
-
-
+var Client = require('node-rest-client').Client;
+var client = new Client();
 
 function WebSocket() {
 	var server;
 	var devicesPool = {};
 	var mobilesPool = {};
 
+	disconnectDevice = function(id){
+		var args = {
+		  data: { id: id },
+		  headers:{"Content-Type": "application/json"} 
+		};
+
+		client.post("http://localhost:1337/device/disconnectDevice", args,  function(data, response) {
+			
+		});
+	};
+
 	deleteFromPool = function(conn) {
-		for(var i = 0; i < devicesPool.length; i++){
-			if(devicesPool[i] === conn) {
-				delete devicesPool[i];
+
+		for(var idUser in devicesPool){
+			for(var idDevice in devicesPool[idUser]) {
+				if (devicesPool[idUser][idDevice] === conn) {
+					disconnectDevice(idDevice);
+					delete devicesPool[idUser][idDevice]
+				}
 			}
 		}
+
 		for(var i = 0; i < mobilesPool.length; i++){
 			if(mobilesPool[i] === conn) {
 				delete mobilesPool[i];
@@ -47,7 +63,7 @@ function WebSocket() {
 		        		try {
 		        			mobilesPool[request.userId.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
-		        			//Delete from pool
+
 		        		}
 		        	} else {
 		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));

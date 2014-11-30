@@ -24,4 +24,8 @@ public class DeviceController {
     public static HttpResponse getDeviceByUUID(DeviceCriteria criteria) {
         return DeviceService.getDeviceByUUID(criteria);
     }
+
+    public static HttpResponse connectDevice(DeviceCriteria criteria) {
+        return DeviceService.connectDevice(criteria);
+    }
 }

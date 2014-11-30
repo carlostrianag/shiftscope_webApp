@@ -43,6 +43,33 @@ module.exports = {
         res.notFound();
       }
     })
+  },
+
+  connectDevice: function(req, res) {
+    var id = req.param('id');
+    if(id === undefined) {
+      res.badRequest();
+    }
+    Device.update({where: {id: id}}, {online: true}).exec(function(err, device){
+      if(err){
+        res.serverError();
+      } else if (device){
+        res.ok();
+      }
+    })
+  },
+  disconnectDevice: function(req, res) {
+    var id = req.param('id');
+    if(id === undefined) {
+      res.badRequest();
+    }
+    Device.update({where: {id: id}}, {online: false}).exec(function(err, device){
+      if(err){
+        res.serverError();
+      } else if (device){
+        res.ok();
+      }
+    })
   }
 };
 

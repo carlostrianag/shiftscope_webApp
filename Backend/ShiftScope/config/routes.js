@@ -46,6 +46,8 @@ module.exports.routes = {
   'GET /device/getDevicesByUserId': {controller: 'DeviceController', action: 'getDevicesByUserId', cors: {origin: '*'}},
   'POST /device/create': {controller: 'DeviceController', action: 'create', cors: {origin: '*'}},
   'GET /device/getDeviceByUUID': {controller: 'DeviceController', action: 'getDeviceByUUID', cors: {origin: '*'}},
+  'POST /device/connectDevice': {controller: 'DeviceController', action: 'connectDevice', cors: {origin: '*'}},
+  'POST /device/disconnectDevice': {controller: 'DeviceController', action: 'disconnectDevice', cors: {origin: '*'}},
   
 
   //FolderMethods

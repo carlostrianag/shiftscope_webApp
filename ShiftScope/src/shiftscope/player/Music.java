@@ -7,7 +7,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
-import shiftscope.view.HomePage;
 
 /**
  *
@@ -266,12 +265,6 @@ public class Music implements Runnable {
             if (line != null) {
                 line.start();
                 int nBytesRead = 0;
-//                if(timeCounter != null){
-//                    timeCounter.cancel(true);
-//                }
-//                timeCounter = new HomePage.TimeCounter();
-//                timeCounter.execute();      
-                
                 while (nBytesRead != -1 && running && !restart) {
                     nBytesRead = din.read(data, 0, data.length);
                     totalBytes += nBytesRead;
@@ -286,6 +279,7 @@ public class Music implements Runnable {
                         wait(15);
                     }
                 }
+                stop();
                 line.drain();
                 line.stop();
                 line.close();

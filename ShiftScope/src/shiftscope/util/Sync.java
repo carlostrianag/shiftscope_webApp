@@ -18,6 +18,7 @@ public class Sync {
     private boolean isPlayingPlaylist;
     private boolean isPlaying;
     private boolean isPaused;
+    private boolean newFolders;
 
     /**
      * @return the currentSongName
@@ -116,6 +117,20 @@ public class Sync {
      */
     public void setCurrentSongDuration(String currentSongDuration) {
         this.currentSongDuration = currentSongDuration;
+    }
+
+    /**
+     * @return the newFolders
+     */
+    public boolean isNewFolders() {
+        return newFolders;
+    }
+
+    /**
+     * @param newFolders the newFolders to set
+     */
+    public void setNewFolders(boolean newFolders) {
+        this.newFolders = newFolders;
     }
     
 }
