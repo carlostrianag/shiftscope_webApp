@@ -6,6 +6,8 @@ function WebSocket() {
 	var server;
 	var devicesPool = {};
 	var mobilesPool = {};
+	//var server = "http://localhost:1337"
+	var server = "http://54.149.22.22"
 
 	disconnectDevice = function(id){
 		var args = {
@@ -13,7 +15,7 @@ function WebSocket() {
 		  headers:{"Content-Type": "application/json"} 
 		};
 
-		client.post("http://localhost:1337/device/disconnectDevice", args,  function(data, response) {
+		client.post(server+"/device/disconnectDevice", args,  function(data, response) {
 			
 		});
 	};

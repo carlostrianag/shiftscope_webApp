@@ -23,4 +23,8 @@ public class TrackController {
     public static HttpResponse getTrackById(TrackCriteria criteria){
         return TrackService.getTrackById(criteria);
     }
+    
+    public static HttpResponse searchTrack(TrackCriteria criteria) {
+        return TrackService.searchTrack(criteria);
+    }
 }

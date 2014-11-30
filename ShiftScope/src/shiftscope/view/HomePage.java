@@ -16,8 +16,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +38,9 @@ import org.apache.http.HttpResponse;
 import shiftscope.controller.FolderController;
 import shiftscope.controller.TrackController;
 import shiftscope.criteria.FolderCriteria;
+import shiftscope.criteria.TrackCriteria;
 import shiftscope.dto.FolderDTO;
+import shiftscope.dto.SearchDTO;
 import shiftscope.model.Folder;
 import shiftscope.model.Track;
 import shiftscope.netservices.HTTPService;
@@ -65,6 +69,7 @@ public class HomePage extends javax.swing.JFrame {
     private float totalFiles;
     private float currentFileScanned;
     private float currentSecond;
+    private int currentFolder;
 
     //Player Variables
     private float volumeValue;
@@ -244,7 +249,7 @@ public class HomePage extends javax.swing.JFrame {
             if (currentSongPosition > 0) {
                 currentSongPosition--;
                 currentSong = queuePaths.get(currentSongPosition);
-                playSong(currentSong,true);
+                playSong(currentSong, true);
             }
         }
     }
@@ -336,9 +341,9 @@ public class HomePage extends javax.swing.JFrame {
                             AudioFileFormat baseFileFormat = AudioSystem.getAudioFileFormat(file);
                             Map properties = baseFileFormat.properties();
                             Long duration1 = (Long) properties.get("duration");
-                            int mili = (int)(duration1/1000);
-                            int sec = (int)(mili/1000)%60;
-                            int min = (int)(mili/1000)/60;
+                            int mili = (int) (duration1 / 1000);
+                            int sec = (int) (mili / 1000) % 60;
+                            int min = (int) (mili / 1000) / 60;
                             track.setDuration(min + ":" + String.format("%02d", sec));
                             if (mp3.hasId3v1Tag()) {
                                 ID3v1 id3v1Tag = mp3.getId3v1Tag();
@@ -362,6 +367,7 @@ public class HomePage extends javax.swing.JFrame {
                         }
                         track.setPath(f.getAbsolutePath());
                         track.setParentFolder(parentId);
+                        track.setLibrary(SessionConstants.LIBRARY_ID);
                         TrackController.createTrack(track);
                         currentFileScanned++;
                         progressBar.setValue((int) currentFileScanned);
@@ -428,6 +434,36 @@ public class HomePage extends javax.swing.JFrame {
 
     }
 
+    private void drawSearchResults(ArrayList<Track> tracks) {
+        int totalElements = tracks.size();
+        folderPane.removeAll();
+        folderPane.setPreferredSize(new Dimension(foldersScrollPane.getWidth(), totalElements * 35));
+        foldersScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        int delta = 0;
+        for (int i = 0; i < tracks.size(); i++) {
+            final Track track = tracks.get(i);
+            JLabel folderLabel = new JLabel(track.getTitle());
+            JLabel iconLabel = new JLabel("T");
+            iconLabel.setBounds(0, (i * 35) + delta, 35, 35);
+            iconLabel.setBorder(BorderFactory.createLineBorder(Color.black));
+            folderLabel.setBounds(50, (i * 35) + delta, 300, 35);
+            folderLabel.setBorder(BorderFactory.createLineBorder(Color.red));
+            folderLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    playSong(track, false);
+                }
+
+            });
+            folderPane.add(iconLabel);
+            folderPane.add(folderLabel);
+        }
+        foldersScrollPane.revalidate();
+        foldersScrollPane.repaint();
+
+    }
+
     private void drawPlaylist() {
         int totalElements = queuePaths.size();
         playlistPanel.setPreferredSize(new Dimension(playlistScrollPane.getWidth(), totalElements * 35));
@@ -461,6 +497,7 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     private void getFolderContent(int id) {
+        currentFolder = id;
         HttpResponse response;
         FolderDTO folderContent = new FolderDTO();
         Folder parentFolder;
@@ -534,6 +571,7 @@ public class HomePage extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         searchTextField = new javax.swing.JTextField();
+        searchButton = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         backButton = new javax.swing.JLabel();
         selectFolderButton = new javax.swing.JLabel();
@@ -572,14 +610,21 @@ public class HomePage extends javax.swing.JFrame {
         jPanel4.add(jLabel1);
 
         searchTextField.setForeground(new java.awt.Color(204, 204, 204));
-        searchTextField.setText("Search");
         searchTextField.setPreferredSize(new java.awt.Dimension(350, 27));
-        searchTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchTextFieldActionPerformed(evt);
+        searchTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchTextFieldKeyReleased(evt);
             }
         });
         jPanel4.add(searchTextField);
+
+        searchButton.setText("Search");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+        jPanel4.add(searchButton);
 
         backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/view/Arrow.png"))); // NOI18N
         backButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -767,10 +812,6 @@ public class HomePage extends javax.swing.JFrame {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_searchTextFieldActionPerformed
-
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
         PlaylistsBook nuevaVentana = new PlaylistsBook();
         nuevaVentana.setVisible(true);        // TODO add your handling code here:
@@ -819,6 +860,48 @@ public class HomePage extends javax.swing.JFrame {
         back();
     }//GEN-LAST:event_backBtnMouseClicked
 
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        try {
+            int currentPage = 1;
+            SearchDTO searchResults = new SearchDTO();
+            TrackCriteria criteria = new TrackCriteria();
+            String word = URLEncoder.encode(searchTextField.getText(), "UTF-8");
+            criteria.setWord(word);
+            criteria.setLibrary(SessionConstants.LIBRARY_ID);
+            criteria.setPage(currentPage);
+            JSONParser = new GsonBuilder().create();
+            HttpResponse response = TrackController.searchTrack(criteria);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                do {
+                    try {
+                        searchResults.addTracks(JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), new TypeToken<List<Track>>() {
+                        }.getType()));
+                        currentPage++;
+                        criteria.setPage(currentPage);
+                        response = TrackController.searchTrack(criteria);
+                    } catch (IOException ex) {
+                        Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalStateException ex) {
+                        Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } while (response.getStatusLine().getStatusCode() != 404);
+                drawSearchResults(searchResults.getTracks());
+            } else if (response.getStatusLine().getStatusCode() == 404) {
+                folderPane.removeAll();
+                foldersScrollPane.revalidate();
+                foldersScrollPane.repaint();
+            }
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
+        if(searchTextField.getText().length() == 0) {
+            getFolderContent(currentFolder);
+        }
+    }//GEN-LAST:event_searchTextFieldKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel backBtn;
@@ -842,6 +925,7 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JPanel playlistPanel;
     private javax.swing.JScrollPane playlistScrollPane;
     private javax.swing.JProgressBar progressBar;
+    private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchTextField;
     private javax.swing.JLabel selectFolderButton;
     private javax.swing.JLabel songNameLabel;

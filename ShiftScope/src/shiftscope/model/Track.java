@@ -18,6 +18,7 @@ public class Track {
     private String title;
     private String duration;
     private int parentFolder;
+    private int library;
 
     /**
      * @return the path
@@ -115,5 +116,19 @@ public class Track {
      */
     public void setParentFolder(int parentFolder) {
         this.parentFolder = parentFolder;
+    }
+
+    /**
+     * @return the library
+     */
+    public int getLibrary() {
+        return library;
+    }
+
+    /**
+     * @param library the library to set
+     */
+    public void setLibrary(int library) {
+        this.library = library;
     }
 }

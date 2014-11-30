@@ -20,6 +20,60 @@ module.exports = {
 				res.notFound();
 			}
 		})
-	}
+	},
+	searchTrack: function(req, res){
+		var word = req.param('word');
+		var library = req.param('library');
+		var page = req.param('page');
+		if(word === undefined) {
+			res.badRequest();
+		}
+		if(library === undefined) {
+			res.badRequest();
+		}
+		if(page === undefined) {
+			res.badRequest();
+		}
+
+		Track.find({where: {library: library,
+		  or : [
+		    { title: {'contains': word} },
+		    { artist: {'contains': word}}
+		  ]
+		}}).paginate({page: page, limit: 8}).exec(function(err, tracks){
+			if(err) {
+				res.serverError();
+			} else if(tracks.length !== 0){
+				res.json(tracks);
+			} else {
+				res.notFound();
+			}
+		})
+	},
+	searchAllTracks: function(req, res){
+		var word = req.param('word');
+		var library = req.param('library');
+		if(word === undefined) {
+			res.badRequest();
+		}
+		if(library === undefined) {
+			res.badRequest();
+		}
+
+		Track.find({where: {library: library,
+		  or : [
+		    { title: {'contains': word} },
+		    { artist: {'contains': word}}
+		  ]
+		}}).exec(function(err, tracks){
+			if(err) {
+				res.serverError();
+			} else if(tracks.length !== 0){
+				res.json(tracks);
+			} else {
+				res.notFound();
+			}
+		})
+	}	
 };
 

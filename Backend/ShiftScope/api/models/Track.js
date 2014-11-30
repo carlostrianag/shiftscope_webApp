@@ -38,6 +38,10 @@ module.exports = {
   parentFolder: {
     model: 'folder',
     foreignKey: true
+  },
+  library: {
+    model: 'library',
+    foreignKey: true
   }
 };
 

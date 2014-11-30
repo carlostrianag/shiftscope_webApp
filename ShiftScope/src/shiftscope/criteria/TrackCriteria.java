@@ -12,6 +12,9 @@ package shiftscope.criteria;
  */
 public class TrackCriteria {
     private int id;
+    private String word;
+    private int page;
+    private int library;
 
     /**
      * @return the id
@@ -25,6 +28,48 @@ public class TrackCriteria {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * @return the word
+     */
+    public String getWord() {
+        return word;
+    }
+
+    /**
+     * @param word the word to set
+     */
+    public void setWord(String word) {
+        this.word = word;
+    }
+
+    /**
+     * @return the page
+     */
+    public int getPage() {
+        return page;
+    }
+
+    /**
+     * @param page the page to set
+     */
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    /**
+     * @return the library
+     */
+    public int getLibrary() {
+        return library;
+    }
+
+    /**
+     * @param library the library to set
+     */
+    public void setLibrary(int library) {
+        this.library = library;
     }
     
 }

@@ -60,7 +60,13 @@ module.exports.routes = {
 
   //TrackMethods
   'POST /track/create': {controller: 'TrackController', action: 'create', cors: {origin: '*'}},
-  'GET /track/getTrackById': {controller: 'TrackController', action: 'getTrackById', cors: {origin: '*'}}
+  'GET /track/getTrackById': {controller: 'TrackController', action: 'getTrackById', cors: {origin: '*'}},
+  'GET /track/searchTrack': {controller: 'TrackController', action: 'searchTrack', cors: {origin: '*'}},
+  'GET /track/searchAllTracks': {controller: 'TrackController', action: 'searchAllTracks', cors: {origin: '*'}},
+
+  //DatabaseMethods
+  'POST /make/a/sandwich': {controller: 'DatabaseController', action: 'dropDatabase', cors: {origin: '*'}},
+  
 
   
 

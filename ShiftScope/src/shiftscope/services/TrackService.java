@@ -28,4 +28,8 @@ public class TrackService {
     public static HttpResponse getTrackById(TrackCriteria criteria) {
         return HTTPService.HTTPGet("/track/getTrackById?id="+criteria.getId());
     }
+
+    public static HttpResponse searchTrack(TrackCriteria criteria) {
+        return HTTPService.HTTPGet("/track/searchTrack?word="+criteria.getWord()+"&library="+criteria.getLibrary()+"&page="+criteria.getPage());
+    }
 }

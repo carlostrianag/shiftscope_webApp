@@ -3,10 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/carlos/Desktop/ShiftScope_Repo/ShiftScope/src/shiftscope/util/Sync.java</file>
-            <file>file:/home/carlos/Desktop/ShiftScope_Repo/ShiftScope/src/shiftscope/netservices/TCPService.java</file>
+            <file>file:/home/carlos/Desktop/ShiftScope_Repo/ShiftScope/src/shiftscope/services/TrackService.java</file>
+            <file>file:/home/carlos/Desktop/ShiftScope_Repo/ShiftScope/src/shiftscope/criteria/TrackCriteria.java</file>
+            <file>file:/home/carlos/Desktop/ShiftScope_Repo/ShiftScope/src/shiftscope/controller/TrackController.java</file>
             <file>file:/home/carlos/Desktop/ShiftScope_Repo/ShiftScope/src/shiftscope/view/ShiftScope.java</file>
             <file>file:/home/carlos/Desktop/ShiftScope_Repo/ShiftScope/src/shiftscope/view/HomePage.java</file>
+            <file>file:/home/carlos/Desktop/ShiftScope_Repo/ShiftScope/src/shiftscope/model/Track.java</file>
         </group>
     </open-files>
 </project-private>
