@@ -1,27 +1,27 @@
 module.exports = {
 
   dropDatabase: function(req, res) {
-    User.remove({}, function(err) { 
+    User.destroy({}, function(err) { 
       if(err){
         res.serverError();
       }
     });
-    Track.remove({}, function(err) { 
+    Track.destroy({}, function(err) { 
       if(err){
         res.serverError();
       }
     });
-    Device.remove({}, function(err) { 
+    Device.destroy({}, function(err) { 
       if(err){
         res.serverError();
       }
     });
-    Folder.remove({}, function(err) { 
+    Folder.destroy({}, function(err) { 
         if(err){
           res.serverError();
         }
     }); 
-    Library.remove({}, function(err) { 
+    Library.destroy({}, function(err) { 
         if(err){
           res.serverError();
         }
