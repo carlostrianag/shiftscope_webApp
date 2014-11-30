@@ -8,6 +8,8 @@ package shiftscope.view;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.mpatric.mp3agic.ID3v1;
+import com.mpatric.mp3agic.Mp3File;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
@@ -30,7 +33,6 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 import org.apache.http.HttpResponse;
-import org.farng.mp3.MP3File;
 import shiftscope.controller.FolderController;
 import shiftscope.controller.TrackController;
 import shiftscope.criteria.FolderCriteria;
@@ -55,7 +57,6 @@ public class HomePage extends javax.swing.JFrame {
     /**
      * Creates new form HomePage
      */
-    
     //GUI Variables
     private TimeCounter timeCounter;
     public TCPService webSocket;
@@ -65,26 +66,23 @@ public class HomePage extends javax.swing.JFrame {
     private float currentFileScanned;
     private float currentSecond;
 
-    
     //Player Variables
-    
     private float volumeValue;
     private boolean playlistPlaying;
-    private int currentSongPosition;    
+    private int currentSongPosition;
     private ArrayList<Track> queuePaths;
     private Track currentSong;
     private Sync sync;
     private Music player;
-    
-    
+
     public class FolderBuilder extends SwingWorker<Void, Void> {
 
         @Override
         protected Void doInBackground() throws Exception {
             totalFiles = 0;
             currentFileScanned = 0;
-            File [] selectedFiles = fileChooser.getSelectedFiles();
-            for(File f : selectedFiles){
+            File[] selectedFiles = fileChooser.getSelectedFiles();
+            for (File f : selectedFiles) {
                 countFiles(f);
             }
             progressBar.setMaximum((int) totalFiles);
@@ -94,7 +92,7 @@ public class HomePage extends javax.swing.JFrame {
                 buildFolder(f, -1);
             }
             progressBar.setVisible(false);
-            getFolderContent(-1);           
+            getFolderContent(-1);
             return null;
         }
 
@@ -108,30 +106,30 @@ public class HomePage extends javax.swing.JFrame {
             webSocket.sendRequest(request);
             sync.setNewFolders(false);
             System.out.println("ShiftScope has finished...");
-        }       
+        }
     }
-    
+
     public class TimeCounter extends SwingWorker<Void, Void> {
 
         @Override
         protected Void doInBackground() throws Exception {
             String duration = getSync().getCurrentSongDuration();
             totalTime.setText(duration);
-            float totalSeconds = (Integer.parseInt(duration.split(":")[0])*60)+Integer.parseInt(duration.split(":")[1]);
+            float totalSeconds = (Integer.parseInt(duration.split(":")[0]) * 60) + Integer.parseInt(duration.split(":")[1]);
             System.out.println(totalSeconds);
             currentSecond = 0;
-            currentSongTimeSlider.setMaximum((int)totalSeconds);
+            currentSongTimeSlider.setMaximum((int) totalSeconds);
             currentSongTimeSlider.setValue(0);
-            while(true){
-                if(isPlaying()) {
-                    int minutes = (int)(currentSecond/60);
-                    int seconds = (int)(currentSecond%60);
-                    String elapsedtTimeString = minutes+ ":"+String.format("%02d", seconds);
-                    elapsedTime.setText(elapsedtTimeString);                    
+            while (true) {
+                if (isPlaying()) {
+                    int minutes = (int) (currentSecond / 60);
+                    int seconds = (int) (currentSecond % 60);
+                    String elapsedtTimeString = minutes + ":" + String.format("%02d", seconds);
+                    elapsedTime.setText(elapsedtTimeString);
                     currentSecond++;
-                    currentSongTimeSlider.setValue((int)currentSecond);
+                    currentSongTimeSlider.setValue((int) currentSecond);
                     Thread.sleep(1000);
-                } else if(isPaused()){
+                } else if (isPaused()) {
                     Thread.sleep(1);
                 } else {
                     break;
@@ -143,9 +141,9 @@ public class HomePage extends javax.swing.JFrame {
         @Override
         protected void done() {
             System.out.println("Song Finished or Stopped...");
-        }       
+        }
     }
-    
+
     public HomePage() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -160,64 +158,61 @@ public class HomePage extends javax.swing.JFrame {
             Logger.getLogger(ShiftScope.class.getName()).log(Level.SEVERE, null, ex);
         }
         getFolderContent(-1);
-        
-    }
-   
 
-    public void playSong(Track t) {  
-        if(player.isPlaying()){
+    }
+
+    public void playSong(Track t, boolean playedFromPlaylist) {
+        if (player.isPlaying()) {
             player.pause();
         }
         currentSong = t;
         volumeValue = player.getVolumeValue();
-        player = new Music();
+        player = new Music(this);
         player.setVolumeValue(volumeValue);
         player.loadFile(t.getPath());
-        
+
         sync.setCurrentSongId(t.getId());
         sync.setCurrentSongName(t.getTitle());
         sync.setCurrentSongArtist(t.getArtist());
         sync.setCurrentSongDuration(t.getDuration());
         sync.setIsPlaying(true);
         sync.setIsPaused(false);
-        
+
         currentSongLabel.setText(t.getTitle() + " - " + t.getArtist());
-        
-        if(timeCounter != null){
+
+        if (timeCounter != null) {
             timeCounter.cancel(true);
             System.out.println("Cancelado");
         }
         timeCounter = new TimeCounter();
         timeCounter.execute();
-        
+
         player.play();
-        
+
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
         request.setSync(sync);
-        
+
         webSocket.sendRequest(request);
-        playlistPlaying = false;
+        playlistPlaying = playedFromPlaylist;
     }
 
     public void playSongFromPlaylist(Track t) {
-        for(int i = 0; i < queuePaths.size(); i++) {
-            if(t.equals(queuePaths.get(i))) {
+        for (int i = 0; i < queuePaths.size(); i++) {
+            if (t.equals(queuePaths.get(i))) {
                 currentSongPosition = i;
                 break;
             }
         }
         currentSong = queuePaths.get(currentSongPosition);
-        playSong(currentSong);
-        playlistPlaying = true;
+        playSong(currentSong, true);
     }
-    
+
     public void playPlaylist() {
         currentSongPosition = 0;
         currentSong = queuePaths.get(currentSongPosition);
-        playSong(currentSong);
-        playlistPlaying = true;
+        playSong(currentSong, true);
     }
 
     public void resume() {
@@ -229,42 +224,39 @@ public class HomePage extends javax.swing.JFrame {
         sync.setIsPlaying(isPlaying());
         sync.setIsPaused(!isPlaying());
     }
-    
+
     public void stop() {
         player.stop();
     }
-    
-    public boolean next() {
-        if(currentSongPosition < queuePaths.size()-1) {
-            currentSongPosition++;
-            currentSong = queuePaths.get(currentSongPosition);
-            playSong(currentSong);
-            playlistPlaying = true;
-            return true;
+
+    public void next() {
+        if (playlistPlaying) {
+            if (currentSongPosition < queuePaths.size() - 1) {
+                currentSongPosition++;
+                currentSong = queuePaths.get(currentSongPosition);
+                playSong(currentSong, true);
+            }
         }
-        return false;
     }
-    
-    public boolean back() {
-        if(currentSongPosition > 0) {
-            currentSongPosition--;
-            currentSong = queuePaths.get(currentSongPosition);
-            playSong(currentSong);
-            playlistPlaying = true;
-            return true;
+
+    public void back() {
+        if (playlistPlaying) {
+            if (currentSongPosition > 0) {
+                currentSongPosition--;
+                currentSong = queuePaths.get(currentSongPosition);
+                playSong(currentSong,true);
+            }
         }
-        return false;
-        
     }
 
     public void mute() {
         player.mute();
     }
-    
-    public void volumeDown(){
+
+    public void volumeDown() {
         player.volumeDown();
     }
-    
+
     public void volumeUp() {
         player.volumeUp();
     }
@@ -272,12 +264,11 @@ public class HomePage extends javax.swing.JFrame {
     public boolean isPlaying() {
         return player.isPlaying();
     }
-    
+
     public boolean isPaused() {
         return player.isPaused();
     }
-    
-    
+
     public void enqueueSong(Track q) {
         queuePaths.add(q);
         drawPlaylist();
@@ -286,17 +277,15 @@ public class HomePage extends javax.swing.JFrame {
         request.setUserId(SessionConstants.USER_ID);
         sync.setCurrentPlaylist(queuePaths);
         request.setSync(sync);
-        
         webSocket.sendRequest(request);
-        
-    }   
-    
-    public Sync getSync(){
+    }
+
+    public Sync getSync() {
         return sync;
     }
 
     public final void initPlayer() {
-        player = new Music();
+        player = new Music(this);
         player.setVolumeValue(volumeValue);
         queuePaths = new ArrayList<>();
         volumeValue = 0;
@@ -304,21 +293,20 @@ public class HomePage extends javax.swing.JFrame {
         currentSongPosition = 0;
         playlistPlaying = false;
         sync = new Sync();
-    }  
+    }
 
-    
     private void countFiles(File selectedFile) {
         File[] selectedFiles;
-        if(selectedFile.isDirectory() && !selectedFile.isHidden()){
+        if (selectedFile.isDirectory() && !selectedFile.isHidden()) {
             selectedFiles = selectedFile.listFiles();
-            for(File f : selectedFiles){
+            for (File f : selectedFiles) {
                 totalFiles++;
                 countFiles(f);
             }
-        } else if(!selectedFile.isFile() && !selectedFile.isHidden() && selectedFile.getName().endsWith(".mp3")) {
+        } else if (!selectedFile.isFile() && !selectedFile.isHidden() && selectedFile.getName().endsWith(".mp3")) {
             totalFiles++;
         }
-    }    
+    }
 
     private void buildFolder(File folder, int parentId) {
         JSONParser = new Gson();
@@ -333,7 +321,7 @@ public class HomePage extends javax.swing.JFrame {
             try {
                 createdFolder = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Folder.class);
                 parentId = createdFolder.getId();
-                MP3File mp3;
+                Mp3File mp3;
                 File files[] = folder.listFiles();
                 currentFileScanned++;
                 progressBar.setValue((int) currentFileScanned);
@@ -343,35 +331,34 @@ public class HomePage extends javax.swing.JFrame {
                     } else if (f.getName().endsWith(".mp3") && !f.isHidden()) {
                         Track track = new Track();
                         try {
-                            File file = f;
-                            AudioFileFormat baseFileFormat;
-                            baseFileFormat = new MpegAudioFileReader().getAudioFileFormat(file);
+                            mp3 = new Mp3File(f.getAbsolutePath());
+                            File file = new File(f.getAbsolutePath());
+                            AudioFileFormat baseFileFormat = AudioSystem.getAudioFileFormat(file);
                             Map properties = baseFileFormat.properties();
-                            Long duration = (Long) properties.get("duration");
-                            int mili = (int) (duration / 1000);
-                            int sec = (mili / 1000) % 60;
-                            int min = (mili / 1000) / 60;
-                            track.setDuration(min + ":" + sec);
+                            Long duration1 = (Long) properties.get("duration");
+                            int mili = (int)(duration1/1000);
+                            int sec = (int)(mili/1000)%60;
+                            int min = (int)(mili/1000)/60;
+                            track.setDuration(min + ":" + String.format("%02d", sec));
+                            if (mp3.hasId3v1Tag()) {
+                                ID3v1 id3v1Tag = mp3.getId3v1Tag();
+                                if (id3v1Tag.getTitle().equals("")) {
+                                    track.setTitle(f.getName());
+                                } else {
+                                    track.setTitle(id3v1Tag.getTitle());
+                                }
 
-                        } catch (UnsupportedAudioFileException ex) {
-                            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        try {
-                            mp3 = new MP3File(f);
-                        } catch (Exception ex) {
-                            continue;
-                        }
-                        try {
-                            if (!mp3.getID3v1Tag().getSongTitle().equals("")) {
-                                track.setTitle(mp3.getID3v1Tag().getSongTitle());
-                                track.setArtist(mp3.getID3v1Tag().getArtist());
+                                if (id3v1Tag.getArtist().equals("")) {
+                                    track.setArtist("Unknown");
+                                } else {
+                                    track.setArtist(id3v1Tag.getArtist());
+                                }
                             } else {
                                 track.setTitle(f.getName());
+                                track.setArtist("Unknown");
                             }
-
                         } catch (Exception ex) {
-                            track.setTitle(f.getName());
+                            continue;
                         }
                         track.setPath(f.getAbsolutePath());
                         track.setParentFolder(parentId);
@@ -429,7 +416,7 @@ public class HomePage extends javax.swing.JFrame {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
-                    playSong(track);
+                    playSong(track, false);
                 }
 
             });
@@ -440,7 +427,7 @@ public class HomePage extends javax.swing.JFrame {
         foldersScrollPane.repaint();
 
     }
-    
+
     private void drawPlaylist() {
         int totalElements = queuePaths.size();
         playlistPanel.setPreferredSize(new Dimension(playlistScrollPane.getWidth(), totalElements * 35));
@@ -471,7 +458,7 @@ public class HomePage extends javax.swing.JFrame {
         playlistScrollPane.revalidate();
         playlistScrollPane.repaint();
 
-    }    
+    }
 
     private void getFolderContent(int id) {
         HttpResponse response;
@@ -534,7 +521,7 @@ public class HomePage extends javax.swing.JFrame {
             Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -692,6 +679,7 @@ public class HomePage extends javax.swing.JFrame {
         toolBar.add(progressBar);
 
         jSplitPane1.setDividerLocation(560);
+        jSplitPane1.setOneTouchExpandable(true);
 
         foldersScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         foldersScrollPane.setMinimumSize(new java.awt.Dimension(500, 25));

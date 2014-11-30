@@ -7,6 +7,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
+import shiftscope.view.HomePage;
 
 /**
  *
@@ -47,6 +48,7 @@ public class Music implements Runnable {
     private float volumeValue;
     private SourceDataLine res;
     private int totalBytes;
+    private HomePage parent;
 
     public int getTotalBytes() {
         return totalBytes;
@@ -55,7 +57,7 @@ public class Music implements Runnable {
     /**
      * Declares default variable values.
      */
-    public Music() {
+    public Music(HomePage parent) {
         file = null;
         running = false;
         mute = false;
@@ -64,6 +66,7 @@ public class Music implements Runnable {
         restart = false;
         muteData = setMuteData();
         volumeValue = 0;
+        this.parent = parent;
     }
 
     /**
@@ -279,7 +282,8 @@ public class Music implements Runnable {
                         wait(15);
                     }
                 }
-                stop();
+                wait(1000);
+                parent.next();
                 line.drain();
                 line.stop();
                 line.close();

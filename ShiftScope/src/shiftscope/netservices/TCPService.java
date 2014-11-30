@@ -80,7 +80,7 @@ public class TCPService extends WebSocketClient {
                 response = TrackController.getTrackById(criteria);
                 try {
                     t = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Track.class);
-                    Main.home.playSong(t);
+                    Main.home.playSong(t, false);
                 } catch (IOException ex) {
                     Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalStateException ex) {
