@@ -87,6 +87,21 @@ public class TCPService extends WebSocketClient {
                     Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
+                
+            case OperationType.PLAY_FROM_PLAYLIST:
+                
+                criteria = new TrackCriteria();
+                criteria.setId(request.getId());
+                response = TrackController.getTrackById(criteria);
+                try {
+                    t = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Track.class);
+                    Main.home.playSongFromPlaylist(t);
+                } catch (IOException ex) {
+                    Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalStateException ex) {
+                    Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;                
 
             case OperationType.ENQUEUE:
                 criteria = new TrackCriteria();
@@ -94,7 +109,7 @@ public class TCPService extends WebSocketClient {
                 response = TrackController.getTrackById(criteria);
                 try {
                     t = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Track.class);
-                    Main.home.playSong(t);
+                    Main.home.enqueueSong(t);
                 } catch (IOException ex) {
                     Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalStateException ex) {
@@ -115,6 +130,7 @@ public class TCPService extends WebSocketClient {
                 request.setUserId(SessionConstants.USER_ID);
                 request.setSync(Main.home.getSync());
                 sendRequest(request);
+            
         }
     }
 

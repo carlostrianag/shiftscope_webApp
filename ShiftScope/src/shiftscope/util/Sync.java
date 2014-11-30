@@ -6,6 +6,9 @@
 
 package shiftscope.util;
 
+import java.util.ArrayList;
+import shiftscope.model.Track;
+
 /**
  *
  * @author carlos
@@ -19,6 +22,7 @@ public class Sync {
     private boolean isPlaying;
     private boolean isPaused;
     private boolean newFolders;
+    private ArrayList<Track> currentPlaylist;
 
     /**
      * @return the currentSongName
@@ -131,6 +135,20 @@ public class Sync {
      */
     public void setNewFolders(boolean newFolders) {
         this.newFolders = newFolders;
+    }
+
+    /**
+     * @return the currentPlaylist
+     */
+    public ArrayList<Track> getCurrentPlaylist() {
+        return currentPlaylist;
+    }
+
+    /**
+     * @param currentPlaylist the currentPlaylist to set
+     */
+    public void setCurrentPlaylist(ArrayList<Track> currentPlaylist) {
+        this.currentPlaylist = currentPlaylist;
     }
     
 }
