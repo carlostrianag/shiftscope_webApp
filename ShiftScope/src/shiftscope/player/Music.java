@@ -1,6 +1,8 @@
 package shiftscope.player;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -39,36 +41,116 @@ import shiftscope.view.HomePage;
  * with audio APIs?) - General Efficiency
  *
  */
-public class Music implements Runnable {
+public class Music {
 
+    private boolean playingMainLine, playingAuxLine, mute, pause;
     private File file;
-    private boolean running, mute, pause, loop, restart;
-    private final int byteChunkSize = 1024;//number of bytes to read at one time
+    private final int byteChunkSize = 1024;
     private byte[] muteData;
-    private float volumeValue;
-    private SourceDataLine res;
+    private float volumeValueMainLine;
+    private float volumeValueAuxLine;
     private int totalBytes;
+    private SourceDataLine mainLine, auxLine;
     private HomePage parent;
-
+    private Thread mainLineThread;
+    private Thread auxLineThread;
+    private Thread mergingThread;
     public int getTotalBytes() {
         return totalBytes;
     }
 
     /**
      * Declares default variable values.
+     * @param parent
      */
     public Music(HomePage parent) {
         file = null;
-        running = false;
+        playingMainLine = false;
+        playingAuxLine = false;
         mute = false;
         pause = false;
-        loop = false;
-        restart = false;
         muteData = setMuteData();
-        volumeValue = 0;
+        volumeValueMainLine = 0;
+        volumeValueAuxLine = 0;
         this.parent = parent;
     }
 
+    private void determineLine() {
+        System.out.println("determinando linea valiemia");
+        System.out.println(playingMainLine + " ----- " + playingAuxLine);
+        if(!playingMainLine && !playingAuxLine) {
+            mainLineThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    playSong();
+                }
+            
+            });
+            mainLineThread.start();
+            
+        } else if(!playingAuxLine){
+            System.out.println("caso 2");
+            
+            mergingThread = new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    float originalVolumeValue = volumeValueMainLine;
+                    setAuxLineVolume(-50);
+                    auxLineThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            playSongAuxLine();
+                        }
+                    });
+                    auxLineThread.start();
+                    while(volumeValueAuxLine < originalVolumeValue) {
+                        volumeValueMainLine -= 2.5;
+                        volumeValueAuxLine += 2.5;
+                        setVolume(volumeValueMainLine);
+                        setAuxLineVolume(volumeValueAuxLine);
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Music.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    playingMainLine = false;
+                }
+                    
+            });
+            mergingThread.start();
+        } else {
+            System.out.println("entro al caso 3");
+            mergingThread = new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    float originalVolumeValue = volumeValueAuxLine;
+                    setVolume(-50);
+                    mainLineThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            playSong();
+                        }
+                    });
+                    mainLineThread.start();
+                    while(volumeValueMainLine < originalVolumeValue) {
+                        volumeValueMainLine += 2.5;
+                        volumeValueAuxLine -= 2.5;
+                        setVolume(volumeValueMainLine);
+                        setAuxLineVolume(volumeValueAuxLine);
+                        try {
+                            Thread.sleep(80);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Music.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    playingAuxLine = false;
+                } 
+            });
+            mergingThread.start();
+        }
+    }
+    
     /**
      * Creates a file object. If the file path exists on the system, the given
      * file is an mp3, and a song is not currently playing in this instance of
@@ -77,29 +159,28 @@ public class Music implements Runnable {
      * @param filePath Path to the file.
      * @return If the file is loaded or not.
      */
-    public boolean loadFile(String filePath) {
+    public boolean loadSong(String filePath) {
         file = new File(filePath);
-        if (file.exists() && file.getName().toLowerCase().endsWith(".mp3") && !running) {
+        if (file.exists() && file.getName().toLowerCase().endsWith(".mp3")) {
             return true;
         } else {
             file = null;
             return false;
         }
     }
-
-    /**
+ /**
      * Starts playing the audio in a new thread.
      */
     public void play() {
         if (file != null) {
-            running = true;
-            try {
-                Thread t = new Thread(this);
-                t.start();
-            } catch (Exception e) {
-                System.err.println("Could not start new thread for audio!");
-                e.printStackTrace();
-            }
+            mergingThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                   determineLine();
+                }
+
+            });
+            mergingThread.start();
         }
     }
 
@@ -108,15 +189,12 @@ public class Music implements Runnable {
      * the audio stream, calling it again unpauses the audio stream.
      */
     public void pause() {
-        if (file != null) {
-            if (pause) {
-                pause = false;
-                running = true;
-            } else {
-                pause = true;
-                running = false;
-            }
-        }
+ 
+            pause = !pause;
+
+            
+
+
     }
 
     /**
@@ -127,11 +205,9 @@ public class Music implements Runnable {
     public void stop() {
         pause();
         file = null;
-        running = false;
+        playingMainLine = false;
         mute = false;
         pause = false;
-        loop = false;
-        restart = false;
         muteData = setMuteData();
     }
 
@@ -155,32 +231,17 @@ public class Music implements Runnable {
      * will make it stop looping, but will not stop the audio from playing to
      * the end of a given loop.
      */
-    public void loop() {
-        if (file != null) {
-            if (loop) {
-                loop = false;
-            } else {
-                loop = true;
-            }
-        }
-    }
 
     /**
      * Restarts the current song. Always use this method to restart a song and
      * never .stop() followed by .play(), which is not safe.
      */
-    public void restart() {
-        restart = true;
-    }
 
     /**
      * Returns whether or not a clip will loop when it reaches the end.
      *
      * @return Status of the variable loop.
      */
-    public boolean isLooping() {
-        return loop;
-    }
 
     /**
      * Returns if the audio is muted or not.
@@ -207,46 +268,45 @@ public class Music implements Runnable {
      * @return If the thread is running or not.
      */
     public boolean isPlaying() {
-        return running;
+        return playingMainLine;
     }
 
-    /**
-     * Returns if a file is loaded or not.
-     *
-     * @return File status of null or a file.
-     */
-    public boolean isLoaded() {
-        if (file == null) {
-            return false;
-        } else {
-            return true;
+    public void playSong() {
+        try {
+            AudioInputStream in = AudioSystem.getAudioInputStream(file);
+            AudioInputStream din = null;
+            AudioFormat baseFormat = in.getFormat();
+            AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
+                    baseFormat.getSampleRate(),
+                    16,
+                    baseFormat.getChannels(),
+                    baseFormat.getChannels() * 2,
+                    baseFormat.getSampleRate(),
+                    false);
+            din = AudioSystem.getAudioInputStream(decodedFormat, in);                
+            stream(decodedFormat, din);
+            in.close();
+        } catch (Exception e) {
+            System.err.println("Problem getting audio stream!");
+            e.printStackTrace();
         }
     }
-
-    /**
-     * Retrieves the audio stream information and starts the stream. When the
-     * stream ends, this method checks to see if it should loop and start again.
-     */
-    @Override
-    public void run() {
+    
+    public void playSongAuxLine() {
         try {
-            do {
-                restart = false;
-                AudioInputStream in = AudioSystem.getAudioInputStream(file);
-                AudioInputStream din = null;
-                AudioFormat baseFormat = in.getFormat();
-                AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
-                        baseFormat.getSampleRate(),
-                        16,
-                        baseFormat.getChannels(),
-                        baseFormat.getChannels() * 2,
-                        baseFormat.getSampleRate(),
-                        false);
-                din = AudioSystem.getAudioInputStream(decodedFormat, in);                
-                stream(decodedFormat, din);
-                in.close();
-            } while ((loop || restart));
-            running = false;
+            AudioInputStream in = AudioSystem.getAudioInputStream(file);
+            AudioInputStream din = null;
+            AudioFormat baseFormat = in.getFormat();
+            AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
+                    baseFormat.getSampleRate(),
+                    16,
+                    baseFormat.getChannels(),
+                    baseFormat.getChannels() * 2,
+                    baseFormat.getSampleRate(),
+                    false);
+            din = AudioSystem.getAudioInputStream(decodedFormat, in);                
+            streamAuxLine(decodedFormat, din);
+            in.close();
         } catch (Exception e) {
             System.err.println("Problem getting audio stream!");
             e.printStackTrace();
@@ -264,18 +324,19 @@ public class Music implements Runnable {
         try {
             totalBytes = 0;
             byte[] data = new byte[byteChunkSize];
-            SourceDataLine line = getLine(targetFormat);
-            if (line != null) {
-                line.start();
+            getLine(targetFormat);
+            if (mainLine != null) {
+                playingMainLine = true;
+                mainLine.start();
                 int nBytesRead = 0;
-                while (nBytesRead != -1 && running && !restart) {
+                while (nBytesRead != -1 && playingMainLine) {
                     nBytesRead = din.read(data, 0, data.length);
                     totalBytes += nBytesRead;
                     if (nBytesRead != -1) {
                         if (mute) {
-                            line.write(muteData, 0, nBytesRead);
+                            mainLine.write(muteData, 0, nBytesRead);
                         } else {
-                            line.write(data, 0, nBytesRead);
+                            mainLine.write(data, 0, nBytesRead);
                         }
                     }
                     while (pause) {
@@ -284,9 +345,10 @@ public class Music implements Runnable {
                 }
                 wait(1000);
                 parent.next();
-                line.drain();
-                line.stop();
-                line.close();
+                mainLine.drain();
+                mainLine.stop();
+                mainLine.close();
+                playingMainLine = false;
                 din.close();
             }
         } catch (Exception e) {
@@ -294,6 +356,44 @@ public class Music implements Runnable {
             e.printStackTrace();
         }
     }
+    
+    private void streamAuxLine(AudioFormat targetFormat, AudioInputStream din) {
+        try {
+            totalBytes = 0;
+            byte[] data = new byte[byteChunkSize];
+            getAuxLine(targetFormat);         
+            if (auxLine != null) {
+                playingAuxLine = true;
+                auxLine.start();
+                int nBytesRead = 0;
+                while (nBytesRead != -1 && playingAuxLine) {
+                    nBytesRead = din.read(data, 0, data.length);
+                    totalBytes += nBytesRead;
+                    if (nBytesRead != -1) {
+                        if (mute) {
+                            auxLine.write(muteData, 0, nBytesRead);
+                        } else {
+                            auxLine.write(data, 0, nBytesRead);
+                        }
+                    }
+                    while (pause) {
+                        wait(15);
+                    }
+                }
+                wait(1000);
+                parent.next();
+                auxLine.drain();
+                auxLine.stop();
+                auxLine.close();
+                playingAuxLine = false;
+                din.close();
+            }
+        } catch (Exception e) {
+            System.err.println("Problem playing audio!");
+            e.printStackTrace();
+        }
+    }
+    
 
     /**
      * Gets the line of audio.
@@ -301,20 +401,32 @@ public class Music implements Runnable {
      * @param audioFormat The format of the audio.
      * @return The line of audio.
      */
-    private SourceDataLine getLine(AudioFormat audioFormat) {
-        res = null;
+    private void getLine(AudioFormat audioFormat) {
+        mainLine = null;
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
 
         try {
-            res = (SourceDataLine) AudioSystem.getLine(info);
-            res.open(audioFormat);
+            mainLine = (SourceDataLine) AudioSystem.getLine(info);
+            mainLine.open(audioFormat);
             setVolume();
         } catch (Exception e) {
             System.err.println("Could not get audio line!");
             e.printStackTrace();
         }
+    }
+    
+    private void getAuxLine(AudioFormat audioFormat) {
+        auxLine = null;
+        DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
 
-        return res;
+        try {
+            auxLine = (SourceDataLine) AudioSystem.getLine(info);
+            auxLine.open(audioFormat);
+            setAuxLineVolume(volumeValueAuxLine);
+        } catch (Exception e) {
+            System.err.println("Could not get audio line!");
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -347,40 +459,52 @@ public class Music implements Runnable {
     }
 
     public void volumeUp() {
-        if (res != null && res.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-            FloatControl volume = (FloatControl) res.getControl(FloatControl.Type.MASTER_GAIN);
-            volumeValue = volume.getValue();
-            if (volumeValue < 0) {
-                volumeValue += 2.5f;
+        if (mainLine != null && mainLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            FloatControl volume = (FloatControl) mainLine.getControl(FloatControl.Type.MASTER_GAIN);
+            volumeValueMainLine = volume.getValue();
+            if (volumeValueMainLine < 0) {
+                volumeValueMainLine += 2.5f;
             }
-            volume.setValue(volumeValue);
+            volume.setValue(volumeValueMainLine);
         }
     }
 
     public void volumeDown() {
-        if (res != null && res.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-            FloatControl volume = (FloatControl) res.getControl(FloatControl.Type.MASTER_GAIN);
-            float volVal = volume.getValue();
-            if (volumeValue > -70) {
-                volumeValue -= 2.5f;
+        if (mainLine != null && mainLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            FloatControl volume = (FloatControl) mainLine.getControl(FloatControl.Type.MASTER_GAIN);
+            if (volumeValueMainLine > -70) {
+                volumeValueMainLine -= 2.5f;
             }
-            volume.setValue(volumeValue);
+            volume.setValue(volumeValueMainLine);
         }
     }
 
+    public void setVolume(float volValue) {
+        volumeValueMainLine = volValue;
+        if (mainLine != null && mainLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            FloatControl volume = (FloatControl) mainLine.getControl(FloatControl.Type.MASTER_GAIN);
+            volume.setValue(volumeValueMainLine);
+        }
+    }
+    
     private void setVolume() {
-        if (res != null && res.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-            FloatControl volume = (FloatControl) res.getControl(FloatControl.Type.MASTER_GAIN);
-            volume.setValue(volumeValue);
+        if (mainLine != null && mainLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            FloatControl volume = (FloatControl) mainLine.getControl(FloatControl.Type.MASTER_GAIN);
+            volume.setValue(volumeValueMainLine);
         }
-    }
+    }    
 
-    public void setVolumeValue(float v) {
-        this.volumeValue = v;
+
+    
+    public void setAuxLineVolume(float v) {
+        volumeValueAuxLine = v;
+        if (auxLine != null && auxLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            FloatControl volume = (FloatControl) auxLine.getControl(FloatControl.Type.MASTER_GAIN);
+            volume.setValue(volumeValueAuxLine);
+        }
     }
 
     public float getVolumeValue() {
-        return volumeValue;
+        return volumeValueMainLine;
     }
-
 }

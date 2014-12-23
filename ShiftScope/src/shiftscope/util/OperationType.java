@@ -33,4 +33,7 @@ public class OperationType {
     public static final int VOLUME_UP = 22;
     public static final int MUTE = 23;
     public static final int SYNC = 24;
+    public static final int SET_VOLUME = 25;
+    public static final int REMOVE_FROM_PLAYLIST = 26;
+    
 }

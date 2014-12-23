@@ -5,8 +5,8 @@ var client = new Client();
 function WebSocket() {
 	var devicesPool = {};
 	var mobilesPool = {};
-	//var server = "http://localhost:1337"
-	var server = "http://54.149.22.22";
+	var server = "http://localhost:1337"
+	//var server = "http://54.149.22.22";
 
 	disconnectDevice = function(id){
 		var args = {
@@ -14,7 +14,7 @@ function WebSocket() {
 		  headers:{"Content-Type": "application/json"} 
 		};
 
-		client.post("http://54.149.22.22"+"/device/disconnectDevice", args,  function(data, response) {
+		client.post("http://localhost:1337"+"/device/disconnectDevice", args,  function(data, response) {
 			
 		});
 	};
@@ -49,7 +49,8 @@ function WebSocket() {
 		        		try{
 							devicesPool[request.userId.toString()][request.to.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
-		        			
+		        			conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
+		        			deleteFromPool(conn);
 		        		}
 		        	} else {
 		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
@@ -64,7 +65,8 @@ function WebSocket() {
 		        		try {
 		        			mobilesPool[request.userId.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
-
+		        			conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
+		        			deleteFromPool(conn);
 		        		}
 		        	} else {
 		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));

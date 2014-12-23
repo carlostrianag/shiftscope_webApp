@@ -89,7 +89,6 @@ public class TCPService extends WebSocketClient {
                 break;
                 
             case OperationType.PLAY_FROM_PLAYLIST:
-                
                 criteria = new TrackCriteria();
                 criteria.setId(request.getId());
                 response = TrackController.getTrackById(criteria);
@@ -101,7 +100,11 @@ public class TCPService extends WebSocketClient {
                 } catch (IllegalStateException ex) {
                     Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                break;                
+                break; 
+            case OperationType.REMOVE_FROM_PLAYLIST:
+                int order = (int)request.getValue();
+                Main.home.dequeueSong(order);
+                break;
 
             case OperationType.ENQUEUE:
                 criteria = new TrackCriteria();
@@ -123,7 +126,10 @@ public class TCPService extends WebSocketClient {
             case OperationType.VOLUME_UP:
                 Main.home.volumeUp();
                 break;
-            
+                
+            case OperationType.SET_VOLUME:
+                Main.home.setVolume(request.getValue());
+                
             case OperationType.SYNC:
                 request = new Operation();
                 request.setOperationType(OperationType.SYNC);
@@ -136,17 +142,18 @@ public class TCPService extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-
+        
     }
 
     @Override
     public void onError(Exception ex) {
+        
     }
 
     public void sendRequest(Operation request) {
         
         try {
-            Gson JSONParser = new Gson();
+            JSONParser = new Gson();
             send(JSONParser.toJson(request, Operation.class));
         } catch(Exception ex){
             

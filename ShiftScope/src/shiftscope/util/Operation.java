@@ -17,6 +17,7 @@ public class Operation {
     private int to;
     private int deviceIdentifier = 2;
     private int deviceId;
+    private float value;
     private Sync sync;
 
     /**
@@ -115,6 +116,20 @@ public class Operation {
      */
     public void setSync(Sync sync) {
         this.sync = sync;
+    }
+
+    /**
+     * @return the value
+     */
+    public float getValue() {
+        return value;
+    }
+
+    /**
+     * @param value the value to set
+     */
+    public void setValue(float value) {
+        this.value = value;
     }
     
     
