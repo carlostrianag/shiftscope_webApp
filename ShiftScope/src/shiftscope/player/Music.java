@@ -12,6 +12,7 @@ import javax.sound.sampled.SourceDataLine;
 import shiftscope.view.HomePage;
 
 public class Music {
+
     private boolean playingMainLine, playingAuxLine, mute, pause;
     private File file;
     private final int byteChunkSize = 1024;
@@ -48,7 +49,6 @@ public class Music {
         volumeValueAuxLine = 0;
     }
 
-    
     public void determineLine() {
         if (!playingMainLine && !playingAuxLine) {
             mainLineThread = new Thread(new Runnable() {
@@ -379,6 +379,18 @@ public class Music {
         }
     }
 
+    public void setVolumeFromValue(float volValue)  {
+        volumeValueMainLine = volValue;
+        volumeValueAuxLine = volValue;
+        if (mainLine != null && mainLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            FloatControl volume = (FloatControl) mainLine.getControl(FloatControl.Type.MASTER_GAIN);
+            volume.setValue(volumeValueMainLine);
+        }
+        if (auxLine != null && auxLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            FloatControl volume = (FloatControl) auxLine.getControl(FloatControl.Type.MASTER_GAIN);
+            volume.setValue(volumeValueAuxLine);
+        }        
+    }
     public void setVolume(float volValue) {
         volumeValueMainLine = volValue;
         if (mainLine != null && mainLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
@@ -404,5 +416,9 @@ public class Music {
     
     public boolean songHasFinished() {
         return songHasFinished;
+    }
+    
+    public boolean isMerging() {
+        return merging;
     }
 }
