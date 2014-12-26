@@ -5,8 +5,11 @@
  */
 package shiftscope.main;
 
+import java.io.IOException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.apache.http.HttpResponse;
+import shiftscope.netservices.HTTPService;
 import shiftscope.view.HomePage;
 import shiftscope.view.ShiftScope;
 
@@ -16,7 +19,7 @@ import shiftscope.view.ShiftScope;
  */
 public class Main {
     public static HomePage home;
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         try {
             // Set cross-platform Java L&F (also called "Metal")
             UIManager.setLookAndFeel(

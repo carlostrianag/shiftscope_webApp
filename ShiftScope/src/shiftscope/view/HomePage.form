@@ -65,7 +65,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="jSplitPane1" pref="294" max="32767" attributes="0"/>
+              <Component id="jSplitPane1" pref="318" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="32767" attributes="0"/>
               <Component id="jPanel5" min="-2" pref="28" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -284,15 +284,6 @@
         <Component class="javax.swing.JLabel" name="elapsedTime">
           <Properties>
             <Property name="text" type="java.lang.String" value="0:00"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JSlider" name="currentSongTimeSlider">
-          <Properties>
-            <Property name="toolTipText" type="java.lang.String" value=""/>
-            <Property name="value" type="int" value="0"/>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[640, 62]"/>
-            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="totalTime">

@@ -64,9 +64,6 @@ import shiftscope.util.Sync;
  */
 public class HomePage extends javax.swing.JFrame {
 
-    /**
-     * Creates new form HomePage
-     */
     //GUI Variables
     //IMAGES
     ImageIcon musicIcon;
@@ -83,7 +80,6 @@ public class HomePage extends javax.swing.JFrame {
     private int currentFolder;
 
     //Player Variables
-    private float volumeValue;
     private boolean playlistPlaying;
     private int currentSongPosition;
     private ArrayList<Track> queuePaths;
@@ -129,13 +125,13 @@ public class HomePage extends javax.swing.JFrame {
 
         @Override
         protected Void doInBackground() throws Exception {
+            
             String duration = getSync().getCurrentSongDuration();
             totalTime.setText(duration);
             float totalSeconds = (Integer.parseInt(duration.split(":")[0]) * 60) + Integer.parseInt(duration.split(":")[1]);
-            System.out.println(totalSeconds);
             currentSecond = 0;
-            currentSongTimeSlider.setMaximum((int) totalSeconds);
-            currentSongTimeSlider.setValue(0);
+            //currentSongTimeSlider.setMaximum((int) totalSeconds);
+            //currentSongTimeSlider.setValue(0);
             while (true) {
                 if (isPlaying()) {
                     int minutes = (int) (currentSecond / 60);
@@ -143,7 +139,10 @@ public class HomePage extends javax.swing.JFrame {
                     String elapsedtTimeString = minutes + ":" + String.format("%02d", seconds);
                     elapsedTime.setText(elapsedtTimeString);
                     currentSecond++;
-                    currentSongTimeSlider.setValue((int) currentSecond);
+                    //currentSongTimeSlider.setValue((int) currentSecond);
+                    if(Math.abs(currentSecond-totalSeconds) <= 5) {
+                        merge();
+                    }
                     Thread.sleep(1000);
                 } else if (isPaused()) {
                     Thread.sleep(1);
@@ -153,10 +152,12 @@ public class HomePage extends javax.swing.JFrame {
             }
             return null;
         }
-
+        
         @Override
         protected void done() {
-            System.out.println("Song Finished or Stopped...");
+            if(player.songHasFinished()) {
+                next();
+            }
         }
     }
 
@@ -180,13 +181,10 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     public void playSong(Track t, boolean playedFromPlaylist) {
-//        if (player.isPlaying()) {
-//            player.pause();
-//        }
         currentSong = t;
-        volumeValue = player.getVolumeValue();
-//        player = new Music(this);
-//        player.setVolumeValue(volumeValue);
+        if(playedFromPlaylist) {
+            getPosition(t);
+        }
         player.loadSong(t.getPath());
 
         sync.setCurrentSongId(t.getId());
@@ -200,13 +198,11 @@ public class HomePage extends javax.swing.JFrame {
 
         if (timeCounter != null) {
             timeCounter.cancel(true);
-            System.out.println("Cancelado");
         }
+      
+        player.play();
         timeCounter = new TimeCounter();
         timeCounter.execute();
-
-        player.play();
-
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
@@ -215,16 +211,53 @@ public class HomePage extends javax.swing.JFrame {
         webSocket.sendRequest(request);
         playlistPlaying = playedFromPlaylist;
     }
+    public void merge() {
+        Track t;
+        if (playlistPlaying) {
+            if (currentSongPosition < queuePaths.size() - 1) {
+                currentSongPosition++;
+                currentSong = queuePaths.get(currentSongPosition);
+                t = currentSong;
+                player.loadSong(t.getPath());
+                sync.setCurrentSongId(t.getId());
+                sync.setCurrentSongName(t.getTitle());
+                sync.setCurrentSongArtist(t.getArtist());
+                sync.setCurrentSongDuration(t.getDuration());
+                sync.setIsPlaying(true);
+                sync.setIsPaused(false);
 
-    public void playSongFromPlaylist(Track t) {
+                currentSongLabel.setText(t.getTitle() + " - " + t.getArtist());
+
+                if (timeCounter != null) {
+                    timeCounter.cancel(true);
+                }
+
+                player.determineLine();
+                timeCounter = new TimeCounter();
+                timeCounter.execute();
+                Operation request = new Operation();
+                request.setOperationType(OperationType.SYNC);
+                request.setUserId(SessionConstants.USER_ID);
+                request.setSync(sync);
+
+                webSocket.sendRequest(request);
+                playlistPlaying = true;                
+            }
+        }
+
+
+        
+
+
+    }    
+    
+    public void getPosition(Track t) {
         for (int i = 0; i < queuePaths.size(); i++) {
             if (t.equals(queuePaths.get(i))) {
                 currentSongPosition = i;
                 break;
             }
         }
-        currentSong = queuePaths.get(currentSongPosition);
-        playSong(currentSong, true);
     }
 
     public void removeFromPlaylist(int position) {
@@ -295,7 +328,6 @@ public class HomePage extends javax.swing.JFrame {
     public boolean isPlaying() {
         return player.isPlaying();
     }
-
     public boolean isPaused() {
         return player.isPaused();
     }
@@ -333,7 +365,6 @@ public class HomePage extends javax.swing.JFrame {
     public final void initPlayer() {
         player = new Music(this);
         queuePaths = new ArrayList<>();
-        volumeValue = 0;
         currentSong = null;
         currentSongPosition = 0;
         playlistPlaying = false;
@@ -880,7 +911,6 @@ public class HomePage extends javax.swing.JFrame {
         songNameLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         elapsedTime = new javax.swing.JLabel();
-        currentSongTimeSlider = new javax.swing.JSlider();
         totalTime = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         currentSongLabel = new javax.swing.JLabel();
@@ -1029,11 +1059,6 @@ public class HomePage extends javax.swing.JFrame {
         elapsedTime.setText("0:00");
         jPanel1.add(elapsedTime);
 
-        currentSongTimeSlider.setToolTipText("");
-        currentSongTimeSlider.setValue(0);
-        currentSongTimeSlider.setPreferredSize(new java.awt.Dimension(640, 62));
-        jPanel1.add(currentSongTimeSlider);
-
         totalTime.setText("0:00");
         jPanel1.add(totalTime);
 
@@ -1122,7 +1147,7 @@ public class HomePage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1233,7 +1258,6 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JLabel backBtn;
     private javax.swing.JLabel backButton;
     private javax.swing.JLabel currentSongLabel;
-    private javax.swing.JSlider currentSongTimeSlider;
     private javax.swing.JLabel elapsedTime;
     private javax.swing.JPanel folderPane;
     private javax.swing.JScrollPane foldersScrollPane;
