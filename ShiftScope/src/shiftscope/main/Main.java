@@ -8,10 +8,7 @@ package shiftscope.main;
 import java.io.IOException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import org.apache.http.HttpResponse;
-import shiftscope.netservices.HTTPService;
-import shiftscope.view.HomePage;
-import shiftscope.view.ShiftScope;
+import shiftscope.views.HomePage;
 
 /**
  *
@@ -34,7 +31,9 @@ public class Main {
             // handle exceptio
 
         }
-        ShiftScope mainScreen = new ShiftScope();
-        mainScreen.setVisible(true);
+        
+        home = new HomePage();
+        home.setVisible(true);
+
     }
 }

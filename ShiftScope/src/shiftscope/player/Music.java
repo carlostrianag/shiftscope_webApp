@@ -9,7 +9,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
-import shiftscope.view.HomePage;
+import shiftscope.views.HomePage;
 
 public class Music {
 
