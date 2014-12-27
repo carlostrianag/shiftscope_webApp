@@ -8,6 +8,7 @@ package shiftscope.controller;
 
 import com.ning.http.client.Response;
 import shiftscope.criteria.FolderCriteria;
+import shiftscope.dto.FolderCreationDTO;
 import shiftscope.model.Folder;
 import shiftscope.services.FolderService;
 
@@ -19,6 +20,10 @@ public class FolderController {
     
     public static Response createFolder(Folder folder){
         return FolderService.createFolder(folder);
+    }
+    
+    public static Response createFolderOptimized(FolderCreationDTO folder) {
+        return FolderService.createFolderOptimized(folder);
     }
     
     public static Response getFolderFoldersById(FolderCriteria criteria){

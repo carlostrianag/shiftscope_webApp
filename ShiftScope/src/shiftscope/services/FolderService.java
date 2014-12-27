@@ -9,6 +9,7 @@ package shiftscope.services;
 import com.google.gson.Gson;
 import com.ning.http.client.Response;
 import shiftscope.criteria.FolderCriteria;
+import shiftscope.dto.FolderCreationDTO;
 import shiftscope.model.Folder;
 import shiftscope.netservices.HTTPService;
 
@@ -41,5 +42,11 @@ public class FolderService {
 
     public static Response getFolderContentById(FolderCriteria criteria) {
         return HTTPService.HTTPGet("/folder/getFolderContentById?id="+criteria.getId()+"&library="+criteria.getLibrary());
+    }
+
+    public static Response createFolderOptimized(FolderCreationDTO folder) {
+        JSONParser = new Gson();
+        String object = JSONParser.toJson(folder);
+        return HTTPService.HTTPPost("/folder/createOptimized", object);
     }
 }

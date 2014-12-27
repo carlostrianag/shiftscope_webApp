@@ -7,6 +7,26 @@
 
 module.exports = {
 
+	createOptimized: function(req, res) {
+		var folder = req.param('folder');
+		var tracks = req.param('tracks');
+		Folder.create(folder).exec(function(err, folder){
+			if(!err) {
+				for(var i in tracks) {
+					tracks[i].parentFolder = folder.id;
+					Track.create(tracks[i]).exec(function(err, track){
+						if(err) {
+							res.serverError();
+						}
+					});
+				}
+				res.json(folder);
+			} else {
+				res.serverError();
+			}
+		});
+		
+	},
 	getFolderParentId: function(req, res){
 		var id = req.param('id');
 		var library = req.param('library');

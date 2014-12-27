@@ -51,6 +51,7 @@ module.exports.routes = {
   
 
   //FolderMethods
+  'POST /folder/createOptimized': {controller: 'FolderController', action: 'createOptimized', cors: {origin: '*'}},  
   'POST /folder/create': {controller: 'FolderController', action: 'create', cors: {origin: '*'}},
   'GET /folder/getFolderFoldersById': {controller: 'FolderController', action: 'getFolderFoldersById', cors: {origin: '*'}},
   'GET /folder/getFolderTracksById': {controller: 'FolderController', action: 'getFolderTracksById', cors: {origin: '*'}},

@@ -53,6 +53,7 @@ import shiftscope.controller.FolderController;
 import shiftscope.controller.TrackController;
 import shiftscope.criteria.FolderCriteria;
 import shiftscope.criteria.TrackCriteria;
+import shiftscope.dto.FolderCreationDTO;
 import shiftscope.dto.FolderDTO;
 import shiftscope.dto.SearchDTO;
 import shiftscope.model.Folder;
@@ -114,7 +115,7 @@ public class HomePage extends javax.swing.JFrame {
             progressBar.setVisible(true);
             System.out.println("Fetching your files...");
             for (File f : fileChooser.getSelectedFiles()) {
-                buildFolder(f, -1);
+                buildFolderOptimized(f, -1);
             }
             progressBar.setVisible(false);
             getFolderContent(-1);
@@ -443,7 +444,7 @@ public class HomePage extends javax.swing.JFrame {
     public Sync getSync() {
         return sync;
     }
-
+    
     public final void initPlayer() {
         player = new Music(this);
         queuePaths = new ArrayList<>();
@@ -533,6 +534,83 @@ public class HomePage extends javax.swing.JFrame {
             }
         }
 
+    }
+    
+    private void buildFolderOptimized(File folder, int parentId) {
+        JSONParser = new Gson();
+        Response response;
+        Folder createdFolder;
+        Mp3File mp3;
+        FolderCreationDTO folderToCreate = new FolderCreationDTO();
+
+        ArrayList<File> folders = new ArrayList<>();
+        ArrayList<Track> tracks = new ArrayList<>();
+
+        Folder newFolder = new Folder();
+        newFolder.setPath(folder.getAbsolutePath());
+        newFolder.setTitle(folder.getName());
+        newFolder.setParentFolder(parentId);
+        newFolder.setLibrary(SessionConstants.LIBRARY_ID);
+
+        folderToCreate.setFolder(newFolder);
+        
+        File[] files = folder.listFiles();
+
+        for (File f : files) {
+            if (f.isDirectory()) {
+                folders.add(f);
+            } else if (f.getName().endsWith(".mp3") && !f.isHidden()) {
+                Track track = new Track();
+                try {
+                    mp3 = new Mp3File(f.getAbsolutePath());
+                    File file = new File(f.getAbsolutePath());
+                    AudioFileFormat baseFileFormat = AudioSystem.getAudioFileFormat(file);
+                    Map properties = baseFileFormat.properties();
+                    Long duration1 = (Long) properties.get("duration");
+                    int mili = (int) (duration1 / 1000);
+                    int sec = (int) (mili / 1000) % 60;
+                    int min = (int) (mili / 1000) / 60;
+                    track.setDuration(min + ":" + String.format("%02d", sec));
+                    if (mp3.hasId3v1Tag()) {
+                        ID3v1 id3v1Tag = mp3.getId3v1Tag();
+                        if (id3v1Tag.getTitle().equals("")) {
+                            track.setTitle(f.getName());
+                        } else {
+                            track.setTitle(id3v1Tag.getTitle());
+                        }
+
+                        if (id3v1Tag.getArtist().equals("")) {
+                            track.setArtist("Unknown");
+                        } else {
+                            track.setArtist(id3v1Tag.getArtist());
+                        }
+                    } else {
+                        track.setTitle(f.getName());
+                        track.setArtist("Unknown");
+                    }
+                } catch (Exception ex) {
+                    continue;
+                }
+                track.setPath(f.getAbsolutePath());
+                track.setLibrary(SessionConstants.LIBRARY_ID);
+                tracks.add(track);
+                currentFileScanned++;
+                progressBar.setValue((int) currentFileScanned);
+            }
+        }
+        
+        folderToCreate.setTracks(tracks);
+        response = FolderController.createFolderOptimized(folderToCreate);
+        try {
+            if(response.getStatusCode() == 200) {
+                createdFolder = (Folder)JSONParser.fromJson(response.getResponseBody(), Folder.class);
+                for (File file : folders) {
+                    buildFolderOptimized(file, createdFolder.getId());
+                }                
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void drawFetchedFolder(FolderDTO fetchedFolder) {
@@ -1318,7 +1396,9 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_searchTextFieldKeyReleased
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        webSocket.close();
+        if(webSocket != null && webSocket.isOpen()) {
+            webSocket.close();
+        }
     }//GEN-LAST:event_formWindowClosing
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
