@@ -40,21 +40,21 @@ module.exports.connections = {
   * Run: npm install sails-mysql                                             *
   *                                                                          *
   ***************************************************************************/
-  shiftscope_db: {
-    adapter: 'sails-mysql',
-    host: 'localhost',
-    user: 'root',
-    password: 'medellin',
-    database: 'shiftscope_db'
-  },
+  // shiftscope_db: {
+  //   adapter: 'sails-mysql',
+  //   host: 'localhost',
+  //   user: 'root',
+  //   password: 'medellin',
+  //   database: 'shiftscope_db'
+  // },
 
-  shiftscope_db_prod: {
-    adapter: 'sails-mysql',
-    host: 'localhost',
-    user: 'root',
-    password: 'medellin',
-    database: 'shiftscope_db'
-  },  
+  // shiftscope_db_prod: {
+  //   adapter: 'sails-mysql',
+  //   host: 'localhost',
+  //   user: 'root',
+  //   password: 'medellin',
+  //   database: 'shiftscope_db'
+  // },  
 
   /***************************************************************************
   *                                                                          *
