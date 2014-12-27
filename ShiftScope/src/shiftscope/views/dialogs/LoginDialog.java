@@ -151,6 +151,7 @@ public class LoginDialog extends JDialog{
                 criteria = new DeviceCriteria();
                 criteria.setUUID(uuid);
                 response = DeviceController.getDeviceByUUID(criteria);
+                System.out.println(HTTPService.parseContent(response.getEntity().getContent()));
                 returnedDevice = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Device.class);
                 
                 SessionConstants.DEVICE_ID = returnedDevice.getId();
