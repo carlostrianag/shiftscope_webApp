@@ -17,9 +17,9 @@ module.exports = {
    * environment (see config/connections.js and config/models.js )           *
    ***************************************************************************/
 
-  models: {
-    connection: 'shiftscope_db_prod'
-  },
+  // models: {
+  //   connection: 'shiftscope_db_prod'
+  // },
 
   /***************************************************************************
    * Set the port in the production environment to 80                        *
