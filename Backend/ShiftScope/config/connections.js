@@ -48,6 +48,14 @@ module.exports.connections = {
     database: 'shiftscope_db'
   },
 
+  shiftscope_db_prod: {
+    adapter: 'sails-mysql',
+    host: 'localhost',
+    user: 'root',
+    password: 'medellin',
+    database: 'shiftscope_db'
+  },  
+
   /***************************************************************************
   *                                                                          *
   * MongoDB is the leading NoSQL database.                                   *
