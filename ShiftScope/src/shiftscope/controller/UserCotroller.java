@@ -6,7 +6,7 @@
 
 package shiftscope.controller;
 
-import org.apache.http.HttpResponse;
+import com.ning.http.client.Response;
 import shiftscope.model.User;
 import shiftscope.services.UserService;
 import shiftscope.util.LoginCredentials;
@@ -17,11 +17,11 @@ import shiftscope.util.LoginCredentials;
  */
 public class UserCotroller {
     
-    public static HttpResponse login(LoginCredentials credentials){
+    public static Response login(LoginCredentials credentials){
         return UserService.login(credentials);
     }
     
-    public static HttpResponse createUser(User user){
+    public static Response createUser(User user){
         return UserService.createUser(user);
     }
 }

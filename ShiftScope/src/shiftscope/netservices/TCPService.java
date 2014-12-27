@@ -6,11 +6,11 @@
 package shiftscope.netservices;
 
 import com.google.gson.Gson;
+import com.ning.http.client.Response;
 import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.http.HttpResponse;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import shiftscope.controller.TrackController;
@@ -27,8 +27,8 @@ import shiftscope.util.SessionConstants;
  */
 public class TCPService extends WebSocketClient {
 
-    
     private Gson JSONParser;
+
     public TCPService(URI serverURI) {
         super(serverURI);
     }
@@ -50,16 +50,16 @@ public class TCPService extends WebSocketClient {
         JSONParser = new Gson();
         Track t;
         TrackCriteria criteria;
-        HttpResponse response;
+        Response response;
         Operation request = JSONParser.fromJson(message, Operation.class);
         switch (request.getOperationType()) {
             case OperationType.PAUSE:
                 Main.home.pause();
                 break;
-                
+
             case OperationType.RESUME:
                 Main.home.resume();
-                break;                
+                break;
 
             case OperationType.STOP:
                 Main.home.stop();
@@ -74,35 +74,35 @@ public class TCPService extends WebSocketClient {
                 break;
 
             case OperationType.PLAY:
-                
+
                 criteria = new TrackCriteria();
                 criteria.setId(request.getId());
                 response = TrackController.getTrackById(criteria);
                 try {
-                    t = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Track.class);
+                    t = JSONParser.fromJson(response.getResponseBody(), Track.class);
                     Main.home.playSong(t, false);
-                } catch (IOException ex) {
-                    Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalStateException ex) {
+                    Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
                     Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
-                
+
             case OperationType.PLAY_FROM_PLAYLIST:
                 criteria = new TrackCriteria();
                 criteria.setId(request.getId());
                 response = TrackController.getTrackById(criteria);
                 try {
-                    t = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Track.class);
+                    t = JSONParser.fromJson(response.getResponseBody(), Track.class);
                     Main.home.playSong(t, true);
                 } catch (IOException ex) {
                     Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalStateException ex) {
                     Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                break; 
+                break;
             case OperationType.REMOVE_FROM_PLAYLIST:
-                int order = (int)request.getValue();
+                int order = (int) request.getValue();
                 Main.home.dequeueSong(order);
                 break;
 
@@ -111,7 +111,7 @@ public class TCPService extends WebSocketClient {
                 criteria.setId(request.getId());
                 response = TrackController.getTrackById(criteria);
                 try {
-                    t = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Track.class);
+                    t = JSONParser.fromJson(response.getResponseBody(), Track.class);
                     Main.home.enqueueSong(t);
                 } catch (IOException ex) {
                     Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
@@ -122,42 +122,42 @@ public class TCPService extends WebSocketClient {
             case OperationType.VOLUME_DOWN:
                 Main.home.volumeDown();
                 break;
-            
+
             case OperationType.VOLUME_UP:
                 Main.home.volumeUp();
                 break;
-                
+
             case OperationType.SET_VOLUME:
                 Main.home.setVolume(request.getValue());
-                
+
             case OperationType.SYNC:
                 request = new Operation();
                 request.setOperationType(OperationType.SYNC);
                 request.setUserId(SessionConstants.USER_ID);
                 request.setSync(Main.home.getSync());
                 sendRequest(request);
-            
+
         }
     }
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        
+
     }
 
     @Override
     public void onError(Exception ex) {
-        
+
     }
 
     public void sendRequest(Operation request) {
-        
+
         try {
             JSONParser = new Gson();
             send(JSONParser.toJson(request, Operation.class));
-        } catch(Exception ex){
-            
+        } catch (Exception ex) {
+
         }
-        
+
     }
 }

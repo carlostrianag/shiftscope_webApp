@@ -5,6 +5,7 @@
  */
 package shiftscope.views.dialogs;
 
+import com.ning.http.client.Response;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -18,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import org.apache.http.HttpResponse;
 import shiftscope.controller.UserCotroller;
 import shiftscope.model.User;
 
@@ -53,8 +53,8 @@ public class RegistrationDialog extends JDialog {
                 user.setLastName(lastNameTextField.getText());
                 user.setEmail(emailTextField.getText());
                 user.setPassword(new String(passwordTextField.getPassword()));
-                HttpResponse response = UserCotroller.createUser(user);
-                if (response.getStatusLine().getStatusCode() == 200){
+                Response response = UserCotroller.createUser(user);
+                if (response.getStatusCode() == 200){
                     dispose();
                     openLoginDialog();
                 } else {

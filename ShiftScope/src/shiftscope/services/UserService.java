@@ -7,7 +7,7 @@
 package shiftscope.services;
 
 import com.google.gson.Gson;
-import org.apache.http.HttpResponse;
+import com.ning.http.client.Response;
 import shiftscope.model.User;
 import shiftscope.netservices.HTTPService;
 import shiftscope.util.LoginCredentials;
@@ -19,13 +19,13 @@ import shiftscope.util.LoginCredentials;
 public class UserService {
     private static Gson JSONParser;
     
-    public static HttpResponse login(LoginCredentials credentials){
+    public static Response login(LoginCredentials credentials){
         JSONParser = new Gson();
         String object = JSONParser.toJson(credentials);
         return HTTPService.HTTPPost("/user/login", object);
     }
 
-    public static HttpResponse createUser(User user) {
+    public static Response createUser(User user) {
         JSONParser = new Gson();
         String object = JSONParser.toJson(user);
         return HTTPService.HTTPPost("/user/create", object);        

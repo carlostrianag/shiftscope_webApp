@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.Mp3File;
+import com.ning.http.client.Response;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -47,7 +48,6 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.apache.http.HttpResponse;
 import shiftscope.controller.FolderController;
 import shiftscope.controller.TrackController;
 import shiftscope.criteria.FolderCriteria;
@@ -56,7 +56,6 @@ import shiftscope.dto.FolderDTO;
 import shiftscope.dto.SearchDTO;
 import shiftscope.model.Folder;
 import shiftscope.model.Track;
-import shiftscope.netservices.HTTPService;
 import shiftscope.netservices.TCPService;
 import shiftscope.player.Music;
 import shiftscope.util.Constants;
@@ -465,10 +464,10 @@ public class HomePage extends javax.swing.JFrame {
         newFolder.setTitle(folder.getName());
         newFolder.setParentFolder(parentId);
         newFolder.setLibrary(SessionConstants.LIBRARY_ID);
-        HttpResponse response = FolderController.createFolder(newFolder);
-        if (response.getStatusLine().getStatusCode() == 200) {
+        Response response = FolderController.createFolder(newFolder);
+        if (response.getStatusCode() == 200) {
             try {
-                createdFolder = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Folder.class);
+                createdFolder = JSONParser.fromJson(response.getResponseBody(), Folder.class);
                 parentId = createdFolder.getId();
                 Mp3File mp3;
                 File files[] = folder.listFiles();
@@ -888,8 +887,7 @@ public class HomePage extends javax.swing.JFrame {
 
     private void getFolderContent(int id) {
         currentFolder = id;
-        HttpResponse response;
-        folderContent = new FolderDTO();
+        Response response;
         Folder parentFolder;
         JSONParser = new GsonBuilder().create();
         FolderCriteria criteria = new FolderCriteria();
@@ -897,55 +895,26 @@ public class HomePage extends javax.swing.JFrame {
         criteria.setLibrary(SessionConstants.LIBRARY_ID);
         response = FolderController.getFolderParentId(criteria);
         try {
-            if (response.getStatusLine().getStatusCode() == 200) {
-                parentFolder = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Folder.class);
-
-                folderContent.setParentFolder(parentFolder.getParentFolder());
+            if (response.getStatusCode() == 200) {
+                parentFolder = JSONParser.fromJson(response.getResponseBody(), Folder.class);
                 SessionConstants.PARENT_FOLDER_ID = parentFolder.getParentFolder();
             } else {
                 SessionConstants.PARENT_FOLDER_ID = -1;
             }
-        } catch (IOException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalStateException ex) {
             Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
         }
-        folderPane.removeAll();
-        int currentPage = 1;
-        criteria = new FolderCriteria();
-        criteria.setId(id);
-        criteria.setLibrary(SessionConstants.LIBRARY_ID);
-        response = FolderController.getFolderFoldersById(criteria);
+        response = FolderController.getFolderContentById(criteria);
         try {
-            if (response.getStatusLine().getStatusCode() == 200) {
-                do {
-                    folderContent.addFolders(JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), new TypeToken<List<Folder>>() {
-                    }.getType()));
-                    currentPage++;
-                    criteria.setPage(currentPage);
-                    response = FolderController.getFolderFoldersById(criteria);
-                } while (response.getStatusLine().getStatusCode() != 404);
+            if(response.getStatusCode() == 200) {
+                folderContent = JSONParser.fromJson(response.getResponseBody(), FolderDTO.class);
+                drawFetchedFolder(folderContent);                
             }
-
-            currentPage = 1;
-            criteria.setPage(currentPage);
-            response = FolderController.getFolderTracksById(criteria);
-            if (response.getStatusLine().getStatusCode() == 200) {
-                do {
-                    folderContent.addTracks(JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), new TypeToken<List<Track>>() {
-                    }.getType()));
-                    currentPage++;
-                    criteria.setPage(currentPage);
-                    response = FolderController.getFolderTracksById(criteria);
-                } while (response.getStatusLine().getStatusCode() != 404);
-            }
-            drawFetchedFolder(folderContent);
         } catch (IOException ex) {
             Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalStateException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     protected final ImageIcon createImageIcon(String path,
@@ -1278,11 +1247,11 @@ public class HomePage extends javax.swing.JFrame {
             criteria.setLibrary(SessionConstants.LIBRARY_ID);
             criteria.setPage(currentPage);
             JSONParser = new GsonBuilder().create();
-            HttpResponse response = TrackController.searchTrack(criteria);
-            if (response.getStatusLine().getStatusCode() == 200) {
+            Response response = TrackController.searchTrack(criteria);
+            if (response.getStatusCode() == 200) {
                 do {
                     try {
-                        searchResults.addTracks(JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), new TypeToken<List<Track>>() {
+                        searchResults.addTracks(JSONParser.fromJson(response.getResponseBody(), new TypeToken<List<Track>>() {
                         }.getType()));
                         currentPage++;
                         criteria.setPage(currentPage);
@@ -1292,9 +1261,9 @@ public class HomePage extends javax.swing.JFrame {
                     } catch (IllegalStateException ex) {
                         Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } while (response.getStatusLine().getStatusCode() != 404);
+                } while (response.getStatusCode() != 404);
                 drawSearchResults(searchResults.getTracks());
-            } else if (response.getStatusLine().getStatusCode() == 404) {
+            } else if (response.getStatusCode() == 404) {
                 folderPane.removeAll();
                 foldersScrollPane.revalidate();
                 foldersScrollPane.repaint();

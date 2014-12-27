@@ -7,7 +7,7 @@
 package shiftscope.services;
 
 import com.google.gson.Gson;
-import org.apache.http.HttpResponse;
+import com.ning.http.client.Response;
 import shiftscope.criteria.LibraryCriteria;
 import shiftscope.model.Library;
 import shiftscope.netservices.HTTPService;
@@ -19,13 +19,13 @@ import shiftscope.netservices.HTTPService;
 public class LibraryService {
     private static Gson JSONParser;
     
-    public static HttpResponse createLibrary(Library library){
+    public static Response createLibrary(Library library){
         JSONParser = new Gson();
         String object = JSONParser.toJson(library);
         return HTTPService.HTTPPost("/library/create", object);
     }
     
-    public static HttpResponse getLibraryByDeviceId(LibraryCriteria criteria){
+    public static Response getLibraryByDeviceId(LibraryCriteria criteria){
         return HTTPService.HTTPGet("/library/getLibraryByDeviceId?device="+criteria.getDevice());
     }     
 }

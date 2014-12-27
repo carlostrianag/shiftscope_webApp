@@ -6,6 +6,7 @@
 package shiftscope.views.dialogs;
 
 import com.google.gson.Gson;
+import com.ning.http.client.Response;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -30,7 +31,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import org.apache.http.HttpResponse;
 import shiftscope.controller.DeviceController;
 import shiftscope.controller.LibraryController;
 import shiftscope.controller.UserCotroller;
@@ -40,7 +40,6 @@ import shiftscope.main.Main;
 import shiftscope.model.Device;
 import shiftscope.model.Library;
 import shiftscope.model.User;
-import shiftscope.netservices.HTTPService;
 import shiftscope.util.LoginCredentials;
 import shiftscope.util.SessionConstants;
 
@@ -65,11 +64,11 @@ public class LoginDialog extends JDialog{
             LoginCredentials credentials = new LoginCredentials();
             credentials.setEmail(emailTextField.getText());
             credentials.setPassword(new String(passwordField.getPassword()));
-            HttpResponse response = UserCotroller.login(credentials);
-            if (response.getStatusLine().getStatusCode() == 200) {
+            Response response = UserCotroller.login(credentials);
+            if (response.getStatusCode() == 200) {
                 JSONParser = new Gson();
                 try {
-                    User user = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), User.class);
+                    User user = JSONParser.fromJson(response.getResponseBody(), User.class);
                     SessionConstants.USER_ID = user.getId();
                     verifyDeviceExistence();
                     dispose();
@@ -134,7 +133,7 @@ public class LoginDialog extends JDialog{
         String pcName;
         Device device;
         Device createdDevice;
-        HttpResponse response;
+        Response response;
         Library library;
         Library createdLibrary;
         List<String> lines;
@@ -151,8 +150,7 @@ public class LoginDialog extends JDialog{
                 criteria = new DeviceCriteria();
                 criteria.setUUID(uuid);
                 response = DeviceController.getDeviceByUUID(criteria);
-                System.out.println(HTTPService.parseContent(response.getEntity().getContent()));
-                returnedDevice = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Device.class);
+                returnedDevice = JSONParser.fromJson(response.getResponseBody(), Device.class);
                 
                 SessionConstants.DEVICE_ID = returnedDevice.getId();
                 criteria = new DeviceCriteria();
@@ -162,7 +160,7 @@ public class LoginDialog extends JDialog{
                 libraryCriteria = new LibraryCriteria();
                 libraryCriteria.setDevice(SessionConstants.DEVICE_ID);
                 response = LibraryController.getLibraryByDeviceId(libraryCriteria);
-                returnedLibrary = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Library.class);
+                returnedLibrary = JSONParser.fromJson(response.getResponseBody(), Library.class);
                 SessionConstants.LIBRARY_ID = returnedLibrary.getId();
 
             } catch (IOException ex) {
@@ -183,15 +181,15 @@ public class LoginDialog extends JDialog{
                     device.setOwnerUser(SessionConstants.USER_ID);
                     device.setUUID(uuid);
                     device.setName(pcName);
-                } while ((response = DeviceController.createDevice(device)).getStatusLine().getStatusCode() != 200);
+                } while ((response = DeviceController.createDevice(device)).getStatusCode() != 200);
 
-                createdDevice = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Device.class);
+                createdDevice = JSONParser.fromJson(response.getResponseBody(), Device.class);
                 SessionConstants.DEVICE_ID = createdDevice.getId();
                 library = new Library();
                 library.setDevice(SessionConstants.DEVICE_ID);
                 library.setUser(SessionConstants.USER_ID);
                 response = LibraryController.createLibrary(library);
-                createdLibrary = JSONParser.fromJson(HTTPService.parseContent(response.getEntity().getContent()), Library.class);
+                createdLibrary = JSONParser.fromJson(response.getResponseBody(), Library.class);
                 SessionConstants.LIBRARY_ID = createdLibrary.getId();
             } catch (UnknownHostException ex) {
                 Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);

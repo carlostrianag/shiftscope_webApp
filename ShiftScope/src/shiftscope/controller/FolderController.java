@@ -6,7 +6,7 @@
 
 package shiftscope.controller;
 
-import org.apache.http.HttpResponse;
+import com.ning.http.client.Response;
 import shiftscope.criteria.FolderCriteria;
 import shiftscope.model.Folder;
 import shiftscope.services.FolderService;
@@ -17,19 +17,23 @@ import shiftscope.services.FolderService;
  */
 public class FolderController {
     
-    public static HttpResponse createFolder(Folder folder){
+    public static Response createFolder(Folder folder){
         return FolderService.createFolder(folder);
     }
     
-    public static HttpResponse getFolderFoldersById(FolderCriteria criteria){
+    public static Response getFolderFoldersById(FolderCriteria criteria){
         return FolderService.getFolderFoldersById(criteria);
     }
     
-    public static HttpResponse getFolderTracksById(FolderCriteria criteria){
+    public static Response getFolderTracksById(FolderCriteria criteria){
         return FolderService.getFolderTracksById(criteria);
     }    
     
-    public static HttpResponse getFolderParentId(FolderCriteria criteria){
+    public static Response getFolderParentId(FolderCriteria criteria){
         return FolderService.getFolderParentId(criteria);
+    }
+    
+    public static Response getFolderContentById(FolderCriteria criteria) {
+        return FolderService.getFolderContentById(criteria);
     }
 }

@@ -6,7 +6,7 @@
 
 package shiftscope.controller;
 
-import org.apache.http.HttpResponse;
+import com.ning.http.client.Response;
 import shiftscope.criteria.LibraryCriteria;
 import shiftscope.model.Library;
 import shiftscope.services.LibraryService;
@@ -16,11 +16,11 @@ import shiftscope.services.LibraryService;
  * @author carlos
  */
 public class LibraryController {
-    public static HttpResponse createLibrary(Library library){
+    public static Response createLibrary(Library library){
         return LibraryService.createLibrary(library);
     }
     
-    public static HttpResponse getLibraryByDeviceId(LibraryCriteria criteria) {
+    public static Response getLibraryByDeviceId(LibraryCriteria criteria) {
         return LibraryService.getLibraryByDeviceId(criteria);
     }
 }

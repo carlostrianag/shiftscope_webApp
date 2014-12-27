@@ -5,19 +5,12 @@
  */
 package shiftscope.netservices;
 
-import com.google.gson.Gson;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.Response;
+
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import shiftscope.util.Constants;
 
 /**
@@ -26,54 +19,34 @@ import shiftscope.util.Constants;
  */
 public class HTTPService {
 
-    private static Gson JSONParser;
-
-    
-    
-    public static String parseContent(InputStream content){
-        String responseContent = "";
-        String line;
-        BufferedReader rd = new BufferedReader(new InputStreamReader(content));
+    public static Response HTTPGet(String targetURL) {
+        AsyncHttpClient client = new AsyncHttpClient();
         try {
-            while ((line = rd.readLine()) != null) {
-                responseContent += line;
-            }
-        } catch (IOException ex) {
+            Response r = client.prepareGet(Constants.SERVER_URL + targetURL).execute().get();
+            //System.out.println(r.getResponseBody() + " from: " + Constants.SERVER_URL+targetURL);
+            return r;
+        } catch (InterruptedException ex) {
+            Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
             Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return responseContent;
+        return null;
     }
-    
-    public static HttpResponse HTTPGet(String targetURL) {
-        HttpClient httpClient = new DefaultHttpClient();
 
+    public static Response HTTPPost(String targetURL, String urlParameters) {
+        AsyncHttpClient client = new AsyncHttpClient();
         try {
-            HttpGet request = new HttpGet(Constants.SERVER_URL+targetURL);
-            request.addHeader("content-type", "application/json");
-            request.addHeader("accept", "json");
-            HttpResponse response = httpClient.execute(request);
-            return response;
-        } catch (Exception ex) {
-            return null;
-        } finally {
-            httpClient.getConnectionManager().shutdown();
+            Response r = client.preparePost(Constants.SERVER_URL + targetURL)
+                    .addHeader("content-type", "application/json; charset=utf-8")
+                    .setBody(urlParameters)
+                    .execute()
+                    .get();
+            return r;
+        } catch (InterruptedException ex) {
+            Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }   
-    
-    public static HttpResponse HTTPPost(String targetURL, String urlParameters) {
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpResponse response;
-        try {
-            HttpPost request = new HttpPost(Constants.SERVER_URL+targetURL);
-            StringEntity params = new StringEntity(urlParameters, "UTF-8");
-            request.addHeader("content-type", "application/json");
-            request.setEntity(params);
-            response = httpClient.execute(request);
-        } catch (Exception ex) {
-            return null;
-        } finally {
-            httpClient.getConnectionManager().shutdown();
-        }
-        return response;
+        return null;
     }
 }

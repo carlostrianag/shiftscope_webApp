@@ -6,7 +6,7 @@
 
 package shiftscope.controller;
 
-import org.apache.http.HttpResponse;
+import com.ning.http.client.Response;
 import shiftscope.criteria.DeviceCriteria;
 import shiftscope.model.Device;
 import shiftscope.services.DeviceService;
@@ -17,15 +17,15 @@ import shiftscope.services.DeviceService;
  */
 public class DeviceController {
         
-    public static HttpResponse createDevice(Device device){
+    public static Response createDevice(Device device){
         return DeviceService.createDevice(device);
     }
     
-    public static HttpResponse getDeviceByUUID(DeviceCriteria criteria) {
+    public static Response getDeviceByUUID(DeviceCriteria criteria) {
         return DeviceService.getDeviceByUUID(criteria);
     }
 
-    public static HttpResponse connectDevice(DeviceCriteria criteria) {
+    public static Response connectDevice(DeviceCriteria criteria) {
         return DeviceService.connectDevice(criteria);
     }
 }

@@ -6,7 +6,7 @@
 
 package shiftscope.controller;
 
-import org.apache.http.HttpResponse;
+import com.ning.http.client.Response;
 import shiftscope.criteria.TrackCriteria;
 import shiftscope.model.Track;
 import shiftscope.services.TrackService;
@@ -16,15 +16,15 @@ import shiftscope.services.TrackService;
  * @author carlos
  */
 public class TrackController {
-    public static HttpResponse createTrack(Track t) {
+    public static Response createTrack(Track t) {
         return TrackService.createTrack(t);
     }
     
-    public static HttpResponse getTrackById(TrackCriteria criteria){
+    public static Response getTrackById(TrackCriteria criteria){
         return TrackService.getTrackById(criteria);
     }
     
-    public static HttpResponse searchTrack(TrackCriteria criteria) {
+    public static Response searchTrack(TrackCriteria criteria) {
         return TrackService.searchTrack(criteria);
     }
 }

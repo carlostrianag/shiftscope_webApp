@@ -7,7 +7,7 @@
 package shiftscope.services;
 
 import com.google.gson.Gson;
-import org.apache.http.HttpResponse;
+import com.ning.http.client.Response;
 import shiftscope.criteria.FolderCriteria;
 import shiftscope.model.Folder;
 import shiftscope.netservices.HTTPService;
@@ -20,22 +20,26 @@ public class FolderService {
     
     private static Gson JSONParser = new Gson();
     
-    public static HttpResponse createFolder(Folder folder){
+    public static Response createFolder(Folder folder){
         JSONParser = new Gson();
         String object = JSONParser.toJson(folder);
         return HTTPService.HTTPPost("/folder/create", object);
     }
 
 
-    public static HttpResponse getFolderFoldersById(FolderCriteria criteria) {
+    public static Response getFolderFoldersById(FolderCriteria criteria) {
         return HTTPService.HTTPGet("/folder/getFolderFoldersById?id="+criteria.getId()+"&library="+criteria.getLibrary()+"&page="+criteria.getPage());
     }
 
-    public static HttpResponse getFolderTracksById(FolderCriteria criteria) {
+    public static Response getFolderTracksById(FolderCriteria criteria) {
         return HTTPService.HTTPGet("/folder/getFolderTracksById?id="+criteria.getId()+"&page="+criteria.getPage());
     }
 
-    public static HttpResponse getFolderParentId(FolderCriteria criteria) {
+    public static Response getFolderParentId(FolderCriteria criteria) {
         return HTTPService.HTTPGet("/folder/getFolderParent?id="+criteria.getId()+"&library="+criteria.getLibrary());
+    }
+
+    public static Response getFolderContentById(FolderCriteria criteria) {
+        return HTTPService.HTTPGet("/folder/getFolderContentById?id="+criteria.getId()+"&library="+criteria.getLibrary());
     }
 }
