@@ -10,7 +10,7 @@ package shiftscope.model;
  *
  * @author carlos
  */
-public class Track {
+public class Track implements Comparable<Track>{
     private int id;
     private String path;
     private String genre;
@@ -131,4 +131,10 @@ public class Track {
     public void setLibrary(int library) {
         this.library = library;
     }
+
+    @Override
+    public int compareTo(Track o) {
+        return getTitle().toLowerCase().compareTo(o.getTitle().toLowerCase());
+    }
+    
 }

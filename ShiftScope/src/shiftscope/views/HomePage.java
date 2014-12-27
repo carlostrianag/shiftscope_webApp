@@ -30,6 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -180,13 +181,7 @@ public class HomePage extends javax.swing.JFrame {
         progressBar.setVisible(false);
         foldersScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         initPlayer();
-        try {
-            System.out.println("Conectando........");
-            webSocket = new TCPService(new URI(Constants.SOCKET_SERVER));
-            webSocket.connect();
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
         musicIcon = createImageIcon("images/music.png", "music_icon");
         folderIcon = createImageIcon("images/folder.png", "music_icon");
         
@@ -241,6 +236,13 @@ public class HomePage extends javax.swing.JFrame {
     }
     
     public void init() {
+        try {
+            System.out.println("Conectando........");
+            webSocket = new TCPService(new URI(Constants.SOCKET_SERVER));
+            webSocket.connect();
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+        }        
         getFolderContent(-1);
     }
     
@@ -256,6 +258,7 @@ public class HomePage extends javax.swing.JFrame {
         }
         player.loadSong(t.getPath());
 
+        
         sync.setCurrentSongId(t.getId());
         sync.setCurrentSongName(t.getTitle());
         sync.setCurrentSongArtist(t.getArtist());
@@ -390,10 +393,17 @@ public class HomePage extends javax.swing.JFrame {
     
     public void setVolumeFromValue(float value) {
         player.setVolumeFromValue(value);
+//        sync.setCurrentVolume((int)value);
+//        Operation request = new Operation();
+//        request.setOperationType(OperationType.SYNC);
+//        request.setUserId(SessionConstants.USER_ID);
+//        request.setSync(getSync());
+//        webSocket.sendRequest(request);
     }
 
     public void setVolume(float value) {
-        player.setVolume(value);
+        player.setVolumeFromValue(value);
+        volumeSlider.setValue((int)value);
     }
 
     public boolean isPlaying() {
@@ -910,6 +920,7 @@ public class HomePage extends javax.swing.JFrame {
         try {
             if(response.getStatusCode() == 200) {
                 folderContent = JSONParser.fromJson(response.getResponseBody(), FolderDTO.class);
+                Collections.sort(folderContent.getTracks());
                 drawFetchedFolder(folderContent);                
             }
         } catch (IOException ex) {
@@ -966,6 +977,8 @@ public class HomePage extends javax.swing.JFrame {
         folderPane = new javax.swing.JPanel();
         playlistScrollPane = new javax.swing.JScrollPane();
         playlistPanel = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        clearPlaylistBtn = new javax.swing.JButton();
 
         jToolBar1.setRollover(true);
 
@@ -1155,6 +1168,28 @@ public class HomePage extends javax.swing.JFrame {
 
         jSplitPane1.setRightComponent(playlistScrollPane);
 
+        clearPlaylistBtn.setText("Clear Playlist");
+        clearPlaylistBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearPlaylistBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(clearPlaylistBtn))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addComponent(clearPlaylistBtn)
+                .addGap(0, 25, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1168,6 +1203,7 @@ public class HomePage extends javax.swing.JFrame {
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -1185,8 +1221,10 @@ public class HomePage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1196,7 +1234,7 @@ public class HomePage extends javax.swing.JFrame {
                 .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(630, Short.MAX_VALUE)
+                    .addContainerGap(751, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(24, 24, 24)))
         );
@@ -1297,10 +1335,24 @@ public class HomePage extends javax.swing.JFrame {
       
     }//GEN-LAST:event_backBtnMouseEntered
 
+    private void clearPlaylistBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearPlaylistBtnActionPerformed
+        queuePaths.clear();
+        sync.setCurrentPlaylist(queuePaths);
+        
+        Operation request = new Operation();
+        request.setOperationType(OperationType.SYNC);
+        request.setUserId(SessionConstants.USER_ID);
+        request.setSync(sync);
+        
+        webSocket.sendRequest(request);     
+        drawPlaylist();
+    }//GEN-LAST:event_clearPlaylistBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel backBtn;
     private javax.swing.JLabel backButton;
+    private javax.swing.JButton clearPlaylistBtn;
     private javax.swing.JLabel currentSongLabel;
     private javax.swing.JLabel elapsedTime;
     private javax.swing.JPanel folderPane;
@@ -1313,6 +1365,7 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel nextBtn;

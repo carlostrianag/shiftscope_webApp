@@ -76,11 +76,4 @@ public class FolderDTO {
     public void addTracks(ArrayList<Track> tracks){
         this.tracks.addAll(tracks);
     }
-
-
-
-    
-
-
-    
 }

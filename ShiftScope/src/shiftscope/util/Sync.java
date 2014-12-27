@@ -18,6 +18,7 @@ public class Sync {
     private String currentSongArtist;
     private String currentSongDuration;
     private int currentSongId;
+    private int currentVolume;
     private boolean isPlayingPlaylist;
     private boolean isPlaying;
     private boolean isPaused;
@@ -149,6 +150,20 @@ public class Sync {
      */
     public void setCurrentPlaylist(ArrayList<Track> currentPlaylist) {
         this.currentPlaylist = currentPlaylist;
+    }
+
+    /**
+     * @return the currentVolume
+     */
+    public int getCurrentVolume() {
+        return currentVolume;
+    }
+
+    /**
+     * @param currentVolume the currentVolume to set
+     */
+    public void setCurrentVolume(int currentVolume) {
+        this.currentVolume = currentVolume;
     }
     
 }

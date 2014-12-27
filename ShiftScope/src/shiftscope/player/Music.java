@@ -185,7 +185,7 @@ public class Music {
     }
 
     public boolean isPlaying() {
-        return playingMainLine || playingAuxLine;
+        return (playingMainLine || playingAuxLine) && !pause;
     }
 
     public void playSong() {
@@ -420,5 +420,15 @@ public class Music {
     
     public boolean isMerging() {
         return merging;
+    }
+    
+    public float getVolume() {
+        if(playingMainLine) {
+            return volumeValueMainLine;
+        } else if(playingAuxLine) {
+            return volumeValueAuxLine;
+        } else {
+            return (volumeValueMainLine > volumeValueAuxLine)?volumeValueMainLine:volumeValueAuxLine;
+        }
     }
 }
