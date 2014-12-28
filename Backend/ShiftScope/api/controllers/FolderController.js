@@ -17,8 +17,6 @@ module.exports = {
 					Track.create(tracks[i]).exec(function(err, track){
 						if(err) {
 							res.serverError();
-						} else {
-							console.log("Created Track: " + track.path);
 						}
 					});
 				}
@@ -28,6 +26,17 @@ module.exports = {
 			}
 		});
 		
+	},
+
+	createTracksOptimized: function(req, res) {
+		var tracks = req.param('tracks');
+		Track.create(tracks).exec(function(err, track){
+			if(err) {
+				res.serverError();
+			} else {
+				res.ok();
+			}
+		});
 	},
 	getFolderParentId: function(req, res){
 		var id = req.param('id');
