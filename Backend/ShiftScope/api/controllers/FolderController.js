@@ -17,6 +17,8 @@ module.exports = {
 					Track.create(tracks[i]).exec(function(err, track){
 						if(err) {
 							res.serverError();
+						} else {
+							console.log("Created Track: " + track.path);
 						}
 					});
 				}
