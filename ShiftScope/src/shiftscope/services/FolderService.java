@@ -8,9 +8,11 @@ package shiftscope.services;
 
 import com.google.gson.Gson;
 import com.ning.http.client.Response;
+import java.util.ArrayList;
 import shiftscope.criteria.FolderCriteria;
 import shiftscope.dto.FolderCreationDTO;
 import shiftscope.model.Folder;
+import shiftscope.model.Track;
 import shiftscope.netservices.HTTPService;
 
 /**
@@ -26,6 +28,12 @@ public class FolderService {
         String object = JSONParser.toJson(folder);
         return HTTPService.HTTPPost("/folder/create", object);
     }
+    
+    public static Response createFolderTracks(FolderCreationDTO tracksToCreate) {
+        JSONParser = new Gson();
+        String object = JSONParser.toJson(tracksToCreate);
+        return HTTPService.HTTPPost("/folder/createFolderTracks", object);
+    }    
 
 
     public static Response getFolderFoldersById(FolderCriteria criteria) {
@@ -49,4 +57,6 @@ public class FolderService {
         String object = JSONParser.toJson(folder);
         return HTTPService.HTTPPost("/folder/createOptimized", object);
     }
+
+
 }

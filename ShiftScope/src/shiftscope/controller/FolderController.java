@@ -22,6 +22,10 @@ public class FolderController {
         return FolderService.createFolder(folder);
     }
     
+    public static Response createFolderTracks(FolderCreationDTO folderTracks) {
+        return FolderService.createFolderTracks(folderTracks);
+    }    
+    
     public static Response createFolderOptimized(FolderCreationDTO folder) {
         return FolderService.createFolderOptimized(folder);
     }
@@ -41,4 +45,6 @@ public class FolderController {
     public static Response getFolderContentById(FolderCriteria criteria) {
         return FolderService.getFolderContentById(criteria);
     }
+
+
 }

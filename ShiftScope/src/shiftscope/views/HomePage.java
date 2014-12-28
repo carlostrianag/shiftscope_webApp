@@ -5,11 +5,10 @@
  */
 package shiftscope.views;
 
+import com.beaglebuddy.mp3.MP3;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.mpatric.mp3agic.ID3v1;
-import com.mpatric.mp3agic.Mp3File;
 import com.ning.http.client.Response;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -29,7 +28,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -105,6 +107,8 @@ public class HomePage extends javax.swing.JFrame {
 
         @Override
         protected Void doInBackground() throws Exception {
+            String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+            System.out.println("Start " + timeStamp);
             totalFiles = 0;
             currentFileScanned = 0;
             File[] selectedFiles = fileChooser.getSelectedFiles();
@@ -112,16 +116,17 @@ public class HomePage extends javax.swing.JFrame {
                 countFiles(f);
             }
             progressBar.setMaximum((int) totalFiles);
+            System.out.println(totalFiles);
             progressBar.setVisible(true);
             System.out.println("Fetching your files...");
             for (File f : fileChooser.getSelectedFiles()) {
                 buildFolderOptimized(f, -1);
             }
-            progressBar.setVisible(false);
+            progressBar.setVisible(false);         
             getFolderContent(-1);
             return null;
         }
-
+        
         @Override
         protected void done() {
             sync.setNewFolders(true);
@@ -468,79 +473,77 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     private void buildFolder(File folder, int parentId) {
-        JSONParser = new Gson();
-        Folder createdFolder;
-        Folder newFolder = new Folder();
-        newFolder.setPath(folder.getAbsolutePath());
-        newFolder.setTitle(folder.getName());
-        newFolder.setParentFolder(parentId);
-        newFolder.setLibrary(SessionConstants.LIBRARY_ID);
-        Response response = FolderController.createFolder(newFolder);
-        if (response.getStatusCode() == 200) {
-            try {
-                createdFolder = JSONParser.fromJson(response.getResponseBody(), Folder.class);
-                parentId = createdFolder.getId();
-                Mp3File mp3;
-                File files[] = folder.listFiles();
-                currentFileScanned++;
-                progressBar.setValue((int) currentFileScanned);
-                for (File f : files) {
-                    if (f.isDirectory()) {
-                        buildFolder(f, parentId);
-                    } else if (f.getName().endsWith(".mp3") && !f.isHidden()) {
-                        Track track = new Track();
-                        try {
-                            mp3 = new Mp3File(f.getAbsolutePath());
-                            File file = new File(f.getAbsolutePath());
-                            AudioFileFormat baseFileFormat = AudioSystem.getAudioFileFormat(file);
-                            Map properties = baseFileFormat.properties();
-                            Long duration1 = (Long) properties.get("duration");
-                            int mili = (int) (duration1 / 1000);
-                            int sec = (int) (mili / 1000) % 60;
-                            int min = (int) (mili / 1000) / 60;
-                            track.setDuration(min + ":" + String.format("%02d", sec));
-                            if (mp3.hasId3v1Tag()) {
-                                ID3v1 id3v1Tag = mp3.getId3v1Tag();
-                                if (id3v1Tag.getTitle().equals("")) {
-                                    track.setTitle(f.getName());
-                                } else {
-                                    track.setTitle(id3v1Tag.getTitle());
-                                }
-
-                                if (id3v1Tag.getArtist().equals("")) {
-                                    track.setArtist("Unknown");
-                                } else {
-                                    track.setArtist(id3v1Tag.getArtist());
-                                }
-                            } else {
-                                track.setTitle(f.getName());
-                                track.setArtist("Unknown");
-                            }
-                        } catch (Exception ex) {
-                            continue;
-                        }
-                        track.setPath(f.getAbsolutePath());
-                        track.setParentFolder(parentId);
-                        track.setLibrary(SessionConstants.LIBRARY_ID);
-                        TrackController.createTrack(track);
-                        currentFileScanned++;
-                        progressBar.setValue((int) currentFileScanned);
-                    }
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalStateException ex) {
-                Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+//        JSONParser = new Gson();
+//        Folder createdFolder;
+//        Folder newFolder = new Folder();
+//        newFolder.setPath(folder.getAbsolutePath());
+//        newFolder.setTitle(folder.getName());
+//        newFolder.setParentFolder(parentId);
+//        newFolder.setLibrary(SessionConstants.LIBRARY_ID);
+//        Response response = FolderController.createFolder(newFolder);
+//        if (response.getStatusCode() == 200) {
+//            try {
+//                createdFolder = JSONParser.fromJson(response.getResponseBody(), Folder.class);
+//                parentId = createdFolder.getId();
+//                Mp3File mp3;
+//                File files[] = folder.listFiles();
+//                currentFileScanned++;
+//                progressBar.setValue((int) currentFileScanned);
+//                for (File f : files) {
+//                    if (f.isDirectory()) {
+//                        buildFolder(f, parentId);
+//                    } else if (f.getName().endsWith(".mp3") && !f.isHidden()) {
+//                        Track track = new Track();
+//                        try {
+//                            mp3 = new Mp3File(f.getAbsolutePath());
+//                            File file = new File(f.getAbsolutePath());
+//                            AudioFileFormat baseFileFormat = AudioSystem.getAudioFileFormat(file);
+//                            Map properties = baseFileFormat.properties();
+//                            Long duration1 = (Long) properties.get("duration");
+//                            int mili = (int) (duration1 / 1000);
+//                            int sec = (int) (mili / 1000) % 60;
+//                            int min = (int) (mili / 1000) / 60;
+//                            track.setDuration(min + ":" + String.format("%02d", sec));
+//                            if (mp3.hasId3v1Tag()) {
+//                                ID3v1 id3v1Tag = mp3.getId3v1Tag();
+//                                if (id3v1Tag.getTitle().equals("")) {
+//                                    track.setTitle(f.getName());
+//                                } else {
+//                                    track.setTitle(id3v1Tag.getTitle());
+//                                }
+//
+//                                if (id3v1Tag.getArtist().equals("")) {
+//                                    track.setArtist("Unknown");
+//                                } else {
+//                                    track.setArtist(id3v1Tag.getArtist());
+//                                }
+//                            } else {
+//                                track.setTitle(f.getName());
+//                                track.setArtist("Unknown");
+//                            }
+//                        } catch (Exception ex) {
+//                            continue;
+//                        }
+//                        track.setPath(f.getAbsolutePath());
+//                        track.setParentFolder(parentId);
+//                        track.setLibrary(SessionConstants.LIBRARY_ID);
+//                        TrackController.createTrack(track);
+//                        currentFileScanned++;
+//                        progressBar.setValue((int) currentFileScanned);
+//                    }
+//                }
+//            } catch (IOException ex) {
+//                Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+//            } catch (IllegalStateException ex) {
+//                Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
 
     }
     
     private void buildFolderOptimized(File folder, int parentId) {
         JSONParser = new Gson();
-        Response response;
         Folder createdFolder;
-        Mp3File mp3;
         FolderCreationDTO folderToCreate = new FolderCreationDTO();
 
         ArrayList<File> folders = new ArrayList<>();
@@ -562,55 +565,94 @@ public class HomePage extends javax.swing.JFrame {
             } else if (f.getName().endsWith(".mp3") && !f.isHidden()) {
                 Track track = new Track();
                 try {
-                    mp3 = new Mp3File(f.getAbsolutePath());
-                    File file = new File(f.getAbsolutePath());
-                    AudioFileFormat baseFileFormat = AudioSystem.getAudioFileFormat(file);
+                    MP3 mp3 = new MP3(f);
+                    AudioFileFormat baseFileFormat = AudioSystem.getAudioFileFormat(f);
                     Map properties = baseFileFormat.properties();
                     Long duration1 = (Long) properties.get("duration");
                     int mili = (int) (duration1 / 1000);
                     int sec = (int) (mili / 1000) % 60;
                     int min = (int) (mili / 1000) / 60;
                     track.setDuration(min + ":" + String.format("%02d", sec));
-                    if (mp3.hasId3v1Tag()) {
-                        ID3v1 id3v1Tag = mp3.getId3v1Tag();
-                        if (id3v1Tag.getTitle().equals("")) {
-                            track.setTitle(f.getName());
-                        } else {
-                            track.setTitle(id3v1Tag.getTitle());
-                        }
-
-                        if (id3v1Tag.getArtist().equals("")) {
-                            track.setArtist("Unknown");
-                        } else {
-                            track.setArtist(id3v1Tag.getArtist());
-                        }
+                    String path = f.getAbsolutePath();
+                    String artist = mp3.getLeadPerformer();
+                    String title = mp3.getTitle();
+                    track.setArtist(artist);
+                    track.setTitle(title);
+                    if(artist != null) {
+                        track.setArtist(artist);
                     } else {
-                        track.setTitle(f.getName());
                         track.setArtist("Unknown");
                     }
-                } catch (Exception ex) {
-                    continue;
+                    if(title != null) {
+                        track.setTitle(title);
+                    } else {
+                        track.setTitle(f.getName());
+                    }
+
+                    track.setPath(path);
+                    track.setLibrary(SessionConstants.LIBRARY_ID);
+                    //jLabel2.setText(f.getAbsolutePath());
+                    currentFileScanned++;
+                    progressBar.setValue((int) currentFileScanned);
+                    tracks.add(track);
+                } catch (IOException ex) {
+                } catch (UnsupportedAudioFileException ex) {
+                    //Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                track.setPath(f.getAbsolutePath());
-                track.setLibrary(SessionConstants.LIBRARY_ID);
-                tracks.add(track);
-                currentFileScanned++;
-                progressBar.setValue((int) currentFileScanned);
             }
         }
         
         folderToCreate.setTracks(tracks);
-        response = FolderController.createFolderOptimized(folderToCreate);
+        System.out.println("Crear " + folder + "   " + new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
+        createdFolder = createFolderByLimit(folderToCreate, 300);
+        
+        if(createdFolder != null) {
+            for (File file : folders) {
+                buildFolderOptimized(file, createdFolder.getId());
+            }            
+        }
+    }
+    
+
+    private Folder createFolderByLimit(FolderCreationDTO folder, int trackLimit) {
+        Folder createdFolder = null;
+        ArrayList<Track> tracks = folder.getTracks();
+        ArrayList<Track> tracksToCreate;
+        int total = tracks.size();
+        int start = 0;
+        int end = 0;
+        if (total > trackLimit) {
+            start = 0;
+            end = (start+trackLimit <= total-1)?start+trackLimit:total-1;
+            System.out.println(total + " " + start + "  " + end);
+            tracksToCreate = new ArrayList<>(tracks.subList(start, end));
+            folder.setTracks(tracksToCreate);            
+        }
+
+        Response response = FolderController.createFolderOptimized(folder);
         try {
-            if(response.getStatusCode() == 200) {
+            if(response.getStatusCode() == 200)  {
                 createdFolder = (Folder)JSONParser.fromJson(response.getResponseBody(), Folder.class);
-                for (File file : folders) {
-                    buildFolderOptimized(file, createdFolder.getId());
-                }                
+                int parentId = createdFolder.getId();
+                if(total > trackLimit) {
+                    for(int i = end; i < total; i++) {
+                        tracks.get(i).setParentFolder(parentId);
+                    }
+                    do {
+                        start = end+1;
+                        end = (start+trackLimit <= total-1)?start+trackLimit:total-1;
+                        System.out.println(total + " " + start + "  " + end);
+                        tracksToCreate = new ArrayList<>(tracks.subList(start, end));
+                        folder.setFolder(null);
+                        folder.setTracks(tracksToCreate);
+                        FolderController.createFolderTracks(folder);
+                    } while(response.getStatusCode() == 200 && start < total);                    
+                }
             }
         } catch (IOException ex) {
             Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return createdFolder;
     }
 
     private void drawFetchedFolder(FolderDTO fetchedFolder) {
@@ -1299,10 +1341,10 @@ public class HomePage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1312,7 +1354,7 @@ public class HomePage extends javax.swing.JFrame {
                 .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(751, Short.MAX_VALUE)
+                    .addContainerGap(787, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(24, 24, 24)))
         );
