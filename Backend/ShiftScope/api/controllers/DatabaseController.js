@@ -25,8 +25,9 @@ module.exports = {
         if(err){
           res.serverError();
         }
-    });          
+    });  
+    res.ok();        
   }
-  res.ok();
+  
 };
 
