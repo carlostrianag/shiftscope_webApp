@@ -25,7 +25,7 @@ module.exports = {
   },
   attributes: {
   	id: {
-  		type: 'integer',
+  		type: 'int',
   		unique: true,
   		primaryKey: true,
   		autoIncrement: true

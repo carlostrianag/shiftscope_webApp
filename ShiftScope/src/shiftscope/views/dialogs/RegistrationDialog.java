@@ -81,7 +81,7 @@ public class RegistrationDialog extends JDialog {
         
         backgroundLabel = new JLabel();
         backgroundLabel.setBounds(0, 0, 500, 550);
-        backgroundLabel.setIcon(createImageIcon("images/back-c.png", "background"));
+        backgroundLabel.setIcon(createImageIcon("../images/back-c.png", "background"));
         
         nameLabel = new JLabel("Name");
         nameLabel.setHorizontalAlignment(SwingConstants.RIGHT);

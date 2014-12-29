@@ -109,6 +109,7 @@ module.exports = {
 				folderDTO.folders = folders;
 				Track.find({where: {parentFolder: id}}).exec(function(err, tracks){
 					if(err){
+						console.log(err);
 						res.serverError();
 					} else {
 						folderDTO.tracks = tracks;

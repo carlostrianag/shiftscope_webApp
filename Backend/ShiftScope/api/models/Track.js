@@ -18,30 +18,31 @@ module.exports = {
   	path: {
   		type: 'string',
       required: true
-  	},
-  	genre: {
-  		type :'string'
-  	},
-  	artist: {
-  		type: 'string'
-  	},
-  	title: {
-  		type: 'string'
-  	},
-  	duration: {
-  		type: 'string'
-  	},
+    },
+    genre: {
+      type :'string'
+    },
+    artist: {
+      type: 'string'
+    },
+    title: {
+      type: 'string'
+    },
+    duration: {
+      type: 'string'
+    },
     statistics: {
       collection: 'statistic'
+    },
+    parentFolder: {
+      model: 'folder',
+      foreignKey: true
+    },
+    library: {
+      model: 'library',
+      foreignKey: true
     }
-  },
-  parentFolder: {
-    model: 'folder',
-    foreignKey: true
-  },
-  library: {
-    model: 'library',
-    foreignKey: true
   }
+
 };
 

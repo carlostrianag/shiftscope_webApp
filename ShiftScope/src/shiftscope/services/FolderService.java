@@ -8,11 +8,9 @@ package shiftscope.services;
 
 import com.google.gson.Gson;
 import com.ning.http.client.Response;
-import java.util.ArrayList;
 import shiftscope.criteria.FolderCriteria;
 import shiftscope.dto.FolderCreationDTO;
 import shiftscope.model.Folder;
-import shiftscope.model.Track;
 import shiftscope.netservices.HTTPService;
 
 /**

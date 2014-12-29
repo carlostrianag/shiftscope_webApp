@@ -471,76 +471,7 @@ public class HomePage extends javax.swing.JFrame {
             totalFiles++;
         }
     }
-
-    private void buildFolder(File folder, int parentId) {
-//        JSONParser = new Gson();
-//        Folder createdFolder;
-//        Folder newFolder = new Folder();
-//        newFolder.setPath(folder.getAbsolutePath());
-//        newFolder.setTitle(folder.getName());
-//        newFolder.setParentFolder(parentId);
-//        newFolder.setLibrary(SessionConstants.LIBRARY_ID);
-//        Response response = FolderController.createFolder(newFolder);
-//        if (response.getStatusCode() == 200) {
-//            try {
-//                createdFolder = JSONParser.fromJson(response.getResponseBody(), Folder.class);
-//                parentId = createdFolder.getId();
-//                Mp3File mp3;
-//                File files[] = folder.listFiles();
-//                currentFileScanned++;
-//                progressBar.setValue((int) currentFileScanned);
-//                for (File f : files) {
-//                    if (f.isDirectory()) {
-//                        buildFolder(f, parentId);
-//                    } else if (f.getName().endsWith(".mp3") && !f.isHidden()) {
-//                        Track track = new Track();
-//                        try {
-//                            mp3 = new Mp3File(f.getAbsolutePath());
-//                            File file = new File(f.getAbsolutePath());
-//                            AudioFileFormat baseFileFormat = AudioSystem.getAudioFileFormat(file);
-//                            Map properties = baseFileFormat.properties();
-//                            Long duration1 = (Long) properties.get("duration");
-//                            int mili = (int) (duration1 / 1000);
-//                            int sec = (int) (mili / 1000) % 60;
-//                            int min = (int) (mili / 1000) / 60;
-//                            track.setDuration(min + ":" + String.format("%02d", sec));
-//                            if (mp3.hasId3v1Tag()) {
-//                                ID3v1 id3v1Tag = mp3.getId3v1Tag();
-//                                if (id3v1Tag.getTitle().equals("")) {
-//                                    track.setTitle(f.getName());
-//                                } else {
-//                                    track.setTitle(id3v1Tag.getTitle());
-//                                }
-//
-//                                if (id3v1Tag.getArtist().equals("")) {
-//                                    track.setArtist("Unknown");
-//                                } else {
-//                                    track.setArtist(id3v1Tag.getArtist());
-//                                }
-//                            } else {
-//                                track.setTitle(f.getName());
-//                                track.setArtist("Unknown");
-//                            }
-//                        } catch (Exception ex) {
-//                            continue;
-//                        }
-//                        track.setPath(f.getAbsolutePath());
-//                        track.setParentFolder(parentId);
-//                        track.setLibrary(SessionConstants.LIBRARY_ID);
-//                        TrackController.createTrack(track);
-//                        currentFileScanned++;
-//                        progressBar.setValue((int) currentFileScanned);
-//                    }
-//                }
-//            } catch (IOException ex) {
-//                Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (IllegalStateException ex) {
-//                Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-
-    }
-    
+   
     private void buildFolderOptimized(File folder, int parentId) {
         JSONParser = new Gson();
         Folder createdFolder;
@@ -624,7 +555,7 @@ public class HomePage extends javax.swing.JFrame {
         if (total > trackLimit) {
             start = 0;
             end = (start+trackLimit <= total-1)?start+trackLimit:total-1;
-            System.out.println(total + " " + start + "  " + end);
+            System.out.println(start + "  " + end);
             tracksToCreate = new ArrayList<>(tracks.subList(start, end));
             folder.setTracks(tracksToCreate);            
         }
@@ -641,7 +572,7 @@ public class HomePage extends javax.swing.JFrame {
                     do {
                         start = end+1;
                         end = (start+trackLimit <= total-1)?start+trackLimit:total-1;
-                        System.out.println(total + " " + start + "  " + end);
+                        System.out.println(start + "  " + end + " " + new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
                         tracksToCreate = new ArrayList<>(tracks.subList(start, end));
                         folder.setFolder(null);
                         folder.setTracks(tracksToCreate);
