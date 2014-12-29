@@ -53,7 +53,7 @@ module.exports.connections = {
     host: 'localhost',
     user: 'root',
     password: 'M3d3ll1n',
-    database: 'shiftscope_db_prod'
+    database: 'shiftscope_db'
   },  
 
   /***************************************************************************
