@@ -151,19 +151,5 @@ public class Sync {
     public void setCurrentPlaylist(ArrayList<Track> currentPlaylist) {
         this.currentPlaylist = currentPlaylist;
     }
-
-    /**
-     * @return the currentVolume
-     */
-    public int getCurrentVolume() {
-        return currentVolume;
-    }
-
-    /**
-     * @param currentVolume the currentVolume to set
-     */
-    public void setCurrentVolume(int currentVolume) {
-        this.currentVolume = currentVolume;
-    }
     
 }

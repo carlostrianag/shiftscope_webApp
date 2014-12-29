@@ -13,6 +13,7 @@ import com.ning.http.client.Response;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -67,6 +68,8 @@ import shiftscope.util.Operation;
 import shiftscope.util.OperationType;
 import shiftscope.util.SessionConstants;
 import shiftscope.util.Sync;
+import shiftscope.util.comparators.ArtistComparator;
+import shiftscope.util.comparators.TitleComparator;
 import shiftscope.views.dialogs.MainDialog;
 
 /**
@@ -98,9 +101,9 @@ public class HomePage extends javax.swing.JFrame {
     private Track currentSong;
     private Sync sync;
     private Music player;
-    
+
     private int layoutWidth;
-    
+
     private FolderDTO folderContent;
 
     public class FolderBuilder extends SwingWorker<Void, Void> {
@@ -122,11 +125,10 @@ public class HomePage extends javax.swing.JFrame {
             for (File f : fileChooser.getSelectedFiles()) {
                 buildFolderOptimized(f, -1);
             }
-            progressBar.setVisible(false);         
-            getFolderContent(-1);
+
             return null;
         }
-        
+
         @Override
         protected void done() {
             sync.setNewFolders(true);
@@ -136,6 +138,8 @@ public class HomePage extends javax.swing.JFrame {
             request.setSync(sync);
             webSocket.sendRequest(request);
             sync.setNewFolders(false);
+            progressBar.setVisible(false);
+            getFolderContent(-1);
             System.out.println("ShiftScope has finished...");
         }
     }
@@ -180,6 +184,69 @@ public class HomePage extends javax.swing.JFrame {
         }
     }
 
+    public class FolderFetcher extends SwingWorker<Void, Void> {
+
+        private final int id;
+        private Frame parentComponent;
+        private int responseCode;
+
+        public FolderFetcher(Frame parent, int id) {
+            this.id = id;
+            this.parentComponent = parent;
+        }
+        
+        @Override
+        protected Void doInBackground() throws Exception {
+            folderPane.removeAll();
+            JLabel loadingLabel = new JLabel("Loading please wait...");
+            loadingLabel.setFont(serifFont);
+            loadingLabel.setBounds(0, 0, 200, 20);
+            folderPane.add(loadingLabel);
+            folderPane.revalidate();
+            folderPane.repaint();
+            
+            currentFolder = id;
+            Response response;
+            Folder parentFolder;
+            JSONParser = new GsonBuilder().create();
+            FolderCriteria criteria = new FolderCriteria();
+            criteria.setId(id);
+            criteria.setLibrary(SessionConstants.LIBRARY_ID);
+            response = FolderController.getFolderParentId(criteria);
+            try {
+                if (response.getStatusCode() == 200) {
+                    parentFolder = JSONParser.fromJson(response.getResponseBody(), Folder.class);
+                    SessionConstants.PARENT_FOLDER_ID = parentFolder.getParentFolder();
+                } else {
+                    SessionConstants.PARENT_FOLDER_ID = -1;
+                }
+            } catch (IllegalStateException ex) {
+                Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            response = FolderController.getFolderContentById(criteria);
+            try {
+                responseCode = response.getStatusCode();
+                if (responseCode == 200) {
+                    folderContent = JSONParser.fromJson(response.getResponseBody(), FolderDTO.class);
+                    Collections.sort(folderContent.getTracks(), new ArtistComparator());
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            if(responseCode == 200) {
+                drawFetchedFolder(folderContent);
+            }
+        }
+
+    }
+
     public HomePage() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -188,9 +255,10 @@ public class HomePage extends javax.swing.JFrame {
         foldersScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         initPlayer();
 
+        buttonGroup2.add(songTitleRadio);
+        buttonGroup2.add(artistRadio);
         musicIcon = createImageIcon("images/music.png", "music_icon");
         folderIcon = createImageIcon("images/folder.png", "music_icon");
-        
 
         PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
             @Override
@@ -204,18 +272,17 @@ public class HomePage extends javax.swing.JFrame {
         };
 
         //jSplitPane1.addPropertyChangeListener(propertyChangeListener);
-        
         volumeSlider.addChangeListener(new ChangeListener() {
 
             @Override
             public void stateChanged(ChangeEvent e) {
                 JSlider source = (JSlider) e.getSource();
-                if(source.getValueIsAdjusting()) {
+                if (source.getValueIsAdjusting()) {
                     setVolumeFromValue(source.getValue());
                 }
             }
         });
-        
+
         MouseListener mouseListener = new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -229,18 +296,18 @@ public class HomePage extends javax.swing.JFrame {
                 btn.setBackground(new Color(34, 34, 34));
             }
         };
-        
+
         nextBtn.addMouseListener(mouseListener);
         backBtn.addMouseListener(mouseListener);
         stopBtn.addMouseListener(mouseListener);
         pauseBtn.addMouseListener(mouseListener);
-        
+
         calculateDifference();
         drawPlaylist();
         MainDialog mainDialog = new MainDialog(this, true);
         mainDialog.setVisible(true);
     }
-    
+
     public void init() {
         try {
             System.out.println("Conectando........");
@@ -248,10 +315,10 @@ public class HomePage extends javax.swing.JFrame {
             webSocket.connect();
         } catch (URISyntaxException ex) {
             Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }
         getFolderContent(-1);
     }
-    
+
     private void calculateDifference() {
         layoutWidth = jSplitPane1.getDividerLocation() - 22;
         //difference = this.getWidth() - jSplitPane1.getDividerLocation();
@@ -264,7 +331,6 @@ public class HomePage extends javax.swing.JFrame {
         }
         player.loadSong(t.getPath());
 
-        
         sync.setCurrentSongId(t.getId());
         sync.setCurrentSongName(t.getTitle());
         sync.setCurrentSongArtist(t.getArtist());
@@ -396,7 +462,7 @@ public class HomePage extends javax.swing.JFrame {
     public void volumeUp() {
         player.volumeUp();
     }
-    
+
     public void setVolumeFromValue(float value) {
         player.setVolumeFromValue(value);
 //        sync.setCurrentVolume((int)value);
@@ -409,7 +475,7 @@ public class HomePage extends javax.swing.JFrame {
 
     public void setVolume(float value) {
         player.setVolumeFromValue(value);
-        volumeSlider.setValue((int)value);
+        volumeSlider.setValue((int) value);
     }
 
     public boolean isPlaying() {
@@ -449,7 +515,7 @@ public class HomePage extends javax.swing.JFrame {
     public Sync getSync() {
         return sync;
     }
-    
+
     public final void initPlayer() {
         player = new Music(this);
         queuePaths = new ArrayList<>();
@@ -471,7 +537,7 @@ public class HomePage extends javax.swing.JFrame {
             totalFiles++;
         }
     }
-   
+
     private void buildFolderOptimized(File folder, int parentId) {
         JSONParser = new Gson();
         Folder createdFolder;
@@ -487,7 +553,7 @@ public class HomePage extends javax.swing.JFrame {
         newFolder.setLibrary(SessionConstants.LIBRARY_ID);
 
         folderToCreate.setFolder(newFolder);
-        
+
         File[] files = folder.listFiles();
 
         for (File f : files) {
@@ -509,12 +575,12 @@ public class HomePage extends javax.swing.JFrame {
                     String title = mp3.getTitle();
                     track.setArtist(artist);
                     track.setTitle(title);
-                    if(artist != null) {
+                    if (artist != null) {
                         track.setArtist(artist);
                     } else {
                         track.setArtist("Unknown");
                     }
-                    if(title != null) {
+                    if (title != null) {
                         track.setTitle(title);
                     } else {
                         track.setTitle(f.getName());
@@ -532,18 +598,16 @@ public class HomePage extends javax.swing.JFrame {
                 }
             }
         }
-        
+
         folderToCreate.setTracks(tracks);
         System.out.println("Crear " + folder + "   " + new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
         createdFolder = createFolderByLimit(folderToCreate, 300);
-        
-        if(createdFolder != null) {
+        if (createdFolder != null) {
             for (File file : folders) {
                 buildFolderOptimized(file, createdFolder.getId());
-            }            
+            }
         }
     }
-    
 
     private Folder createFolderByLimit(FolderCreationDTO folder, int trackLimit) {
         Folder createdFolder = null;
@@ -554,30 +618,30 @@ public class HomePage extends javax.swing.JFrame {
         int end = 0;
         if (total > trackLimit) {
             start = 0;
-            end = (start+trackLimit <= total-1)?start+trackLimit:total-1;
+            end = (start + trackLimit <= total - 1) ? start + trackLimit : total - 1;
             System.out.println(start + "  " + end);
             tracksToCreate = new ArrayList<>(tracks.subList(start, end));
-            folder.setTracks(tracksToCreate);            
+            folder.setTracks(tracksToCreate);
         }
 
         Response response = FolderController.createFolderOptimized(folder);
         try {
-            if(response.getStatusCode() == 200)  {
-                createdFolder = (Folder)JSONParser.fromJson(response.getResponseBody(), Folder.class);
+            if (response.getStatusCode() == 200) {
+                createdFolder = (Folder) JSONParser.fromJson(response.getResponseBody(), Folder.class);
                 int parentId = createdFolder.getId();
-                if(total > trackLimit) {
-                    for(int i = end; i < total; i++) {
+                if (total > trackLimit) {
+                    for (int i = end; i < total; i++) {
                         tracks.get(i).setParentFolder(parentId);
                     }
                     do {
-                        start = end+1;
-                        end = (start+trackLimit <= total-1)?start+trackLimit:total-1;
+                        start = end + 1;
+                        end = (start + trackLimit <= total - 1) ? start + trackLimit : total - 1;
                         System.out.println(start + "  " + end + " " + new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
                         tracksToCreate = new ArrayList<>(tracks.subList(start, end));
                         folder.setFolder(null);
                         folder.setTracks(tracksToCreate);
                         FolderController.createFolderTracks(folder);
-                    } while(response.getStatusCode() == 200 && start < total);                    
+                    } while (response.getStatusCode() == 200 && start < total);
                 }
             }
         } catch (IOException ex) {
@@ -587,7 +651,8 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     private void drawFetchedFolder(FolderDTO fetchedFolder) {
-        if(fetchedFolder != null) {
+        if (fetchedFolder != null) {
+
             int totalElements = fetchedFolder.getFolders().size() + fetchedFolder.getTracks().size();
 
             folderPane.removeAll();
@@ -606,7 +671,7 @@ public class HomePage extends javax.swing.JFrame {
                     public void paint(Graphics g) {
                         super.paint(g);
                         g.setColor(Color.GRAY);
-                        g.drawRoundRect(0, 0, layoutWidth-2, 43, 3, 3);
+                        g.drawRoundRect(0, 0, layoutWidth - 2, 43, 3, 3);
                     }
 
                 };
@@ -651,14 +716,14 @@ public class HomePage extends javax.swing.JFrame {
                 iconLabel.setIcon(folderIcon);
 
                 iconLabel.setBounds(15, 0, 35, 45);
-                folderLabel.setBounds(45, 0, layoutWidth-35, 45);
+                folderLabel.setBounds(45, 0, layoutWidth - 35, 45);
 
                 folderPanel.add(iconLabel);
                 folderPanel.add(folderLabel);
                 folderPane.add(folderPanel);
 
             }
-            delta = folders.size();
+            delta = folders.size() * 45;
             for (int i = 0; i < tracks.size(); i++) {
                 final Track track = tracks.get(i);
                 final JPanel trackPanel = new JPanel() {
@@ -666,7 +731,7 @@ public class HomePage extends javax.swing.JFrame {
                     public void paint(Graphics g) {
                         super.paint(g);
                         g.setColor(Color.GRAY);
-                        g.drawRoundRect(0, 0, layoutWidth-2, 43, 3, 3);
+                        g.drawRoundRect(0, 0, layoutWidth - 2, 43, 3, 3);
                     }
 
                 };
@@ -744,8 +809,8 @@ public class HomePage extends javax.swing.JFrame {
                 iconLabel.setIcon(musicIcon);
 
                 iconLabel.setBounds(10, 10, 35, 20);
-                trackLabel.setBounds(35, 0, layoutWidth-35, 20);
-                artistLabel.setBounds(38, 20, layoutWidth-38, 20);
+                trackLabel.setBounds(35, 0, layoutWidth - 35, 20);
+                artistLabel.setBounds(38, 20, layoutWidth - 38, 20);
 
                 trackPanel.add(iconLabel);
                 trackPanel.add(trackLabel);
@@ -754,7 +819,7 @@ public class HomePage extends javax.swing.JFrame {
 
             }
             foldersScrollPane.revalidate();
-            foldersScrollPane.repaint();            
+            foldersScrollPane.repaint();
         }
     }
 
@@ -873,7 +938,7 @@ public class HomePage extends javax.swing.JFrame {
                 public void paint(Graphics g) {
                     super.paint(g);
                     g.setColor(Color.GRAY);
-                    g.drawRoundRect(0, 0, 230-2, 43, 3, 3);
+                    g.drawRoundRect(0, 0, 230 - 2, 43, 3, 3);
                 }
 
             };
@@ -932,8 +997,8 @@ public class HomePage extends javax.swing.JFrame {
             iconLabel.setIcon(musicIcon);
 
             iconLabel.setBounds(10, 10, 35, 20);
-            trackLabel.setBounds(35, 0, 230-35, 20);
-            artistLabel.setBounds(38, 20, 230-38, 20);
+            trackLabel.setBounds(35, 0, 230 - 35, 20);
+            artistLabel.setBounds(38, 20, 230 - 38, 20);
 
             trackPanel.add(iconLabel);
             trackPanel.add(trackLabel);
@@ -947,36 +1012,7 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     private void getFolderContent(int id) {
-        currentFolder = id;
-        Response response;
-        Folder parentFolder;
-        JSONParser = new GsonBuilder().create();
-        FolderCriteria criteria = new FolderCriteria();
-        criteria.setId(id);
-        criteria.setLibrary(SessionConstants.LIBRARY_ID);
-        response = FolderController.getFolderParentId(criteria);
-        try {
-            if (response.getStatusCode() == 200) {
-                parentFolder = JSONParser.fromJson(response.getResponseBody(), Folder.class);
-                SessionConstants.PARENT_FOLDER_ID = parentFolder.getParentFolder();
-            } else {
-                SessionConstants.PARENT_FOLDER_ID = -1;
-            }
-        } catch (IllegalStateException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        response = FolderController.getFolderContentById(criteria);
-        try {
-            if(response.getStatusCode() == 200) {
-                folderContent = JSONParser.fromJson(response.getResponseBody(), FolderDTO.class);
-                Collections.sort(folderContent.getTracks());
-                drawFetchedFolder(folderContent);                
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        new FolderFetcher(this, id).execute();
     }
 
     protected final ImageIcon createImageIcon(String path,
@@ -1001,6 +1037,7 @@ public class HomePage extends javax.swing.JFrame {
 
         jToolBar1 = new javax.swing.JToolBar();
         jComboBox1 = new javax.swing.JComboBox();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         searchTextField = new javax.swing.JTextField();
@@ -1030,6 +1067,8 @@ public class HomePage extends javax.swing.JFrame {
         playlistPanel = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         clearPlaylistBtn = new javax.swing.JButton();
+        artistRadio = new javax.swing.JRadioButton();
+        songTitleRadio = new javax.swing.JRadioButton();
 
         jToolBar1.setRollover(true);
 
@@ -1231,7 +1270,7 @@ public class HomePage extends javax.swing.JFrame {
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(clearPlaylistBtn))
         );
         jPanel7Layout.setVerticalGroup(
@@ -1240,6 +1279,20 @@ public class HomePage extends javax.swing.JFrame {
                 .addComponent(clearPlaylistBtn)
                 .addGap(0, 25, Short.MAX_VALUE))
         );
+
+        artistRadio.setText("Artist");
+        artistRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                artistRadioActionPerformed(evt);
+            }
+        });
+
+        songTitleRadio.setText("Song Title");
+        songTitleRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                songTitleRadioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1254,7 +1307,12 @@ public class HomePage extends javax.swing.JFrame {
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(songTitleRadio)
+                                .addGap(18, 18, 18)
+                                .addComponent(artistRadio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -1272,10 +1330,14 @@ public class HomePage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(songTitleRadio)
+                        .addComponent(artistRadio)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1369,7 +1431,7 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_searchTextFieldKeyReleased
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if(webSocket != null && webSocket.isOpen()) {
+        if (webSocket != null && webSocket.isOpen()) {
             webSocket.close();
         }
     }//GEN-LAST:event_formWindowClosing
@@ -1385,26 +1447,54 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_jSplitPane1PropertyChange
 
     private void backBtnMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backBtnMouseEntered
-      
+
     }//GEN-LAST:event_backBtnMouseEntered
 
     private void clearPlaylistBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearPlaylistBtnActionPerformed
         queuePaths.clear();
         sync.setCurrentPlaylist(queuePaths);
-        
+
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
         request.setSync(sync);
-        
-        webSocket.sendRequest(request);     
+
+        webSocket.sendRequest(request);
         drawPlaylist();
     }//GEN-LAST:event_clearPlaylistBtnActionPerformed
 
+    private void songTitleRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_songTitleRadioActionPerformed
+        if(songTitleRadio.isSelected()) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Collections.sort(folderContent.getTracks(), new TitleComparator());
+                    drawFetchedFolder(folderContent);
+                }
+            });
+            thread.start();
+        }
+    }//GEN-LAST:event_songTitleRadioActionPerformed
+
+    private void artistRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_artistRadioActionPerformed
+        if(artistRadio.isSelected()) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Collections.sort(folderContent.getTracks(), new ArtistComparator());
+                    drawFetchedFolder(folderContent);
+                }
+            });
+            thread.start();
+        }
+    }//GEN-LAST:event_artistRadioActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton artistRadio;
     private javax.swing.JLabel backBtn;
     private javax.swing.JLabel backButton;
+    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton clearPlaylistBtn;
     private javax.swing.JLabel currentSongLabel;
     private javax.swing.JLabel elapsedTime;
@@ -1430,6 +1520,7 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JTextField searchTextField;
     private javax.swing.JLabel selectFolderButton;
     private javax.swing.JLabel songNameLabel;
+    private javax.swing.JRadioButton songTitleRadio;
     private javax.swing.JLabel stopBtn;
     private javax.swing.JToolBar toolBar;
     private javax.swing.JLabel totalTime;
