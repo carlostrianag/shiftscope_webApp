@@ -1053,8 +1053,6 @@ public class HomePage extends javax.swing.JFrame {
         buttonGroup2 = new javax.swing.ButtonGroup();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        searchTextField = new javax.swing.JTextField();
-        searchButton = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         backButton = new javax.swing.JLabel();
         selectFolderButton = new javax.swing.JLabel();
@@ -1080,8 +1078,9 @@ public class HomePage extends javax.swing.JFrame {
         playlistPanel = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         clearPlaylistBtn = new javax.swing.JButton();
-        artistRadio = new javax.swing.JRadioButton();
         songTitleRadio = new javax.swing.JRadioButton();
+        artistRadio = new javax.swing.JRadioButton();
+        searchTextField = new javax.swing.JTextField();
 
         jToolBar1.setRollover(true);
 
@@ -1102,32 +1101,15 @@ public class HomePage extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                formKeyReleased(evt);
+            }
+        });
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/icon.png"))); // NOI18N
         jLabel1.setAlignmentX(-0.0F);
         jPanel4.add(jLabel1);
-
-        searchTextField.setForeground(new java.awt.Color(204, 204, 204));
-        searchTextField.setPreferredSize(new java.awt.Dimension(350, 27));
-        searchTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchTextFieldActionPerformed(evt);
-            }
-        });
-        searchTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                searchTextFieldKeyReleased(evt);
-            }
-        });
-        jPanel4.add(searchTextField);
-
-        searchButton.setText("Search");
-        searchButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchButtonActionPerformed(evt);
-            }
-        });
-        jPanel4.add(searchButton);
 
         backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/back.png"))); // NOI18N
         backButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1283,20 +1265,12 @@ public class HomePage extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(clearPlaylistBtn))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addComponent(clearPlaylistBtn)
-                .addGap(0, 25, Short.MAX_VALUE))
-        );
+        songTitleRadio.setText("Song Title");
+        songTitleRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                songTitleRadioActionPerformed(evt);
+            }
+        });
 
         artistRadio.setText("Artist");
         artistRadio.addActionListener(new java.awt.event.ActionListener() {
@@ -1305,12 +1279,43 @@ public class HomePage extends javax.swing.JFrame {
             }
         });
 
-        songTitleRadio.setText("Song Title");
-        songTitleRadio.addActionListener(new java.awt.event.ActionListener() {
+        searchTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                songTitleRadioActionPerformed(evt);
+                searchTextFieldActionPerformed(evt);
             }
         });
+        searchTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchTextFieldKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addComponent(songTitleRadio)
+                .addGap(18, 18, 18)
+                .addComponent(artistRadio)
+                .addGap(18, 18, 18)
+                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(clearPlaylistBtn))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addComponent(clearPlaylistBtn)
+                .addGap(0, 25, Short.MAX_VALUE))
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(songTitleRadio)
+                    .addComponent(artistRadio)
+                    .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1325,12 +1330,7 @@ public class HomePage extends javax.swing.JFrame {
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(songTitleRadio)
-                                .addGap(18, 18, 18)
-                                .addComponent(artistRadio)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -1348,14 +1348,10 @@ public class HomePage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(songTitleRadio)
-                        .addComponent(artistRadio)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1365,7 +1361,7 @@ public class HomePage extends javax.swing.JFrame {
                 .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(787, Short.MAX_VALUE)
+                    .addContainerGap(789, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(24, 24, 24)))
         );
@@ -1405,55 +1401,6 @@ public class HomePage extends javax.swing.JFrame {
     private void backBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backBtnMouseClicked
         back();
     }//GEN-LAST:event_backBtnMouseClicked
-
-    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        try {
-            int currentPage = 1;
-            SearchDTO searchResults = new SearchDTO();
-            TrackCriteria criteria = new TrackCriteria();
-            String word = URLEncoder.encode(searchTextField.getText(), "UTF-8");
-            criteria.setWord(word);
-            criteria.setLibrary(SessionConstants.LIBRARY_ID);
-            criteria.setPage(currentPage);
-            JSONParser = new GsonBuilder().create();
-            Response response = TrackController.searchTrack(criteria);
-            if (response.getStatusCode() == 200) {
-                do {
-                    try {
-                        searchResults.addTracks(JSONParser.fromJson(response.getResponseBody(), new TypeToken<List<Track>>() {
-                        }.getType()));
-                        currentPage++;
-                        criteria.setPage(currentPage);
-                        response = TrackController.searchTrack(criteria);
-                    } catch (IOException ex) {
-                        Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IllegalStateException ex) {
-                        Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } while (response.getStatusCode() != 404);
-                drawSearchResults(searchResults.getTracks());
-            } else if (response.getStatusCode() == 404) {
-                folderPane.removeAll();
-                foldersScrollPane.revalidate();
-                foldersScrollPane.repaint();
-            }
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_searchButtonActionPerformed
-
-    private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
-        if(searchTextField.getText().length() > 2) {
-            String matchCriteria = searchTextField.getText();
-            ArrayList<Track> tracks = new ArrayList<Track>(folderContent.getTracks().stream().filter(p -> p.getTitle().contains(matchCriteria) || p.getArtist().contains(matchCriteria)).collect(Collectors.toList()));
-            drawSearchResults(tracks);
-        } else if(searchTextField.getText().length() == 0){
-            drawFetchedFolder(folderContent);
-        }
-
-        
-    
-    }//GEN-LAST:event_searchTextFieldKeyReleased
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (webSocket != null && webSocket.isOpen()) {
@@ -1498,8 +1445,37 @@ public class HomePage extends javax.swing.JFrame {
                 }
             });
             thread.start();
+            System.out.println("entro");
         }
     }//GEN-LAST:event_songTitleRadioActionPerformed
+
+    private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
+        if(artistRadio.isSelected()) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Collections.sort(folderContent.getTracks(), new ArtistComparator());
+                    drawFetchedFolder(folderContent);
+                }
+            });
+            thread.start();
+            System.out.println("");
+        }
+    }//GEN-LAST:event_searchTextFieldActionPerformed
+
+    private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
+        if(searchTextField.getText().length() > 2) {
+            String matchCriteria = searchTextField.getText();
+            ArrayList<Track> tracks = new ArrayList<Track>(folderContent.getTracks().stream().filter(p -> p.getTitle().contains(matchCriteria) || p.getArtist().contains(matchCriteria)).collect(Collectors.toList()));
+            drawSearchResults(tracks);
+        } else if(searchTextField.getText().length() == 0){
+            drawFetchedFolder(folderContent);
+        }
+    }//GEN-LAST:event_searchTextFieldKeyReleased
+
+    private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
+
+    }//GEN-LAST:event_formKeyReleased
 
     private void artistRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_artistRadioActionPerformed
         if(artistRadio.isSelected()) {
@@ -1513,10 +1489,6 @@ public class HomePage extends javax.swing.JFrame {
             thread.start();
         }
     }//GEN-LAST:event_artistRadioActionPerformed
-
-    private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_searchTextFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1545,7 +1517,6 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JPanel playlistPanel;
     private javax.swing.JScrollPane playlistScrollPane;
     private javax.swing.JProgressBar progressBar;
-    private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchTextField;
     private javax.swing.JLabel selectFolderButton;
     private javax.swing.JLabel songNameLabel;
