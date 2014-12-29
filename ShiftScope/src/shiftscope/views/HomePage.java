@@ -35,8 +35,10 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -824,100 +826,111 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     private void drawSearchResults(ArrayList<Track> tracks) {
-        int totalElements = tracks.size();
-        folderPane.removeAll();
-        folderPane.setPreferredSize(new Dimension(foldersScrollPane.getWidth(), totalElements * 35));
-        foldersScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        int delta = 0;
-        for (int i = 0; i < tracks.size(); i++) {
-            final Track track = tracks.get(i);
-            final JPanel trackPanel = new JPanel() {
-
-                @Override
-                public void paint(Graphics g) {
-                    super.paint(g);
-                    g.setColor(Color.GRAY);
-                    g.drawRoundRect(0, 0, 700, 35, 3, 3);
-                }
-
-            };
-            trackPanel.addMouseListener(new MouseListener() {
-
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() == 2) {
-                        playSong(track, false);
-                    } else if (e.getButton() == MouseEvent.BUTTON3) {
-                        JPopupMenu popupMenu = new JPopupMenu();
-                        JMenuItem play = new JMenuItem("Play");
-                        play.addActionListener(new ActionListener() {
-
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                playSong(track, false);
-                            }
-
-                        });
-
-                        JMenuItem addToPlaylist = new JMenuItem("Add to playlist");
-                        addToPlaylist.addActionListener(new ActionListener() {
-
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                enqueueSong(track);
-                            }
-
-                        });
-                        popupMenu.add(play);
-                        popupMenu.add(addToPlaylist);
-                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
+            folderPane.setPreferredSize(new Dimension(layoutWidth, tracks.size()*45));
+            folderPane.removeAll();
+            JLabel loadingLabel = new JLabel("Loading please wait...");
+            loadingLabel.setFont(serifFont);
+            loadingLabel.setBounds(0, 0, 200, 20);
+            folderPane.add(loadingLabel);
+            folderPane.revalidate();
+            folderPane.repaint();
+            folderPane.removeAll();
+            for (int i = 0; i < tracks.size(); i++) {
+                final Track track = tracks.get(i);
+                final JPanel trackPanel = new JPanel() {
+                    @Override
+                    public void paint(Graphics g) {
+                        super.paint(g);
+                        g.setColor(Color.GRAY);
+                        g.drawRoundRect(0, 0, layoutWidth - 2, 43, 3, 3);
                     }
-                }
 
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    trackPanel.setBackground(new Color(245, 245, 245));
-                }
+                };
+                trackPanel.addMouseMotionListener(new MouseMotionAdapter() {
 
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    trackPanel.setBackground(Color.WHITE);
-                }
+                    @Override
+                    public void mouseDragged(MouseEvent e) {
+                        //e.translatePoint(e.getComponent().getLocation().x, e.getComponent().getLocation().y);
+                        //trackPanel.setLocation(0, e.getY()+5);
+                    }
 
-                @Override
-                public void mousePressed(MouseEvent e) {
+                });
+                trackPanel.addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.getClickCount() == 2) {
+                            playSong(track, false);
+                        } else if (e.getButton() == MouseEvent.BUTTON3) {
+                            JPopupMenu popupMenu = new JPopupMenu();
+                            popupMenu.setLabel("Folder");
+                            JMenuItem play = new JMenuItem("Play");
+                            play.addActionListener(new ActionListener() {
 
-                }
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    playSong(track, false);
+                                }
 
-                @Override
-                public void mouseReleased(MouseEvent e) {
+                            });
 
-                }
-            });
-            trackPanel.setLayout(null);
-            trackPanel.setBackground(Color.white);
-            trackPanel.setBounds(0, (i * 35) + delta, 700, 35);
-            JLabel trackLabel = new JLabel(track.getTitle());
-            trackLabel.setFont(serifFont);
-            JLabel artistLabel = new JLabel(track.getArtist());
-            artistLabel.setFont(serifFont);
-            JLabel iconLabel = new JLabel();
-            iconLabel.setIcon(musicIcon);
+                            JMenuItem addToPlaylist = new JMenuItem("Add to playlist");
+                            addToPlaylist.addActionListener(new ActionListener() {
 
-            iconLabel.setBounds(15, 0, 35, 35);
-            trackLabel.setBounds(50, 0, 300, 35);
-            artistLabel.setBounds(350, 0, 300, 35);
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    enqueueSong(track);
+                                }
 
-            trackPanel.add(iconLabel);
-            trackPanel.add(trackLabel);
-            trackPanel.add(artistLabel);
-            folderPane.add(trackPanel);
+                            });
+                            popupMenu.add(play);
+                            popupMenu.add(addToPlaylist);
+                            popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                        }
 
-        }
+                    }
 
-        foldersScrollPane.revalidate();
-        foldersScrollPane.repaint();
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
 
+                        trackPanel.setBackground(new Color(245, 245, 245));
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        trackPanel.setBackground(Color.WHITE);
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+                });
+                trackPanel.setLayout(null);
+                trackPanel.setBackground(Color.white);
+                trackPanel.setBounds(0, (i * 45), layoutWidth, 45);
+                JLabel trackLabel = new JLabel(track.getTitle());
+                trackLabel.setFont(serifFont);
+                JLabel artistLabel = new JLabel(track.getArtist());
+                artistLabel.setFont(serifFontArtist);
+                JLabel iconLabel = new JLabel();
+                iconLabel.setIcon(musicIcon);
+
+                iconLabel.setBounds(10, 10, 35, 20);
+                trackLabel.setBounds(35, 0, layoutWidth - 35, 20);
+                artistLabel.setBounds(38, 20, layoutWidth - 38, 20);
+
+                trackPanel.add(iconLabel);
+                trackPanel.add(trackLabel);
+                trackPanel.add(artistLabel);
+                folderPane.add(trackPanel);
+
+            }
+            foldersScrollPane.revalidate();
+            foldersScrollPane.repaint();        
     }
 
     private void drawPlaylist() {
@@ -1096,6 +1109,11 @@ public class HomePage extends javax.swing.JFrame {
 
         searchTextField.setForeground(new java.awt.Color(204, 204, 204));
         searchTextField.setPreferredSize(new java.awt.Dimension(350, 27));
+        searchTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchTextFieldActionPerformed(evt);
+            }
+        });
         searchTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 searchTextFieldKeyReleased(evt);
@@ -1425,9 +1443,16 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
-        if (searchTextField.getText().length() == 0) {
-            getFolderContent(currentFolder);
+        if(searchTextField.getText().length() > 2) {
+            String matchCriteria = searchTextField.getText();
+            ArrayList<Track> tracks = new ArrayList<Track>(folderContent.getTracks().stream().filter(p -> p.getTitle().contains(matchCriteria) || p.getArtist().contains(matchCriteria)).collect(Collectors.toList()));
+            drawSearchResults(tracks);
+        } else if(searchTextField.getText().length() == 0){
+            drawFetchedFolder(folderContent);
         }
+
+        
+    
     }//GEN-LAST:event_searchTextFieldKeyReleased
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -1488,6 +1513,10 @@ public class HomePage extends javax.swing.JFrame {
             thread.start();
         }
     }//GEN-LAST:event_artistRadioActionPerformed
+
+    private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchTextFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
