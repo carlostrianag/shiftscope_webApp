@@ -52,7 +52,7 @@ module.exports.connections = {
     adapter: 'sails-mysql',
     host: 'localhost',
     user: 'root',
-    password: 'M3d3llin',
+    password: 'M3d3ll1n',
     database: 'shiftscope_db_prod'
   },  
 
