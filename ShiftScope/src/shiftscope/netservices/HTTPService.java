@@ -28,7 +28,7 @@ public class HTTPService {
         } catch (InterruptedException ex) {
             Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
-            Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Se ha producido un error de conexion");
         }
         return null;
     }
@@ -45,7 +45,7 @@ public class HTTPService {
         } catch (InterruptedException ex) {
             Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
-            Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Se ha producido un error de conexion");
         }
         return null;
     }

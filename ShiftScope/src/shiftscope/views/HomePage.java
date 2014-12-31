@@ -8,7 +8,6 @@ package shiftscope.views;
 import com.beaglebuddy.mp3.MP3;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.ning.http.client.Response;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,17 +24,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -55,12 +50,9 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import shiftscope.controller.FolderController;
-import shiftscope.controller.TrackController;
 import shiftscope.criteria.FolderCriteria;
-import shiftscope.criteria.TrackCriteria;
 import shiftscope.dto.FolderCreationDTO;
 import shiftscope.dto.FolderDTO;
-import shiftscope.dto.SearchDTO;
 import shiftscope.model.Folder;
 import shiftscope.model.Track;
 import shiftscope.netservices.TCPService;
@@ -94,8 +86,6 @@ public class HomePage extends javax.swing.JFrame {
     private float totalFiles;
     private float currentFileScanned;
     private float currentSecond;
-    private int currentFolder;
-
     //Player Variables
     private boolean playlistPlaying;
     private int currentSongPosition;
@@ -112,8 +102,6 @@ public class HomePage extends javax.swing.JFrame {
 
         @Override
         protected Void doInBackground() throws Exception {
-            String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
-            System.out.println("Start " + timeStamp);
             totalFiles = 0;
             currentFileScanned = 0;
             File[] selectedFiles = fileChooser.getSelectedFiles();
@@ -127,7 +115,6 @@ public class HomePage extends javax.swing.JFrame {
             for (File f : fileChooser.getSelectedFiles()) {
                 buildFolderOptimized(f, -1);
             }
-
             return null;
         }
 
@@ -187,7 +174,6 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     public class FolderFetcher extends SwingWorker<Void, Void> {
-
         private final int id;
         private Frame parentComponent;
         private int responseCode;
@@ -200,14 +186,13 @@ public class HomePage extends javax.swing.JFrame {
         @Override
         protected Void doInBackground() throws Exception {
             folderPane.removeAll();
-            JLabel loadingLabel = new JLabel("Loading please wait...");
+            JLabel loadingLabel = new JLabel("Fetching please wait...");
             loadingLabel.setFont(serifFont);
             loadingLabel.setBounds(0, 0, 200, 20);
             folderPane.add(loadingLabel);
             folderPane.revalidate();
             folderPane.repaint();
             
-            currentFolder = id;
             Response response;
             Folder parentFolder;
             JSONParser = new GsonBuilder().create();
@@ -246,8 +231,211 @@ public class HomePage extends javax.swing.JFrame {
                 drawFetchedFolder(folderContent);
             }
         }
-
     }
+    
+    public class FolderDrawer extends SwingWorker<Void, Void> {
+
+        private final FolderDTO fetchedFolder;
+        private ArrayList<JPanel> panels;
+        public FolderDrawer(FolderDTO fetchedFolder) {
+            this.fetchedFolder = fetchedFolder;
+            panels = new ArrayList<>();
+        }
+
+        
+        @Override
+        protected Void doInBackground() throws Exception {
+            if (fetchedFolder != null) {
+                folderPane.removeAll();
+                JLabel loadingLabel = new JLabel("Loading please wait...");
+                loadingLabel.setFont(serifFont);
+                loadingLabel.setBounds(0, 0, 200, 20);
+                folderPane.add(loadingLabel);
+                folderPane.revalidate();
+                folderPane.repaint();                
+                int totalElements = fetchedFolder.getFolders().size() + fetchedFolder.getTracks().size();
+
+                //folderPane.removeAll();
+                folderPane.setPreferredSize(new Dimension(layoutWidth, totalElements * 45));
+                foldersScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+                ArrayList<Folder> folders = fetchedFolder.getFolders();
+                ArrayList<Track> tracks = fetchedFolder.getTracks();
+
+                int delta = 0;
+                for (int i = 0; i < folders.size(); i++) {
+                    final Folder folder = folders.get(i);
+                    final JPanel folderPanel = new JPanel() {
+
+                        @Override
+                        public void paint(Graphics g) {
+                            super.paint(g);
+                            g.setColor(Color.GRAY);
+                            g.drawRoundRect(0, 0, layoutWidth - 2, 43, 3, 3);
+                        }
+
+                    };
+                    folderPanel.addMouseListener(new MouseListener() {
+
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            if (e.getClickCount() == 2) {
+                                getFolderContent(folder.getId());
+                            } else if (e.getButton() == MouseEvent.BUTTON3) {
+
+                            }
+
+                        }
+
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+                            folderPanel.setBackground(new Color(245, 245, 245));
+                        }
+
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            folderPanel.setBackground(Color.WHITE);
+                        }
+
+                        @Override
+                        public void mousePressed(MouseEvent e) {
+
+                        }
+
+                        @Override
+                        public void mouseReleased(MouseEvent e) {
+
+                        }
+                    });
+                    folderPanel.setLayout(null);
+                    folderPanel.setBackground(Color.white);
+                    folderPanel.setBounds(0, (i * 45), layoutWidth, 45);
+                    JLabel folderLabel = new JLabel(folder.getTitle());
+                    folderLabel.setFont(serifFont);
+                    JLabel iconLabel = new JLabel();
+                    iconLabel.setIcon(folderIcon);
+
+                    iconLabel.setBounds(15, 0, 35, 45);
+                    folderLabel.setBounds(45, 0, layoutWidth - 35, 45);
+
+                    folderPanel.add(iconLabel);
+                    folderPanel.add(folderLabel);
+                    panels.add(folderPanel);
+
+                }
+                delta = folders.size() * 45;
+                for (int i = 0; i < tracks.size(); i++) {
+                    final Track track = tracks.get(i);
+                    final JPanel trackPanel = new JPanel() {
+                        @Override
+                        public void paint(Graphics g) {
+                            super.paint(g);
+                            g.setColor(Color.GRAY);
+                            g.drawRoundRect(0, 0, layoutWidth - 2, 43, 3, 3);
+                        }
+
+                    };
+                    trackPanel.addMouseMotionListener(new MouseMotionAdapter() {
+
+                        @Override
+                        public void mouseDragged(MouseEvent e) {
+                        //e.translatePoint(e.getComponent().getLocation().x, e.getComponent().getLocation().y);
+                            //trackPanel.setLocation(0, e.getY()+5);
+                        }
+
+                    });
+                    trackPanel.addMouseListener(new MouseListener() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            if (e.getClickCount() == 2) {
+                                playSong(track, false);
+                            } else if (e.getButton() == MouseEvent.BUTTON3) {
+                                JPopupMenu popupMenu = new JPopupMenu();
+                                popupMenu.setLabel("Folder");
+                                JMenuItem play = new JMenuItem("Play");
+                                play.addActionListener(new ActionListener() {
+
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        playSong(track, false);
+                                    }
+
+                                });
+
+                                JMenuItem addToPlaylist = new JMenuItem("Add to playlist");
+                                addToPlaylist.addActionListener(new ActionListener() {
+
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        enqueueSong(track);
+                                    }
+
+                                });
+                                popupMenu.add(play);
+                                popupMenu.add(addToPlaylist);
+                                popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                            }
+
+                        }
+
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+
+                            trackPanel.setBackground(new Color(245, 245, 245));
+                        }
+
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            trackPanel.setBackground(Color.WHITE);
+                        }
+
+                        @Override
+                        public void mousePressed(MouseEvent e) {
+                        }
+
+                        @Override
+                        public void mouseReleased(MouseEvent e) {
+
+                        }
+                    });
+                    trackPanel.setLayout(null);
+                    trackPanel.setBackground(Color.white);
+                    trackPanel.setBounds(0, (i * 45) + delta, layoutWidth, 45);
+                    JLabel trackLabel = new JLabel(track.getTitle());
+                    trackLabel.setFont(serifFont);
+                    JLabel artistLabel = new JLabel(track.getArtist());
+                    artistLabel.setFont(serifFontArtist);
+                    JLabel iconLabel = new JLabel();
+                    iconLabel.setIcon(musicIcon);
+
+                    iconLabel.setBounds(10, 10, 35, 20);
+                    trackLabel.setBounds(35, 0, layoutWidth - 35, 20);
+                    artistLabel.setBounds(38, 20, layoutWidth - 38, 20);
+
+                    trackPanel.add(iconLabel);
+                    trackPanel.add(trackLabel);
+                    trackPanel.add(artistLabel);
+                    panels.add(trackPanel);
+
+                }
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            folderPane.removeAll();
+            for (JPanel panel : panels) {
+                folderPane.add(panel);
+            }
+            folderPane.repaint();
+            foldersScrollPane.revalidate();
+            foldersScrollPane.repaint();
+        }
+        
+    
+    };
 
     public HomePage() {
         initComponents();
@@ -653,187 +841,11 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     private void drawFetchedFolder(FolderDTO fetchedFolder) {
-        if (fetchedFolder != null) {
-
-            int totalElements = fetchedFolder.getFolders().size() + fetchedFolder.getTracks().size();
-
-            folderPane.removeAll();
-            folderPane.setPreferredSize(new Dimension(layoutWidth, totalElements * 45));
-            foldersScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-            ArrayList<Folder> folders = fetchedFolder.getFolders();
-            ArrayList<Track> tracks = fetchedFolder.getTracks();
-
-            int delta = 0;
-            for (int i = 0; i < folders.size(); i++) {
-                final Folder folder = folders.get(i);
-                final JPanel folderPanel = new JPanel() {
-
-                    @Override
-                    public void paint(Graphics g) {
-                        super.paint(g);
-                        g.setColor(Color.GRAY);
-                        g.drawRoundRect(0, 0, layoutWidth - 2, 43, 3, 3);
-                    }
-
-                };
-                folderPanel.addMouseListener(new MouseListener() {
-
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        if (e.getClickCount() == 2) {
-                            getFolderContent(folder.getId());
-                        } else if (e.getButton() == MouseEvent.BUTTON3) {
-
-                        }
-
-                    }
-
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-                        folderPanel.setBackground(new Color(245, 245, 245));
-                    }
-
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        folderPanel.setBackground(Color.WHITE);
-                    }
-
-                    @Override
-                    public void mousePressed(MouseEvent e) {
-
-                    }
-
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
-
-                    }
-                });
-                folderPanel.setLayout(null);
-                folderPanel.setBackground(Color.white);
-                folderPanel.setBounds(0, (i * 45), layoutWidth, 45);
-                JLabel folderLabel = new JLabel(folder.getTitle());
-                folderLabel.setFont(serifFont);
-                JLabel iconLabel = new JLabel();
-                iconLabel.setIcon(folderIcon);
-
-                iconLabel.setBounds(15, 0, 35, 45);
-                folderLabel.setBounds(45, 0, layoutWidth - 35, 45);
-
-                folderPanel.add(iconLabel);
-                folderPanel.add(folderLabel);
-                folderPane.add(folderPanel);
-
-            }
-            delta = folders.size() * 45;
-            for (int i = 0; i < tracks.size(); i++) {
-                final Track track = tracks.get(i);
-                final JPanel trackPanel = new JPanel() {
-                    @Override
-                    public void paint(Graphics g) {
-                        super.paint(g);
-                        g.setColor(Color.GRAY);
-                        g.drawRoundRect(0, 0, layoutWidth - 2, 43, 3, 3);
-                    }
-
-                };
-                trackPanel.addMouseMotionListener(new MouseMotionAdapter() {
-
-                    @Override
-                    public void mouseDragged(MouseEvent e) {
-                        //e.translatePoint(e.getComponent().getLocation().x, e.getComponent().getLocation().y);
-                        //trackPanel.setLocation(0, e.getY()+5);
-                    }
-
-                });
-                trackPanel.addMouseListener(new MouseListener() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        if (e.getClickCount() == 2) {
-                            playSong(track, false);
-                        } else if (e.getButton() == MouseEvent.BUTTON3) {
-                            JPopupMenu popupMenu = new JPopupMenu();
-                            popupMenu.setLabel("Folder");
-                            JMenuItem play = new JMenuItem("Play");
-                            play.addActionListener(new ActionListener() {
-
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    playSong(track, false);
-                                }
-
-                            });
-
-                            JMenuItem addToPlaylist = new JMenuItem("Add to playlist");
-                            addToPlaylist.addActionListener(new ActionListener() {
-
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    enqueueSong(track);
-                                }
-
-                            });
-                            popupMenu.add(play);
-                            popupMenu.add(addToPlaylist);
-                            popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                        }
-
-                    }
-
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-
-                        trackPanel.setBackground(new Color(245, 245, 245));
-                    }
-
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        trackPanel.setBackground(Color.WHITE);
-                    }
-
-                    @Override
-                    public void mousePressed(MouseEvent e) {
-                    }
-
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
-
-                    }
-                });
-                trackPanel.setLayout(null);
-                trackPanel.setBackground(Color.white);
-                trackPanel.setBounds(0, (i * 45) + delta, layoutWidth, 45);
-                JLabel trackLabel = new JLabel(track.getTitle());
-                trackLabel.setFont(serifFont);
-                JLabel artistLabel = new JLabel(track.getArtist());
-                artistLabel.setFont(serifFontArtist);
-                JLabel iconLabel = new JLabel();
-                iconLabel.setIcon(musicIcon);
-
-                iconLabel.setBounds(10, 10, 35, 20);
-                trackLabel.setBounds(35, 0, layoutWidth - 35, 20);
-                artistLabel.setBounds(38, 20, layoutWidth - 38, 20);
-
-                trackPanel.add(iconLabel);
-                trackPanel.add(trackLabel);
-                trackPanel.add(artistLabel);
-                folderPane.add(trackPanel);
-
-            }
-            foldersScrollPane.revalidate();
-            foldersScrollPane.repaint();
-        }
+        new FolderDrawer(fetchedFolder).execute();
     }
 
     private void drawSearchResults(ArrayList<Track> tracks) {
             folderPane.setPreferredSize(new Dimension(layoutWidth, tracks.size()*45));
-            folderPane.removeAll();
-            JLabel loadingLabel = new JLabel("Loading please wait...");
-            loadingLabel.setFont(serifFont);
-            loadingLabel.setBounds(0, 0, 200, 20);
-            folderPane.add(loadingLabel);
-            folderPane.revalidate();
-            folderPane.repaint();
             folderPane.removeAll();
             for (int i = 0; i < tracks.size(); i++) {
                 final Track track = tracks.get(i);
@@ -1445,7 +1457,6 @@ public class HomePage extends javax.swing.JFrame {
                 }
             });
             thread.start();
-            System.out.println("entro");
         }
     }//GEN-LAST:event_songTitleRadioActionPerformed
 
@@ -1459,7 +1470,6 @@ public class HomePage extends javax.swing.JFrame {
                 }
             });
             thread.start();
-            System.out.println("");
         }
     }//GEN-LAST:event_searchTextFieldActionPerformed
 
