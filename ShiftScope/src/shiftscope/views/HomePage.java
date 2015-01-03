@@ -88,6 +88,9 @@ public class HomePage extends javax.swing.JFrame {
     private float currentSecond;
     //Player Variables
     private boolean playlistPlaying;
+    private boolean orderBySongName;
+    private boolean orderByArtist;
+    
     private int currentSongPosition;
     private ArrayList<Track> queuePaths;
     private Track currentSong;
@@ -217,7 +220,6 @@ public class HomePage extends javax.swing.JFrame {
                 responseCode = response.getStatusCode();
                 if (responseCode == 200) {
                     folderContent = JSONParser.fromJson(response.getResponseBody(), FolderDTO.class);
-                    Collections.sort(folderContent.getTracks(), new ArtistComparator());
                 }
             } catch (IOException ex) {
                 Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
@@ -228,7 +230,7 @@ public class HomePage extends javax.swing.JFrame {
         @Override
         protected void done() {
             if(responseCode == 200) {
-                drawFetchedFolder(folderContent);
+                new TrackOrderer().execute();
             }
         }
     }
@@ -246,6 +248,12 @@ public class HomePage extends javax.swing.JFrame {
         @Override
         protected Void doInBackground() throws Exception {
             if (fetchedFolder != null) {
+                if(orderByArtist) {
+                    Collections.sort(folderContent.getTracks(), new ArtistComparator());                
+                } else {
+                    Collections.sort(folderContent.getTracks(), new TitleComparator());
+                }
+                
                 folderPane.removeAll();
                 JLabel loadingLabel = new JLabel("Loading please wait...");
                 loadingLabel.setFont(serifFont);
@@ -258,6 +266,7 @@ public class HomePage extends javax.swing.JFrame {
                 //folderPane.removeAll();
                 folderPane.setPreferredSize(new Dimension(layoutWidth, totalElements * 45));
                 foldersScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+                foldersScrollPane.getVerticalScrollBar().setValue(0);
 
                 ArrayList<Folder> folders = fetchedFolder.getFolders();
                 ArrayList<Track> tracks = fetchedFolder.getTracks();
@@ -436,6 +445,28 @@ public class HomePage extends javax.swing.JFrame {
         
     
     };
+    
+    public class TrackOrderer extends SwingWorker<Void, Void> {
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            if(orderBySongName) {
+                Collections.sort(folderContent.getTracks(), new TitleComparator());
+            } else {
+                Collections.sort(folderContent.getTracks(), new ArtistComparator());
+            }
+            drawFetchedFolder(folderContent);
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            
+        }
+        
+        
+    
+    };
 
     public HomePage() {
         initComponents();
@@ -449,7 +480,7 @@ public class HomePage extends javax.swing.JFrame {
         buttonGroup2.add(artistRadio);
         musicIcon = createImageIcon("images/music.png", "music_icon");
         folderIcon = createImageIcon("images/folder.png", "music_icon");
-
+        songTitleRadio.setSelected(true);
         PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent changeEvent) {
@@ -846,6 +877,7 @@ public class HomePage extends javax.swing.JFrame {
 
     private void drawSearchResults(ArrayList<Track> tracks) {
             folderPane.setPreferredSize(new Dimension(layoutWidth, tracks.size()*45));
+            foldersScrollPane.getVerticalScrollBar().setValue(0);
             folderPane.removeAll();
             for (int i = 0; i < tracks.size(); i++) {
                 final Track track = tracks.get(i);
@@ -865,8 +897,8 @@ public class HomePage extends javax.swing.JFrame {
                         //e.translatePoint(e.getComponent().getLocation().x, e.getComponent().getLocation().y);
                         //trackPanel.setLocation(0, e.getY()+5);
                     }
-
                 });
+                
                 trackPanel.addMouseListener(new MouseListener() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
@@ -1449,28 +1481,14 @@ public class HomePage extends javax.swing.JFrame {
 
     private void songTitleRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_songTitleRadioActionPerformed
         if(songTitleRadio.isSelected()) {
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Collections.sort(folderContent.getTracks(), new TitleComparator());
-                    drawFetchedFolder(folderContent);
-                }
-            });
-            thread.start();
+            orderBySongName = true;
+            orderByArtist = false;
+            new TrackOrderer().execute();
         }
     }//GEN-LAST:event_songTitleRadioActionPerformed
 
     private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
-        if(artistRadio.isSelected()) {
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Collections.sort(folderContent.getTracks(), new ArtistComparator());
-                    drawFetchedFolder(folderContent);
-                }
-            });
-            thread.start();
-        }
+
     }//GEN-LAST:event_searchTextFieldActionPerformed
 
     private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
@@ -1489,14 +1507,9 @@ public class HomePage extends javax.swing.JFrame {
 
     private void artistRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_artistRadioActionPerformed
         if(artistRadio.isSelected()) {
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Collections.sort(folderContent.getTracks(), new ArtistComparator());
-                    drawFetchedFolder(folderContent);
-                }
-            });
-            thread.start();
+            orderByArtist = true;
+            orderBySongName = false;
+            new TrackOrderer().execute();
         }
     }//GEN-LAST:event_artistRadioActionPerformed
 
