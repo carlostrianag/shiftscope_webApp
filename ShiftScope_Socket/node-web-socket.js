@@ -5,8 +5,8 @@ var client = new Client();
 function WebSocket() {
 	var devicesPool = {};
 	var mobilesPool = {};
-	var serverURL = "http://localhost:1337"
-	//var server = "http://54.149.22.22";
+	//var serverURL = "http://localhost:1337"
+	var server = "http://54.149.22.22";
 
 	disconnectDevice = function(id){
 		var args = {
