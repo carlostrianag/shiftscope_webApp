@@ -106,9 +106,9 @@ public class LoginDialog extends JDialog{
         passwordLabel.setBounds(40, 100, 70, 35);
         passwordLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         emailTextField.setBounds(120, 50, 150, 25);
-        emailTextField.setText("trianag24@gmail.com");
+        //emailTextField.setText("trianag24@gmail.com");
         passwordField.setBounds(120, 100, 150, 25);
-        passwordField.setText("medellin0707");
+        //passwordField.setText("medellin0707");
         getIntBtn.setBounds(150, 150, 100, 25);
         getIntBtn.addActionListener(getInActionListener);
         

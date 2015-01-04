@@ -88,7 +88,7 @@ public class RegistrationDialog extends JDialog {
         nameLabel.setBounds(100, 40, 80, 35);
         
         nameTextField = new JTextField();
-        nameTextField.setText("Carlos");
+        //nameTextField.setText("Carlos");
         nameTextField.setBounds(200, 40, 150, 25);
         
         lastNameLabel = new JLabel("Last Name");
@@ -96,7 +96,7 @@ public class RegistrationDialog extends JDialog {
         lastNameLabel.setBounds(100, 80, 80, 35);
         
         lastNameTextField = new JTextField();
-        lastNameTextField.setText("Triana");
+        //lastNameTextField.setText("Triana");
         lastNameTextField.setBounds(200, 80, 150, 25);
         
         emailLabel = new JLabel("Email");
@@ -104,7 +104,7 @@ public class RegistrationDialog extends JDialog {
         emailLabel.setBounds(100, 120, 80, 35);
         
         emailTextField = new JTextField();
-        emailTextField.setText("trianag24@gmail.com");
+        //emailTextField.setText("trianag24@gmail.com");
         emailTextField.setBounds(200, 120, 150, 25);
         
         passwordLabel = new JLabel("Password");
@@ -112,7 +112,7 @@ public class RegistrationDialog extends JDialog {
         passwordLabel.setBounds(100, 160, 80, 35);
         
         passwordTextField = new JPasswordField();
-        passwordTextField.setText("medellin0707");
+        //passwordTextField.setText("medellin0707");
         passwordTextField.setBounds(200, 160, 150, 25);
         
         registerBtn = new JButton("Register");

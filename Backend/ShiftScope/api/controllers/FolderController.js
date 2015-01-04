@@ -93,6 +93,7 @@ module.exports = {
 			}
 		})
 	},
+
 	getFolderContentById: function(req, res){
 		var id = req.param('id');
 		var libraryId = req.param('library');

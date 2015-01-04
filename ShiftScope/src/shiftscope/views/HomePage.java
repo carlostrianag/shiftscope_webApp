@@ -291,7 +291,20 @@ public class HomePage extends javax.swing.JFrame {
                             if (e.getClickCount() == 2) {
                                 getFolderContent(folder.getId());
                             } else if (e.getButton() == MouseEvent.BUTTON3) {
-
+//                                JPopupMenu popupMenu = new JPopupMenu();
+//                                popupMenu.setLabel("Folder");
+//                                JMenuItem remove = new JMenuItem("Remove folder");
+//                                remove.addActionListener(new ActionListener() {
+//
+//                                    @Override
+//                                    public void actionPerformed(ActionEvent e) {
+//                                        
+//                                    }
+//
+//                                });
+//
+//                                popupMenu.add(remove);
+//                                popupMenu.show(e.getComponent(), e.getX(), e.getY());
                             }
 
                         }
@@ -614,23 +627,16 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     public void getPosition(Track t) {
+        System.out.println("before " + currentSongPosition);
         for (int i = 0; i < queuePaths.size(); i++) {
             if (t.equals(queuePaths.get(i))) {
                 currentSongPosition = i;
+                System.out.println("after " + currentSongPosition);
                 break;
             }
         }
     }
 
-    public void removeFromPlaylist(int position) {
-        queuePaths.remove(position);
-        drawPlaylist();
-        Operation request = new Operation();
-        request.setOperationType(OperationType.SYNC);
-        request.setUserId(SessionConstants.USER_ID);
-        sync.setCurrentPlaylist(queuePaths);
-        request.setSync(sync);
-    }
 
     public void playPlaylist() {
         currentSongPosition = 0;
@@ -724,6 +730,7 @@ public class HomePage extends javax.swing.JFrame {
         }
 
         queuePaths.remove(position);
+        getPosition(currentSong);
         drawPlaylist();
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
@@ -1447,8 +1454,8 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnMouseClicked
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if (webSocket != null && webSocket.isOpen()) {
-            webSocket.close();
+        if (webSocket != null) {
+            webSocket.closeConnection(5, "hola");
         }
     }//GEN-LAST:event_formWindowClosing
 
