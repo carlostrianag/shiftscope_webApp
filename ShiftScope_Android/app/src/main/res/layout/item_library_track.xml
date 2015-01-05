@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:padding="10dp">
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:id="@+id/trackImage"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/music"
+        android:layout_marginStart="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:text="New Text"
+        android:id="@+id/trackTitle"
+        android:gravity="center_vertical"
+        android:layout_alignTop="@+id/trackImage"
+        android:layout_toRightOf="@+id/trackImage"
+        android:layout_toEndOf="@+id/trackImage"
+        android:layout_marginStart="15dp"
+        android:layout_centerVertical="true" />
+</RelativeLayout>
