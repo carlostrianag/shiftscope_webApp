@@ -110,9 +110,9 @@ module.exports = {
 			} else if(folder){
 				folderDTO.parentFolder = folder.id;
 			} else {
-				res.notFound();
+				folderDTO.parentFolder = -1;
 			}
-		})
+		});
 
 		Folder.find({where: {parentFolder: id, library: libraryId}}).exec(function(err, folders){
 			if(err){
@@ -121,7 +121,6 @@ module.exports = {
 				folderDTO.folders = folders;
 				Track.find({where: {parentFolder: id}}).exec(function(err, tracks){
 					if(err){
-						console.log(err);
 						res.serverError();
 					} else {
 						folderDTO.tracks = tracks;
