@@ -108,6 +108,7 @@ module.exports = {
 			if(err){
 				res.serverError();
 			} else if(folder){
+				console.log(folder);
 				folderDTO.parentFolder = folder.id;
 			} else {
 				res.notFound();
