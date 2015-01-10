@@ -38,6 +38,7 @@ module.exports = {
 			}
 		});
 	},
+
 	getFolderParentId: function(req, res){
 		var id = req.param('id');
 		var library = req.param('library');
@@ -102,6 +103,16 @@ module.exports = {
 		if(id === undefined || libraryId === undefined){
 			res.badRequest();
 		}
+
+		Folder.findOne({where: {id: id, library: library}}).exec(function(err, folder){
+			if(err){
+				res.serverError();
+			} else if(folder){
+				folderDTO.parentFolder = folder.id;
+			} else {
+				res.notFound();
+			}
+		})
 
 		Folder.find({where: {parentFolder: id, library: libraryId}}).exec(function(err, folders){
 			if(err){
