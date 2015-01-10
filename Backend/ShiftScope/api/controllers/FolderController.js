@@ -108,7 +108,7 @@ module.exports = {
 			if(err){
 				res.serverError();
 			} else if(folder){
-				folderDTO.parentFolder = folder.id;
+				folderDTO.parentFolder = folder.parentFolder;
 			} else {
 				folderDTO.parentFolder = -1;
 			}
