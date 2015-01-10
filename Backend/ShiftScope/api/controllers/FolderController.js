@@ -104,11 +104,10 @@ module.exports = {
 			res.badRequest();
 		}
 
-		Folder.findOne({where: {id: id, library: library}}).exec(function(err, folder){
+		Folder.findOne({where: {id: id, library: libraryId}}).exec(function(err, folder){
 			if(err){
 				res.serverError();
 			} else if(folder){
-				console.log(folder);
 				folderDTO.parentFolder = folder.id;
 			} else {
 				res.notFound();
