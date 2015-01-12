@@ -128,7 +128,7 @@ public class TCPService extends WebSocketClient {
                 break;
 
             case OperationType.SET_VOLUME:
-                Main.home.setVolume(request.getValue());
+                Main.home.setVolumeFromValue(request.getValue(), false);
 
             case OperationType.SYNC:
                 request = new Operation();

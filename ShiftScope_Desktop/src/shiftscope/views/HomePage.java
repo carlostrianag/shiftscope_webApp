@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -49,6 +50,11 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javazoom.jlgui.basicplayer.BasicController;
+import javazoom.jlgui.basicplayer.BasicPlayer;
+import javazoom.jlgui.basicplayer.BasicPlayerEvent;
+import javazoom.jlgui.basicplayer.BasicPlayerException;
+import javazoom.jlgui.basicplayer.BasicPlayerListener;
 import shiftscope.controller.FolderController;
 import shiftscope.criteria.FolderCriteria;
 import shiftscope.dto.FolderCreationDTO;
@@ -56,7 +62,6 @@ import shiftscope.dto.FolderDTO;
 import shiftscope.model.Folder;
 import shiftscope.model.Track;
 import shiftscope.netservices.TCPService;
-import shiftscope.player.Music;
 import shiftscope.util.Constants;
 import shiftscope.util.Operation;
 import shiftscope.util.OperationType;
@@ -70,36 +75,128 @@ import shiftscope.views.dialogs.MainDialog;
  *
  * @author VeronicaEncinales
  */
-public class HomePage extends javax.swing.JFrame {
+public class HomePage extends javax.swing.JFrame implements BasicPlayerListener {
 
-    //GUI Variables
     //IMAGES
     ImageIcon musicIcon;
     ImageIcon folderIcon;
-    //
+    //FONTS
     Font serifFont = new Font("sans-serif", Font.PLAIN, 14);
     Font serifFontArtist = new Font("sans-serif", Font.PLAIN, 12);
-    private TimeCounter timeCounter;
+    
+    //GUI VARIABLES
     public TCPService webSocket;
     private Gson JSONParser;
     private JFileChooser fileChooser;
     private float totalFiles;
     private float currentFileScanned;
-    private float currentSecond;
-    //Player Variables
-    private boolean playlistPlaying;
+
+    private int currentSongPosition;
+    private int layoutWidth;
     private boolean orderBySongName;
     private boolean orderByArtist;
-    
-    private int currentSongPosition;
     private ArrayList<Track> queuePaths;
+    private FolderDTO folderContent;
     private Track currentSong;
     private Sync sync;
-    private Music player;
+    
+    private BasicPlayer player;
+    private BasicController control;
+    private boolean playlistPlaying;
+    private boolean paused;
+    private boolean volumeAdjustedByUser;
+    private String totalTimeString;
+    private String elapsedTimeString;
+    private int totalSeconds;
+    private int currentSecond;
+    private int frameLength;
+    private Float frameRate;
 
-    private int layoutWidth;
+    @Override
+    public void opened(Object o, Map map) {
+        //display("opened : " + map.toString());
+        Long duration = (Long) map.get("duration");
+        int mili = (int) (duration / 1000);
+        int sec = (int) (mili / 1000) % 60;
+        int min = (int) (mili / 1000) / 60;
+        totalTimeString = min + ":" + String.format("%02d", sec);
+        totalTime.setText(totalTimeString);
+        totalSeconds = (Integer.parseInt(totalTimeString.split(":")[0]) * 60) + Integer.parseInt(totalTimeString.split(":")[1]);
+        frameRate = (Float) map.get("mp3.framerate.fps");
+        frameLength = (int) map.get("mp3.framesize.bytes");
+        songPositionSlider.setMaximum(totalSeconds);
+    }
 
-    private FolderDTO folderContent;
+    @Override
+    public void progress(int i, long l, byte[] bytes, Map map) {
+        //display("progress : " + map.toString());
+        Long duration1 = (Long) map.get("mp3.position.microseconds");
+        int mili = (int) (duration1 / 1000);
+        int sec = (int) (mili / 1000) % 60;
+        int min = (int) (mili / 1000) / 60;
+        elapsedTimeString = min + ":" + String.format("%02d", sec);
+        elapsedTime.setText(elapsedTimeString);
+        currentSecond = (Integer.parseInt(elapsedTimeString.split(":")[0]) * 60) + Integer.parseInt(elapsedTimeString.split(":")[1]);
+        songPositionSlider.setValue(currentSecond);
+    }
+
+    @Override
+    public void stateUpdated(BasicPlayerEvent event) {
+        display("stateUpdated : " + event.toString());
+        Operation request = new Operation();
+        request.setOperationType(OperationType.SYNC);
+        request.setUserId(SessionConstants.USER_ID);
+        switch(event.getCode()) {
+            
+            case BasicPlayerEvent.PLAYING:
+                sync.setCurrentSongId(currentSong.getId());
+                sync.setCurrentSongName(currentSong.getTitle());
+                sync.setCurrentSongArtist(currentSong.getArtist());
+                sync.setCurrentSongDuration(currentSong.getDuration());
+                sync.setCurrentVolume((int) player.getGainValue());
+                sync.setIsPlaying(true);
+                sync.setIsPaused(false);
+                request.setSync(sync);
+                webSocket.sendRequest(request);
+                paused = false;
+                break;
+                
+            case BasicPlayerEvent.PAUSED:
+                sync.setIsPlaying(false);
+                sync.setIsPaused(true);
+                request.setSync(sync);
+                webSocket.sendRequest(request);
+                paused = true;
+                break;
+            case BasicPlayerEvent.RESUMED:
+                sync.setIsPlaying(true);
+                sync.setIsPaused(false);
+                request.setSync(sync);
+                webSocket.sendRequest(request);                
+                paused = false;
+                break;
+                
+            case BasicPlayerEvent.EOM:
+                next();
+                break;
+                
+            case BasicPlayerEvent.GAIN:
+                if(volumeAdjustedByUser) {
+                    //enviar por socket
+                    System.out.println("enviar por sockett");
+                } else {
+                    System.out.println("AJUSTADO DE SOCKET");
+                    volumeSlider.setValue((int)(player.getGainValue()*100));
+                }
+                break;
+        }
+
+    }
+
+    @Override
+    public void setController(BasicController controller) {
+        //display("setController : " + controller); 
+    }
 
     public class FolderBuilder extends SwingWorker<Void, Void> {
 
@@ -136,47 +233,8 @@ public class HomePage extends javax.swing.JFrame {
         }
     }
 
-    public class TimeCounter extends SwingWorker<Void, Void> {
-
-        @Override
-        protected Void doInBackground() throws Exception {
-
-            String duration = getSync().getCurrentSongDuration();
-            totalTime.setText(duration);
-            float totalSeconds = (Integer.parseInt(duration.split(":")[0]) * 60) + Integer.parseInt(duration.split(":")[1]);
-            currentSecond = 0;
-            //currentSongTimeSlider.setMaximum((int) totalSeconds);
-            //currentSongTimeSlider.setValue(0);
-            while (true) {
-                if (isPlaying()) {
-                    int minutes = (int) (currentSecond / 60);
-                    int seconds = (int) (currentSecond % 60);
-                    String elapsedtTimeString = minutes + ":" + String.format("%02d", seconds);
-                    elapsedTime.setText(elapsedtTimeString);
-                    currentSecond++;
-                    //currentSongTimeSlider.setValue((int) currentSecond);
-                    if (Math.abs(currentSecond - totalSeconds) <= 5 && !player.isMerging()) {
-                        merge();
-                    }
-                    Thread.sleep(1000);
-                } else if (isPaused()) {
-                    Thread.sleep(1);
-                } else {
-                    break;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void done() {
-            if (player.songHasFinished()) {
-                next();
-            }
-        }
-    }
-
     public class FolderFetcher extends SwingWorker<Void, Void> {
+
         private final int id;
         private Frame parentComponent;
         private int responseCode;
@@ -185,7 +243,7 @@ public class HomePage extends javax.swing.JFrame {
             this.id = id;
             this.parentComponent = parent;
         }
-        
+
         @Override
         protected Void doInBackground() throws Exception {
             folderPane.removeAll();
@@ -195,7 +253,7 @@ public class HomePage extends javax.swing.JFrame {
             folderPane.add(loadingLabel);
             folderPane.revalidate();
             folderPane.repaint();
-            
+
             Response response;
             Folder parentFolder;
             JSONParser = new GsonBuilder().create();
@@ -229,38 +287,38 @@ public class HomePage extends javax.swing.JFrame {
 
         @Override
         protected void done() {
-            if(responseCode == 200) {
+            if (responseCode == 200) {
                 new TrackOrderer().execute();
             }
         }
     }
-    
+
     public class FolderDrawer extends SwingWorker<Void, Void> {
 
         private final FolderDTO fetchedFolder;
         private ArrayList<JPanel> panels;
+
         public FolderDrawer(FolderDTO fetchedFolder) {
             this.fetchedFolder = fetchedFolder;
             panels = new ArrayList<>();
         }
 
-        
         @Override
         protected Void doInBackground() throws Exception {
             if (fetchedFolder != null) {
-                if(orderByArtist) {
-                    Collections.sort(folderContent.getTracks(), new ArtistComparator());                
+                if (orderByArtist) {
+                    Collections.sort(folderContent.getTracks(), new ArtistComparator());
                 } else {
                     Collections.sort(folderContent.getTracks(), new TitleComparator());
                 }
-                
+
                 folderPane.removeAll();
                 JLabel loadingLabel = new JLabel("Loading please wait...");
                 loadingLabel.setFont(serifFont);
                 loadingLabel.setBounds(0, 0, 200, 20);
                 folderPane.add(loadingLabel);
                 folderPane.revalidate();
-                folderPane.repaint();                
+                folderPane.repaint();
                 int totalElements = fetchedFolder.getFolders().size() + fetchedFolder.getTracks().size();
 
                 //folderPane.removeAll();
@@ -361,7 +419,7 @@ public class HomePage extends javax.swing.JFrame {
 
                         @Override
                         public void mouseDragged(MouseEvent e) {
-                        //e.translatePoint(e.getComponent().getLocation().x, e.getComponent().getLocation().y);
+                            //e.translatePoint(e.getComponent().getLocation().x, e.getComponent().getLocation().y);
                             //trackPanel.setLocation(0, e.getY()+5);
                         }
 
@@ -455,15 +513,14 @@ public class HomePage extends javax.swing.JFrame {
             foldersScrollPane.revalidate();
             foldersScrollPane.repaint();
         }
-        
-    
+
     };
-    
+
     public class TrackOrderer extends SwingWorker<Void, Void> {
 
         @Override
         protected Void doInBackground() throws Exception {
-            if(orderBySongName) {
+            if (orderBySongName) {
                 Collections.sort(folderContent.getTracks(), new TitleComparator());
             } else {
                 Collections.sort(folderContent.getTracks(), new ArtistComparator());
@@ -474,17 +531,20 @@ public class HomePage extends javax.swing.JFrame {
 
         @Override
         protected void done() {
-            
+
         }
-        
-        
-    
+
     };
 
     public HomePage() {
         initComponents();
         this.setLocationRelativeTo(null);
-        setIconImage(createImageIcon("images/icon.png", "app_logo").getImage());
+        ArrayList<Image> images = new ArrayList<Image>();
+        images.add(createImageIcon("images/2_72x72.png", "app_logo").getImage());
+        images.add(createImageIcon("images/2_48x48.png", "app_logo").getImage());
+        images.add(createImageIcon("images/2_96x96.png", "app_logo").getImage());
+        images.add(createImageIcon("images/2_144x144.png", "app_logo").getImage());
+        setIconImages(images);
         progressBar.setVisible(false);
         foldersScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         initPlayer();
@@ -512,9 +572,33 @@ public class HomePage extends javax.swing.JFrame {
             public void stateChanged(ChangeEvent e) {
                 JSlider source = (JSlider) e.getSource();
                 if (source.getValueIsAdjusting()) {
-                    setVolumeFromValue(source.getValue());
+                    
+                    double value = new Double(String.valueOf(source.getValue()));
+                    setVolumeFromValue(value/100d, true);
                 }
             }
+        });
+
+        songPositionSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSlider source = (JSlider) e.getSource();
+                if (source.getValueIsAdjusting()) {
+                    //System.out.println("esta ajustandose");
+                    int value = source.getValue();
+                    long skippedBytes = (long) (value * frameRate * frameLength);
+//                    try {
+//                        
+//                        control.seek(skippedBytes);
+//                        control.play();
+//                    } catch (BasicPlayerException ex) {
+//                        Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+                } else {
+                    //System.out.println("no se esta ajustando sino programando");
+                }
+            }
+        ;
         });
 
         MouseListener mouseListener = new MouseAdapter() {
@@ -559,71 +643,53 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     public void playSong(Track t, boolean playedFromPlaylist) {
-        currentSong = t;
-        if (playedFromPlaylist) {
-            getPosition(t);
+        try {
+            control.open(new File(t.getPath()));
+            control.play();
+            currentSong = t;
+            if (playedFromPlaylist) {
+                getPosition(t);
+            }
+            currentSongLabel.setText(t.getTitle() + " - " + t.getArtist());
+            playlistPlaying = playedFromPlaylist;
+        } catch (BasicPlayerException ex) {
+            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
         }
-        player.loadSong(t.getPath());
-
-        sync.setCurrentSongId(t.getId());
-        sync.setCurrentSongName(t.getTitle());
-        sync.setCurrentSongArtist(t.getArtist());
-        sync.setCurrentSongDuration(t.getDuration());
-        sync.setCurrentVolume((int)player.getVolume());
-        sync.setIsPlaying(true);
-        sync.setIsPaused(false);
-
-        currentSongLabel.setText(t.getTitle() + " - " + t.getArtist());
-
-        if (timeCounter != null) {
-            timeCounter.cancel(true);
-        }
-
-        player.play();
-        timeCounter = new TimeCounter();
-        timeCounter.execute();
-        Operation request = new Operation();
-        request.setOperationType(OperationType.SYNC);
-        request.setUserId(SessionConstants.USER_ID);
-        request.setSync(sync);
-
-        webSocket.sendRequest(request);
-        playlistPlaying = playedFromPlaylist;
     }
 
     public void merge() {
-        Track t;
-        if (playlistPlaying) {
-            if (currentSongPosition < queuePaths.size() - 1) {
-                currentSongPosition++;
-                currentSong = queuePaths.get(currentSongPosition);
-                t = currentSong;
-                player.loadSong(t.getPath());
-                sync.setCurrentSongId(t.getId());
-                sync.setCurrentSongName(t.getTitle());
-                sync.setCurrentSongArtist(t.getArtist());
-                sync.setCurrentSongDuration(t.getDuration());
-                sync.setIsPlaying(true);
-                sync.setIsPaused(false);
-
-                currentSongLabel.setText(t.getTitle() + " - " + t.getArtist());
-
-                if (timeCounter != null) {
-                    timeCounter.cancel(true);
-                }
-
-                player.determineLine();
-                timeCounter = new TimeCounter();
-                timeCounter.execute();
-                Operation request = new Operation();
-                request.setOperationType(OperationType.SYNC);
-                request.setUserId(SessionConstants.USER_ID);
-                request.setSync(sync);
-
-                webSocket.sendRequest(request);
-                playlistPlaying = true;
-            }
-        }
+//        Track t;
+//        if (playlistPlaying) {
+//            if (currentSongPosition < queuePaths.size() - 1) {
+//                currentSongPosition++;
+//                currentSong = queuePaths.get(currentSongPosition);
+//                t = currentSong;
+//                player.loadSong(t.getPath());
+//                sync.setCurrentSongId(t.getId());
+//                sync.setCurrentSongName(t.getTitle());
+//                sync.setCurrentSongArtist(t.getArtist());
+//                sync.setCurrentSongDuration(t.getDuration());
+//                sync.setIsPlaying(true);
+//                sync.setIsPaused(false);
+//
+//                currentSongLabel.setText(t.getTitle() + " - " + t.getArtist());
+//
+//                if (timeCounter != null) {
+//                    timeCounter.cancel(true);
+//                }
+//
+//                player.determineLine();
+//                timeCounter = new TimeCounter();
+//                timeCounter.execute();
+//                Operation request = new Operation();
+//                request.setOperationType(OperationType.SYNC);
+//                request.setUserId(SessionConstants.USER_ID);
+//                request.setSync(sync);
+//
+//                webSocket.sendRequest(request);
+//                playlistPlaying = true;
+//            }
+//        }
 
     }
 
@@ -638,7 +704,6 @@ public class HomePage extends javax.swing.JFrame {
         }
     }
 
-
     public void playPlaylist() {
         currentSongPosition = 0;
         currentSong = queuePaths.get(currentSongPosition);
@@ -646,17 +711,27 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     public void resume() {
-        player.pause();
+        try {
+            control.resume();
+        } catch (BasicPlayerException ex) {
+            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void pause() {
-        player.pause();
-        sync.setIsPlaying(isPlaying());
-        sync.setIsPaused(!isPlaying());
+        try {
+            control.pause();
+        } catch (BasicPlayerException ex) {
+            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void stop() {
-        player.stop();
+        try {
+            control.stop();
+        } catch (BasicPlayerException ex) {
+            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void next() {
@@ -680,38 +755,39 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     public void mute() {
-        player.mute();
+//        player.mute();
     }
 
     public void volumeDown() {
-        player.volumeDown();
+//        player.volumeDown();
     }
 
     public void volumeUp() {
-        player.volumeUp();
+//        player.volumeUp();
     }
 
-    public void setVolumeFromValue(float value) {
-        player.setVolumeFromValue(value);
-//        sync.setCurrentVolume((int)value);
-//        Operation request = new Operation();
-//        request.setOperationType(OperationType.SYNC);
-//        request.setUserId(SessionConstants.USER_ID);
-//        request.setSync(getSync());
-//        webSocket.sendRequest(request);
+    public void setVolumeFromValue(double value, boolean fromUser) {
+        try {
+            volumeAdjustedByUser = fromUser;
+            player.setGain(value);
+        } catch (BasicPlayerException ex) {
+            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void setVolume(float value) {
-        player.setVolumeFromValue(value);
-        volumeSlider.setValue((int) value);
+//        player.setVolumeFromValue(value);
+//        volumeSlider.setValue((int) value);
     }
 
     public boolean isPlaying() {
-        return player.isPlaying();
+//        return player.isPlaying();
+        return false;
     }
 
     public boolean isPaused() {
-        return player.isPaused();
+//        return player.isPaused();
+        return false;
     }
 
     public void enqueueSong(Track q) {
@@ -745,13 +821,32 @@ public class HomePage extends javax.swing.JFrame {
         return sync;
     }
 
+//    public final void initPlayer() {
+//        player = new Music(this);
+//        queuePaths = new ArrayList<>();
+//        currentSong = null;
+//        currentSongPosition = 0;
+//        playlistPlaying = false;
+//        sync = new Sync();
+//    }
     public final void initPlayer() {
-        player = new Music(this);
+        player = new BasicPlayer();
+        player.addBasicPlayerListener(this);
+        control = (BasicController) player;
+        try {
+            control.setGain(1.0);
+        } catch (BasicPlayerException ex) {
+            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+        }
         queuePaths = new ArrayList<>();
         currentSong = null;
         currentSongPosition = 0;
         playlistPlaying = false;
         sync = new Sync();
+    }
+
+    public void display(String msg) {
+        System.out.println(msg);
     }
 
     private void countFiles(File selectedFile) {
@@ -884,105 +979,105 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     private void drawSearchResults(ArrayList<Track> tracks) {
-            folderPane.setPreferredSize(new Dimension(layoutWidth, tracks.size()*45));
-            foldersScrollPane.getVerticalScrollBar().setValue(0);
-            folderPane.removeAll();
-            for (int i = 0; i < tracks.size(); i++) {
-                final Track track = tracks.get(i);
-                final JPanel trackPanel = new JPanel() {
-                    @Override
-                    public void paint(Graphics g) {
-                        super.paint(g);
-                        g.setColor(Color.GRAY);
-                        g.drawRoundRect(0, 0, layoutWidth - 2, 43, 3, 3);
-                    }
+        folderPane.setPreferredSize(new Dimension(layoutWidth, tracks.size() * 45));
+        foldersScrollPane.getVerticalScrollBar().setValue(0);
+        folderPane.removeAll();
+        for (int i = 0; i < tracks.size(); i++) {
+            final Track track = tracks.get(i);
+            final JPanel trackPanel = new JPanel() {
+                @Override
+                public void paint(Graphics g) {
+                    super.paint(g);
+                    g.setColor(Color.GRAY);
+                    g.drawRoundRect(0, 0, layoutWidth - 2, 43, 3, 3);
+                }
 
-                };
-                trackPanel.addMouseMotionListener(new MouseMotionAdapter() {
+            };
+            trackPanel.addMouseMotionListener(new MouseMotionAdapter() {
 
-                    @Override
-                    public void mouseDragged(MouseEvent e) {
+                @Override
+                public void mouseDragged(MouseEvent e) {
                         //e.translatePoint(e.getComponent().getLocation().x, e.getComponent().getLocation().y);
-                        //trackPanel.setLocation(0, e.getY()+5);
-                    }
-                });
-                
-                trackPanel.addMouseListener(new MouseListener() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        if (e.getClickCount() == 2) {
-                            playSong(track, false);
-                        } else if (e.getButton() == MouseEvent.BUTTON3) {
-                            JPopupMenu popupMenu = new JPopupMenu();
-                            popupMenu.setLabel("Folder");
-                            JMenuItem play = new JMenuItem("Play");
-                            play.addActionListener(new ActionListener() {
+                    //trackPanel.setLocation(0, e.getY()+5);
+                }
+            });
 
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    playSong(track, false);
-                                }
+            trackPanel.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2) {
+                        playSong(track, false);
+                    } else if (e.getButton() == MouseEvent.BUTTON3) {
+                        JPopupMenu popupMenu = new JPopupMenu();
+                        popupMenu.setLabel("Folder");
+                        JMenuItem play = new JMenuItem("Play");
+                        play.addActionListener(new ActionListener() {
 
-                            });
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                playSong(track, false);
+                            }
 
-                            JMenuItem addToPlaylist = new JMenuItem("Add to playlist");
-                            addToPlaylist.addActionListener(new ActionListener() {
+                        });
 
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    enqueueSong(track);
-                                }
+                        JMenuItem addToPlaylist = new JMenuItem("Add to playlist");
+                        addToPlaylist.addActionListener(new ActionListener() {
 
-                            });
-                            popupMenu.add(play);
-                            popupMenu.add(addToPlaylist);
-                            popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                        }
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                enqueueSong(track);
+                            }
 
+                        });
+                        popupMenu.add(play);
+                        popupMenu.add(addToPlaylist);
+                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
                     }
 
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
+                }
 
-                        trackPanel.setBackground(new Color(245, 245, 245));
-                    }
+                @Override
+                public void mouseEntered(MouseEvent e) {
 
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        trackPanel.setBackground(Color.WHITE);
-                    }
+                    trackPanel.setBackground(new Color(245, 245, 245));
+                }
 
-                    @Override
-                    public void mousePressed(MouseEvent e) {
-                    }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    trackPanel.setBackground(Color.WHITE);
+                }
 
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                }
 
-                    }
-                });
-                trackPanel.setLayout(null);
-                trackPanel.setBackground(Color.white);
-                trackPanel.setBounds(0, (i * 45), layoutWidth, 45);
-                JLabel trackLabel = new JLabel(track.getTitle());
-                trackLabel.setFont(serifFont);
-                JLabel artistLabel = new JLabel(track.getArtist());
-                artistLabel.setFont(serifFontArtist);
-                JLabel iconLabel = new JLabel();
-                iconLabel.setIcon(musicIcon);
+                @Override
+                public void mouseReleased(MouseEvent e) {
 
-                iconLabel.setBounds(10, 10, 35, 20);
-                trackLabel.setBounds(35, 0, layoutWidth - 35, 20);
-                artistLabel.setBounds(38, 20, layoutWidth - 38, 20);
+                }
+            });
+            trackPanel.setLayout(null);
+            trackPanel.setBackground(Color.white);
+            trackPanel.setBounds(0, (i * 45), layoutWidth, 45);
+            JLabel trackLabel = new JLabel(track.getTitle());
+            trackLabel.setFont(serifFont);
+            JLabel artistLabel = new JLabel(track.getArtist());
+            artistLabel.setFont(serifFontArtist);
+            JLabel iconLabel = new JLabel();
+            iconLabel.setIcon(musicIcon);
 
-                trackPanel.add(iconLabel);
-                trackPanel.add(trackLabel);
-                trackPanel.add(artistLabel);
-                folderPane.add(trackPanel);
+            iconLabel.setBounds(10, 10, 35, 20);
+            trackLabel.setBounds(35, 0, layoutWidth - 35, 20);
+            artistLabel.setBounds(38, 20, layoutWidth - 38, 20);
 
-            }
-            foldersScrollPane.revalidate();
-            foldersScrollPane.repaint();        
+            trackPanel.add(iconLabel);
+            trackPanel.add(trackLabel);
+            trackPanel.add(artistLabel);
+            folderPane.add(trackPanel);
+
+        }
+        foldersScrollPane.revalidate();
+        foldersScrollPane.repaint();
     }
 
     private void drawPlaylist() {
@@ -1118,6 +1213,7 @@ public class HomePage extends javax.swing.JFrame {
         volumeSlider = new javax.swing.JSlider();
         jPanel1 = new javax.swing.JPanel();
         elapsedTime = new javax.swing.JLabel();
+        songPositionSlider = new javax.swing.JSlider();
         totalTime = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         currentSongLabel = new javax.swing.JLabel();
@@ -1139,7 +1235,7 @@ public class HomePage extends javax.swing.JFrame {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("ShiftScope");
+        setTitle("Shudder");
         setBackground(new java.awt.Color(254, 254, 254));
         setBounds(new java.awt.Rectangle(0, 0, 865, 654));
         setMinimumSize(new java.awt.Dimension(800, 600));
@@ -1159,7 +1255,7 @@ public class HomePage extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/icon.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/2_72x72.png"))); // NOI18N
         jLabel1.setAlignmentX(-0.0F);
         jPanel4.add(jLabel1);
 
@@ -1234,12 +1330,14 @@ public class HomePage extends javax.swing.JFrame {
         jPanel2.add(nextBtn);
         jPanel2.add(songNameLabel);
 
-        volumeSlider.setMaximum(0);
-        volumeSlider.setMinimum(-70);
+        volumeSlider.setValue(100);
         jPanel6.add(volumeSlider);
 
         elapsedTime.setText("0:00");
         jPanel1.add(elapsedTime);
+
+        songPositionSlider.setValue(0);
+        jPanel1.add(songPositionSlider);
 
         totalTime.setText("0:00");
         jPanel1.add(totalTime);
@@ -1400,10 +1498,10 @@ public class HomePage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1429,13 +1527,11 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_selectFolderButtonMouseClicked
 
     private void pauseBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pauseBtnMouseClicked
-
-        pause();
-        Operation request = new Operation();
-        request.setOperationType(OperationType.SYNC);
-        request.setUserId(SessionConstants.USER_ID);
-        request.setSync(getSync());
-        webSocket.sendRequest(request);
+        if(paused) {
+            resume();
+        } else {
+            pause();
+        } 
     }//GEN-LAST:event_pauseBtnMouseClicked
 
     private void stopBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stopBtnMouseClicked
@@ -1488,7 +1584,7 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_clearPlaylistBtnActionPerformed
 
     private void songTitleRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_songTitleRadioActionPerformed
-        if(songTitleRadio.isSelected()) {
+        if (songTitleRadio.isSelected()) {
             orderBySongName = true;
             orderByArtist = false;
             new TrackOrderer().execute();
@@ -1500,11 +1596,11 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_searchTextFieldActionPerformed
 
     private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
-        if(searchTextField.getText().length() > 2) {
+        if (searchTextField.getText().length() > 2) {
             String matchCriteria = searchTextField.getText();
             ArrayList<Track> tracks = new ArrayList<Track>(folderContent.getTracks().stream().filter(p -> p.getTitle().contains(matchCriteria) || p.getArtist().contains(matchCriteria)).collect(Collectors.toList()));
             drawSearchResults(tracks);
-        } else if(searchTextField.getText().length() == 0){
+        } else if (searchTextField.getText().length() == 0) {
             drawFetchedFolder(folderContent);
         }
     }//GEN-LAST:event_searchTextFieldKeyReleased
@@ -1514,7 +1610,7 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_formKeyReleased
 
     private void artistRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_artistRadioActionPerformed
-        if(artistRadio.isSelected()) {
+        if (artistRadio.isSelected()) {
             orderByArtist = true;
             orderBySongName = false;
             new TrackOrderer().execute();
@@ -1551,6 +1647,7 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JTextField searchTextField;
     private javax.swing.JLabel selectFolderButton;
     private javax.swing.JLabel songNameLabel;
+    private javax.swing.JSlider songPositionSlider;
     private javax.swing.JRadioButton songTitleRadio;
     private javax.swing.JLabel stopBtn;
     private javax.swing.JToolBar toolBar;

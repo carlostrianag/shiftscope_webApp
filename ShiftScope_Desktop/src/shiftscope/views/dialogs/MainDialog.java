@@ -57,7 +57,7 @@ public class MainDialog extends JDialog {
     private final void createComponents() {
         dialogPanel = new JPanel();
         label = new JLabel();
-        logoLabel = new JLabel(createImageIcon("../images/icon.png", "logo_shift"));
+        logoLabel = new JLabel(createImageIcon("../images/2_48x48.png", "logo_shift"));
         loginBtn = new JButton("Log In");
         registerButton = new JButton("Register");
         
@@ -69,7 +69,7 @@ public class MainDialog extends JDialog {
         label.setBounds(0, 0, 350, 250);
         label.setIcon(createImageIcon("../images/back-c.png", "background"));
         
-        logoLabel.setBounds(135, 10, 48, 48);
+        logoLabel.setBounds(135, 10, 49, 49);
         
         
         
