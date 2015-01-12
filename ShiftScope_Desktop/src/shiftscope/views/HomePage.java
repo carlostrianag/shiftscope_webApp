@@ -569,6 +569,7 @@ public class HomePage extends javax.swing.JFrame {
         sync.setCurrentSongName(t.getTitle());
         sync.setCurrentSongArtist(t.getArtist());
         sync.setCurrentSongDuration(t.getDuration());
+        sync.setCurrentVolume((int)player.getVolume());
         sync.setIsPlaying(true);
         sync.setIsPaused(false);
 
