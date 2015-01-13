@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+    <item android:id="@+id/action_search"
+        android:title="My busqueadas"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView" />.
+
+    <item android:id="@+id/action_order_by_artist"
+        android:title="Order By Artist"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/action_order_by_title"
+        android:title="Order By Title"
+        app:showAsAction="never">
+    </item>
+</menu>

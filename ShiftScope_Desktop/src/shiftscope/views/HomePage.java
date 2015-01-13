@@ -540,10 +540,10 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         initComponents();
         this.setLocationRelativeTo(null);
         ArrayList<Image> images = new ArrayList<Image>();
-        images.add(createImageIcon("images/2_72x72.png", "app_logo").getImage());
-        images.add(createImageIcon("images/2_48x48.png", "app_logo").getImage());
-        images.add(createImageIcon("images/2_96x96.png", "app_logo").getImage());
-        images.add(createImageIcon("images/2_144x144.png", "app_logo").getImage());
+        images.add(createImageIcon("images/icon_48.png", "app_logo").getImage());
+        images.add(createImageIcon("images/icon_72.png", "app_logo").getImage());
+        images.add(createImageIcon("images/icon_96.png", "app_logo").getImage());
+        images.add(createImageIcon("images/icon_144.png", "app_logo").getImage());
         setIconImages(images);
         progressBar.setVisible(false);
         foldersScrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -1255,7 +1255,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
             }
         });
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/2_72x72.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/icon_72.png"))); // NOI18N
         jLabel1.setAlignmentX(-0.0F);
         jPanel4.add(jLabel1);
 
@@ -1350,7 +1350,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         toolBar.setRollover(true);
         toolBar.add(progressBar);
 
-        jSplitPane1.setBorder(null);
         jSplitPane1.setDividerLocation(560);
         jSplitPane1.setDividerSize(0);
         jSplitPane1.setToolTipText("");

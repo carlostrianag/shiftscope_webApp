@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="default_background">#19151D</color>
+    <color name="fluor_pink">#CC0033</color>
+    <color name="darker_purple">#260026</color>
+    <color name="lighter_purple">#320032</color>
+</resources>

@@ -124,7 +124,7 @@
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/shiftscope/views/images/2_72x72.png"/>
+              <Image iconType="3" name="/shiftscope/views/images/icon_72.png"/>
             </Property>
             <Property name="alignmentX" type="float" value="-0.0"/>
           </Properties>
@@ -310,9 +310,6 @@
     </Container>
     <Container class="javax.swing.JSplitPane" name="jSplitPane1">
       <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="null"/>
-        </Property>
         <Property name="dividerLocation" type="int" value="560"/>
         <Property name="dividerSize" type="int" value="0"/>
         <Property name="toolTipText" type="java.lang.String" value=""/>
