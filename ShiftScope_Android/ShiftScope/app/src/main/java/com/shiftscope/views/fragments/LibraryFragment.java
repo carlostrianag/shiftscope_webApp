@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.daimajia.swipe.implments.SwipeItemMangerImpl;
 import com.shiftscope.controllers.FolderController;
 import com.shiftscope.controllers.LibraryController;
 import com.shiftscope.dto.FolderDTO;
@@ -73,7 +74,7 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Object object = parent.getItemAtPosition(position);
+        Object object = parent.getAdapter().getItem(position);
         if(object.getClass() == FolderDTO.class) {
             FolderDTO selectedFolder = (FolderDTO) object;
             getFolderContent(selectedFolder.getId(), libraryListView.onSaveInstanceState());
@@ -101,6 +102,8 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onSuccessfulFolderFetch(LibraryAdapter adapter, Parcelable restoredState) {
         libraryListView.setAdapter(adapter);
+        Log.v("DEBUG", adapter.toString() + " set");
+
         if(restoredState != null) {
             libraryListView.onRestoreInstanceState(restoredState);
         }
@@ -115,6 +118,7 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onOrder(LibraryAdapter adapter) {
         libraryListView.setAdapter(adapter);
+        Log.v("DEBUG", adapter.toString() + " set");
         dismissProgressDialog();
     }
 

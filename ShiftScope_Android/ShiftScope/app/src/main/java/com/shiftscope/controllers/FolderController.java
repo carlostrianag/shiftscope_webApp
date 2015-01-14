@@ -1,5 +1,6 @@
 package com.shiftscope.controllers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Parcelable;
@@ -34,7 +35,7 @@ public class FolderController {
 
     private static FolderContentDTO folderContentDTO;
     private static FolderCommunicator communicator;
-    private static Context context;
+    private static Activity activity;
     private static LayoutInflater inflater;
     private static LibraryAdapter adapter;
     private static HashMap<Integer, Parcelable> statesHashMap = new HashMap<>();
@@ -42,7 +43,7 @@ public class FolderController {
     private static boolean orderByTitle = false;
 
     public static void setCommunicator(Fragment fragment) {
-        context = fragment.getActivity().getApplicationContext();
+        activity = fragment.getActivity();
         inflater = fragment.getActivity().getLayoutInflater();
         communicator = (FolderCommunicator) fragment;
     }
@@ -112,7 +113,7 @@ public class FolderController {
             super();
             this.event = event;
             this.query = query;
-            this.filter = adapter.getFilter();
+            //this.filter = adapter.getFilter();
         }
 
         @Override
@@ -134,7 +135,7 @@ public class FolderController {
 
                     folderContent.addAll(folderContentDTO.getFolders());
                     folderContent.addAll(folderContentDTO.getTracks());
-                    adapter = new LibraryAdapter(context, android.R.layout.simple_list_item_1, folderContent, inflater);
+                    adapter = new LibraryAdapter(activity, folderContent);
                     SessionConstants.PARENT_FOLDER = folderContentDTO.getParentFolder();
                     break;
                 case ON_FILTER_QUERY:
@@ -147,7 +148,7 @@ public class FolderController {
                     folderContent = new ArrayList<>();
                     folderContent.addAll(folderContentDTO.getFolders());
                     folderContent.addAll(folderContentDTO.getTracks());
-                    adapter = new LibraryAdapter(context, android.R.layout.simple_list_item_1, folderContent, inflater);
+                    adapter = new LibraryAdapter(activity, folderContent);
                     break;
 
                 case ON_ORDER_BY_ARTIST:
@@ -157,7 +158,7 @@ public class FolderController {
                     folderContent = new ArrayList<>();
                     folderContent.addAll(folderContentDTO.getFolders());
                     folderContent.addAll(folderContentDTO.getTracks());
-                    adapter = new LibraryAdapter(context, android.R.layout.simple_list_item_1, folderContent, inflater);
+                    adapter = new LibraryAdapter(activity, folderContent);
                     break;
             }
             return null;

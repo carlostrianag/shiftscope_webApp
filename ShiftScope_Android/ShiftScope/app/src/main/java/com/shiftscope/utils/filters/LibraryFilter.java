@@ -41,11 +41,11 @@ public class LibraryFilter extends Filter {
 
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
-        adapter.clear();
-        ArrayList<TrackDTO> tracks = (ArrayList<TrackDTO>)results.values;
-        for (TrackDTO t : tracks) {
-            adapter.add(t);
-            adapter.notifyDataSetChanged();
-        }
+//        adapter.sc
+//        ArrayList<TrackDTO> tracks = (ArrayList<TrackDTO>)results.values;
+//        for (TrackDTO t : tracks) {
+//            adapter.add(t);
+//            adapter.notifyDataSetChanged();
+//        }
     }
 }

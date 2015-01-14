@@ -33,5 +33,6 @@ dependencies {
     compile files('autobahn-0.5.0')
     compile files('jackson-core-asl-1.9.7')
     compile files('jackson-mapper-asl-1.9.7')
+    compile files('AndroidSwipeLayout-v1.1.6')
 }
 

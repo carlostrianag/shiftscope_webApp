@@ -1,5 +1,6 @@
 package com.shiftscope.controllers;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.util.Log;

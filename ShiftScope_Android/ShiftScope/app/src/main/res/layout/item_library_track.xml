@@ -42,3 +42,4 @@
         android:textColor="@color/darker_purple"
         android:textSize="14dp" />
 </RelativeLayout>
+
