@@ -801,12 +801,33 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         webSocket.sendRequest(request);
     }
 
-    public void dequeueSong(int position) {
-        if (queuePaths.get(position).equals(currentSong)) {
+//    public void dequeueSong(int position) {
+//        if (queuePaths.get(position).equals(currentSong)) {
+//            next();
+//        }
+//
+//        queuePaths.remove(position);
+//        getPosition(currentSong);
+//        drawPlaylist();
+//        Operation request = new Operation();
+//        request.setOperationType(OperationType.SYNC);
+//        request.setUserId(SessionConstants.USER_ID);
+//        sync.setCurrentPlaylist(queuePaths);
+//        request.setSync(sync);
+//        webSocket.sendRequest(request);
+//    }
+    
+    public void dequeueSong(Track t) {
+        if (t.equals(currentSong)) {
             next();
         }
 
-        queuePaths.remove(position);
+        for (Track track : queuePaths) {
+            if(track.getId() == t.getId()) {
+                queuePaths.remove(track);
+                break;
+            }
+        }
         getPosition(currentSong);
         drawPlaylist();
         Operation request = new Operation();
@@ -1116,7 +1137,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                dequeueSong(position);
+                                dequeueSong(track);
                             }
 
                         });

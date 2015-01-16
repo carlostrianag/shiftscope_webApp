@@ -102,8 +102,19 @@ public class TCPService extends WebSocketClient {
                 }
                 break;
             case OperationType.REMOVE_FROM_PLAYLIST:
-                int order = (int) request.getValue();
-                Main.home.dequeueSong(order);
+                criteria = new TrackCriteria();
+                criteria.setId(request.getId());
+                System.out.println("entro");
+                //int order = (int) request.getValue();
+                response = TrackController.getTrackById(criteria);
+                try {
+                    t = JSONParser.fromJson(response.getResponseBody(), Track.class);
+                    Main.home.dequeueSong(t);
+                } catch (IOException ex) {
+                    Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalStateException ex) {
+                    Logger.getLogger(TCPService.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
 
             case OperationType.ENQUEUE:

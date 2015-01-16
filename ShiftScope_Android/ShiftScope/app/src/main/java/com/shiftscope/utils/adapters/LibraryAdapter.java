@@ -3,6 +3,7 @@ package com.shiftscope.utils.adapters;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -22,6 +23,8 @@ import com.shiftscope.utils.Operation;
 import com.shiftscope.utils.constants.RequestTypes;
 import com.shiftscope.utils.constants.SessionConstants;
 import com.shiftscope.utils.filters.LibraryFilter;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,7 +100,7 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
         return getCustomView(position, convertView, parent);
     }
 
-    private View getCustomView(int position, View convertView, ViewGroup parent) {
+/*    private View getCustomView(int position, View convertView, ViewGroup parent) {
         int layoutType = getItemViewType(position);
         FolderViewHolder folderHolder;
         TrackViewHolder trackHolder;
@@ -106,7 +109,6 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
         switch (layoutType) {
             case 0:
                 folder = (FolderDTO)folderContent.get(position);
-
                 if ( v == null) {
                     LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     v  = layoutInflater.inflate(R.layout.item_library_folder, parent, false);
@@ -133,6 +135,29 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
                 break;
         }
             return v;
+    }*/
+
+    private View getCustomView(int position, View convertView, ViewGroup parent) {
+        int layoutType = getItemViewType(position);
+        LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v;
+        switch (layoutType) {
+            case 0:
+                folder = (FolderDTO)folderContent.get(position);
+                v  = layoutInflater.inflate(R.layout.item_library_folder, parent, false);
+                TextView folderTitle = (TextView) v.findViewById(R.id.folderTitle);
+                folderTitle.setText(folder.getTitle());
+                return v;
+            case 1:
+                track = (TrackDTO)folderContent.get(position);
+                v  = layoutInflater.inflate(R.layout.item_library_track, parent, false);
+                TextView trackTitle = (TextView) v.findViewById(R.id.trackTitle);
+                trackTitle.setText(track.getTitle());
+                TextView artistName = (TextView) v.findViewById(R.id.artistName);
+                artistName.setText(track.getArtist());
+                return v;
+        }
+        return null;
     }
 
     @Override
