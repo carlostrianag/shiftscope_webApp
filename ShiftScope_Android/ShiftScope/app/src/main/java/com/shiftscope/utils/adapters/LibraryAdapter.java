@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
@@ -32,7 +31,7 @@ import shiftscope.com.shiftscope.R;
 /**
  * Created by Carlos on 1/4/2015.
  */
-public class LibraryAdapter extends BaseAdapter implements Filterable{
+public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
 
     private Context context;
     private LayoutInflater inflater;
@@ -42,12 +41,12 @@ public class LibraryAdapter extends BaseAdapter implements Filterable{
     private TrackDTO track;
 
 
-    public LibraryAdapter(Context context, ArrayList<Object> objects) {
+    public LibraryAdapter(Context context, int resource, ArrayList<Object> objects) {
+        super(context, resource, objects);
         this.context = context;
         this.folderContent = objects;
-        Log.v("DEBUG", "CONSTRUCTOR");
-
     }
+
 
     private class FolderViewHolder {
         public TextView folderTitle;
@@ -77,6 +76,7 @@ public class LibraryAdapter extends BaseAdapter implements Filterable{
         return (folderContent.get(position).getClass() == FolderDTO.class)?0:1;
     }
 
+
     @Override
     public int getCount() {
         return folderContent.size();
@@ -96,11 +96,6 @@ public class LibraryAdapter extends BaseAdapter implements Filterable{
     public View getView(int position, View convertView, ViewGroup parent) {
         return getCustomView(position, convertView, parent);
     }
-
-/*    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        return getCustomView(position, convertView, parent);
-    }*/
 
     private View getCustomView(int position, View convertView, ViewGroup parent) {
         int layoutType = getItemViewType(position);

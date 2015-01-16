@@ -113,7 +113,7 @@ public class FolderController {
             super();
             this.event = event;
             this.query = query;
-            //this.filter = adapter.getFilter();
+            this.filter = adapter.getFilter();
         }
 
         @Override
@@ -135,7 +135,7 @@ public class FolderController {
 
                     folderContent.addAll(folderContentDTO.getFolders());
                     folderContent.addAll(folderContentDTO.getTracks());
-                    adapter = new LibraryAdapter(activity, folderContent);
+                    adapter = new LibraryAdapter(activity, android.R.layout.simple_list_item_1, folderContent);
                     SessionConstants.PARENT_FOLDER = folderContentDTO.getParentFolder();
                     break;
                 case ON_FILTER_QUERY:
@@ -148,7 +148,7 @@ public class FolderController {
                     folderContent = new ArrayList<>();
                     folderContent.addAll(folderContentDTO.getFolders());
                     folderContent.addAll(folderContentDTO.getTracks());
-                    adapter = new LibraryAdapter(activity, folderContent);
+                    adapter = new LibraryAdapter(activity, android.R.layout.simple_list_item_1, folderContent);
                     break;
 
                 case ON_ORDER_BY_ARTIST:
@@ -158,7 +158,7 @@ public class FolderController {
                     folderContent = new ArrayList<>();
                     folderContent.addAll(folderContentDTO.getFolders());
                     folderContent.addAll(folderContentDTO.getTracks());
-                    adapter = new LibraryAdapter(activity, folderContent);
+                    adapter = new LibraryAdapter(activity,android.R.layout.simple_list_item_1,  folderContent);
                     break;
             }
             return null;

@@ -40,7 +40,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_previous"
+                    android:src="@drawable/ic_back"
                     android:id="@+id/backBtn"
                     android:contentDescription=""
                     android:layout_gravity="center_vertical"
@@ -49,7 +49,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_pause_over_video"
+                    android:src="@drawable/ic_pause"
                     android:id="@+id/pauseBtn"
                     android:contentDescription=""
                     android:layout_gravity="center_vertical"
@@ -58,7 +58,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_stop"
+                    android:src="@drawable/ic_stop"
                     android:id="@+id/stopBtn"
                     android:contentDescription=""
                     android:layout_gravity="center_vertical"
@@ -68,7 +68,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_next"
+                    android:src="@drawable/ic_next"
                     android:id="@+id/nextBtn"
                     android:contentDescription=""
                     android:layout_gravity="center_vertical"
