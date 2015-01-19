@@ -41,7 +41,7 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
     public void onCreate(Bundle savedInstanceState) {
         LibraryController.setCommunicator(this);
         FolderController.setCommunicator(this);
-        swipeDetector = new SwipeDetector();
+
         super.onCreate(savedInstanceState);
     }
 
@@ -54,6 +54,7 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
     public void onStart() {
         super.onStart();
         libraryListView = (ListView)getView().findViewById(R.id.libraryListView);
+        swipeDetector = new SwipeDetector(libraryListView);
         libraryListView.setOnTouchListener(swipeDetector);
         libraryListView.setOnItemClickListener(this);
         getView().setFocusableInTouchMode(true);
@@ -81,34 +82,27 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
         Object object = parent.getAdapter().getItem(position);
         if(swipeDetector.swipeDetected()) {
             if(object.getClass() == TrackDTO.class) {
+                Log.v("KJ", "FUE UN SWIPE");
                 TrackDTO track = (TrackDTO) object;
-                Log.v("DEBUG", "" + view.getX() + " -- " + view.getTranslationX());
                 if(swipeDetector.getAction() == SwipeDetector.Action.LR) {
-                    if(view.getTranslationX() == 0) {
-                        view.animate().translationXBy(150).setDuration(80).start();
-                        //var request = new Operation({id: parent.data('key'), userId: localStorage.getItem('userId'), operationType: ENQUEUE, to: localStorage.getItem('deviceId')});
-                        Operation operation = new Operation();
-                        operation.setId(track.getId());
-                        operation.setUserId(SessionConstants.USER_ID);
-                        operation.setTo(SessionConstants.DEVICE_ID);
-                        operation.setOperationType(RequestTypes.ENQUEUE);
-                        TCPService.send(operation);
-                    }
+                    Operation operation = new Operation();
+                    operation.setId(track.getId());
+                    operation.setUserId(SessionConstants.USER_ID);
+                    operation.setTo(SessionConstants.DEVICE_ID);
+                    operation.setOperationType(RequestTypes.ENQUEUE);
+                    TCPService.send(operation);
                 } else if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
-                    if(view.getTranslationX() != 0) {
-                        view.animate().translationX(0).setDuration(80).start();
-                        Operation operation = new Operation();
-                        operation.setId(track.getId());
-                        operation.setUserId(SessionConstants.USER_ID);
-                        operation.setTo(SessionConstants.DEVICE_ID);
-                        operation.setOperationType(RequestTypes.REMOVE_FROM_PLAYLIST);
-                        TCPService.send(operation);
-                    }
+                    Operation operation = new Operation();
+                    operation.setId(track.getId());
+                    operation.setUserId(SessionConstants.USER_ID);
+                    operation.setTo(SessionConstants.DEVICE_ID);
+                    operation.setOperationType(RequestTypes.REMOVE_FROM_PLAYLIST);
+                    TCPService.send(operation);
                 }
             }
 
         } else {
-
+            Log.v("fdsf", "FUE CLICK");
             if(object.getClass() == FolderDTO.class) {
                 FolderDTO selectedFolder = (FolderDTO) object;
                 getFolderContent(selectedFolder.getId(), libraryListView.onSaveInstanceState());

@@ -73,7 +73,8 @@ public class TCPService{
 
     public static void send(Operation operation){
         Gson JSONParser = new Gson();
-        webSocket.sendTextMessage(JSONParser.toJson(operation));
+        Log.v("SOCKET", "ENVIADO");
+        //webSocket.sendTextMessage(JSONParser.toJson(operation));
     }
 
     public interface PlayerCommunicator {
