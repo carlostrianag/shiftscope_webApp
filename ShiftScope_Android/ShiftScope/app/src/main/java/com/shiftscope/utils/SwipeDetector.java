@@ -28,13 +28,14 @@ public class SwipeDetector implements View.OnTouchListener {
 
 
     private static final String logTag = "SwipeDetector";
-    private static final int MIN_DISTANCE = 100;
+    private static final int MAX_X_POSITION = 180;
     private float downX, downY, upX, upY;
-    int absDownX = 0;
-    int absDownY = 0;
-    int absMoveX = 0;
-    int absMoveY = 0;
-    float deltaWidth = 0;
+    private int absDownX = 0;
+    private int absDownY = 0;
+    private int absMoveX = 0;
+    private int absMoveY = 0;
+    private float newX;
+    private float deltaWidth = 0;
     private int[] listViewCoords = new int[2];
     private View selectedView = null;
     private Action mSwipeDetected = Action.None;
@@ -91,12 +92,12 @@ public class SwipeDetector implements View.OnTouchListener {
                 upY = event.getY();
                 absMoveX = (int) event.getRawX() - listViewCoords[0];
                 absMoveY = (int) event.getRawY() - listViewCoords[1];
+
                 float deltaX = downX - upX;
                 float deltaY = downY - upY;
-
                 float absDeltaY = absDownY - absMoveY;
                 float absDeltaX = absDownX - absMoveX;
-                float newX = absMoveX - deltaWidth;
+                newX = absMoveX - deltaWidth;
                 if(Math.abs(absDeltaY) < 70) {
                     if ( selectedView != null ) {
                         if(Math.abs(absDeltaX) > 40) {
@@ -113,12 +114,14 @@ public class SwipeDetector implements View.OnTouchListener {
                             mSwipeDetected = Action.RL;
                         }
 
-                        if(mSwipeDetected == Action.LR && newX > 180) {
-                            selectedView.setX(180);
+                        if(mSwipeDetected == Action.LR && newX > MAX_X_POSITION) {
+                            newX = MAX_X_POSITION;
+                            selectedView.setX(newX);
                         }
 
                         if(mSwipeDetected == Action.RL && newX < 0) {
-                            selectedView.setX(0);
+                            newX  = 0;
+                            selectedView.setX(newX);
                         }
                     }
                 } else {
@@ -130,10 +133,10 @@ public class SwipeDetector implements View.OnTouchListener {
 
             case MotionEvent.ACTION_UP:
                 if (selectedView != null) {
-                    if (mSwipeDetected == Action.LR && selectedView.getX() == 0) {
-                        selectedView.animate().x(150).setDuration(80).start();
-                    } else if (mSwipeDetected == Action.RL && selectedView.getX() != 0) {
-                        selectedView.animate().x(0).setDuration(80).start();
+                    if(mSwipeDetected == Action.LR && newX != MAX_X_POSITION) {
+                        selectedView.animate().x(MAX_X_POSITION).setDuration(150).start();
+                    } else if(mSwipeDetected == Action.RL && newX != 0) {
+                        selectedView.animate().x(0).setDuration(150).start();
                     }
                 }
                 return false;
