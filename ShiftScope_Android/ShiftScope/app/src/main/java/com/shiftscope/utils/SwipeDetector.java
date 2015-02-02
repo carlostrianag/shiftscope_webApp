@@ -74,7 +74,6 @@ public class SwipeDetector implements View.OnTouchListener {
                     child = mListView.getChildAt(i);
                     child.getHitRect(rect);
                     if (rect.contains(absDownX, absDownY)) {
-                        Log.v(logTag, "SELECCIONADO: " + i);
                         Object item  = arrayAdapter.getItem(i+firstVisibleChild);
                         if(item.getClass() == FolderDTO.class) {
                             selectedView = null;
@@ -98,10 +97,8 @@ public class SwipeDetector implements View.OnTouchListener {
                 float absDeltaY = absDownY - absMoveY;
                 float absDeltaX = absDownX - absMoveX;
                 float newX = absMoveX - deltaWidth;
-                Log.v("PRUEBA", " . " + Math.abs(absDeltaY) + " . " + Math.abs(absDeltaX));
                 if(Math.abs(absDeltaY) < 70) {
                     if ( selectedView != null ) {
-
                         if(Math.abs(absDeltaX) > 40) {
                             selectedView.setX(newX);
                         }
