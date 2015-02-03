@@ -5,6 +5,7 @@
  */
 package shiftscope.views.dialogs;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -56,6 +57,7 @@ public class MainDialog extends JDialog {
     
     private final void createComponents() {
         dialogPanel = new JPanel();
+        dialogPanel.setBackground(new Color(38,0,38));
         label = new JLabel();
         logoLabel = new JLabel(createImageIcon("../images/icon_48.png", "logo_shift"));
         loginBtn = new JButton("Log In");
@@ -66,8 +68,6 @@ public class MainDialog extends JDialog {
         dialogPanel.setPreferredSize(new Dimension(300, 150));
         
         
-        label.setBounds(0, 0, 350, 250);
-        label.setIcon(createImageIcon("../images/back-c.png", "background"));
         
         logoLabel.setBounds(135, 10, 49, 49);
         

@@ -107,15 +107,13 @@ public class SwipeDetector implements View.OnTouchListener {
                 if(Math.abs(absDeltaY) < 70) {
 
                     if ( selectedView != null ) {
-                        if(Math.abs(absDeltaX) > 40) {
-                            selectedView.setX(newX);
-                        }
 
                         if (deltaX < 0) {
                             //Log.i(logTag, "Swipe Left to Right");
                             mSwipeDetected = Action.LR;
                             if(isAdded) {
                                 mSwipeDetected = Action.None;
+                                return true;
                             }
                         }
 
@@ -124,7 +122,12 @@ public class SwipeDetector implements View.OnTouchListener {
                             mSwipeDetected = Action.RL;
                             if(!isAdded) {
                                 mSwipeDetected = Action.None;
+                                return true;
                             }
+                        }
+
+                        if(Math.abs(absDeltaX) > 40) {
+                            selectedView.setX(newX);
                         }
 
                         if(mSwipeDetected == Action.LR && newX > MAX_X_POSITION) {

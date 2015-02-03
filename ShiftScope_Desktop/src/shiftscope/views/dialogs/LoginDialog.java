@@ -96,10 +96,9 @@ public class LoginDialog extends JDialog{
         dialogPanel.setLayout(null);
         dialogPanel.setBounds(0, 0, 0, 0);
         dialogPanel.setPreferredSize(new Dimension(350, 200));
+        dialogPanel.setBackground(new Color(38,0,38));
         
-        
-        backgroundLabel.setBounds(0, 0, 400, 250);
-        backgroundLabel.setIcon(createImageIcon("../images/back-c.png", "background"));
+        backgroundLabel.setBackground(Color.red);
         emailLabel.setBounds(40, 50, 70, 35);
         emailLabel.setBackground(Color.red);
         emailLabel.setHorizontalAlignment(SwingConstants.RIGHT);

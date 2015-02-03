@@ -545,6 +545,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         images.add(createImageIcon("images/icon_96.png", "app_logo").getImage());
         images.add(createImageIcon("images/icon_144.png", "app_logo").getImage());
         setIconImages(images);
+        getContentPane().setBackground(new Color(38,0,38));
         progressBar.setVisible(false);
         foldersScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         initPlayer();
@@ -1257,7 +1258,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Shudder");
-        setBackground(new java.awt.Color(254, 254, 254));
+        setBackground(new java.awt.Color(38, 0, 38));
         setBounds(new java.awt.Rectangle(0, 0, 865, 654));
         setMinimumSize(new java.awt.Dimension(800, 600));
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -1276,10 +1277,15 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
             }
         });
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/icon_72.png"))); // NOI18N
+        jPanel4.setBackground(new java.awt.Color(38, 0, 38));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/logo_shudder.png"))); // NOI18N
         jLabel1.setAlignmentX(-0.0F);
         jPanel4.add(jLabel1);
 
+        jPanel3.setBackground(new java.awt.Color(38, 0, 38));
+
+        backButton.setBackground(new java.awt.Color(38, 0, 38));
         backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/back.png"))); // NOI18N
         backButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1296,6 +1302,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         });
         jPanel3.add(selectFolderButton);
 
+        jPanel2.setBackground(new java.awt.Color(38, 0, 38));
         jPanel2.setPreferredSize(new java.awt.Dimension(150, 40));
 
         backBtn.setBackground(new java.awt.Color(34, 34, 34));
@@ -1351,21 +1358,30 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         jPanel2.add(nextBtn);
         jPanel2.add(songNameLabel);
 
+        jPanel6.setBackground(new java.awt.Color(38, 0, 38));
+
+        volumeSlider.setBackground(new java.awt.Color(38, 0, 38));
         volumeSlider.setValue(100);
         jPanel6.add(volumeSlider);
+
+        jPanel1.setBackground(new java.awt.Color(38, 0, 38));
 
         elapsedTime.setText("0:00");
         jPanel1.add(elapsedTime);
 
+        songPositionSlider.setBackground(new java.awt.Color(38, 0, 38));
         songPositionSlider.setValue(0);
         jPanel1.add(songPositionSlider);
 
         totalTime.setText("0:00");
         jPanel1.add(totalTime);
 
+        jPanel5.setBackground(new java.awt.Color(38, 0, 38));
+
         currentSongLabel.setFont(new java.awt.Font("SansSerif", 0, 15)); // NOI18N
         jPanel5.add(currentSongLabel);
 
+        toolBar.setBackground(new java.awt.Color(38, 0, 38));
         toolBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
@@ -1428,6 +1444,8 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
         jSplitPane1.setRightComponent(playlistScrollPane);
 
+        jPanel7.setBackground(new java.awt.Color(38, 0, 38));
+
         clearPlaylistBtn.setText("Clear Playlist");
         clearPlaylistBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1435,6 +1453,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
             }
         });
 
+        songTitleRadio.setBackground(new java.awt.Color(38, 0, 38));
         songTitleRadio.setText("Song Title");
         songTitleRadio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1442,6 +1461,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
             }
         });
 
+        artistRadio.setBackground(new java.awt.Color(38, 0, 38));
         artistRadio.setText("Artist");
         artistRadio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1518,7 +1538,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
