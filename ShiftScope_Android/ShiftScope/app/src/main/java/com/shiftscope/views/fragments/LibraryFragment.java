@@ -82,7 +82,6 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
         Object object = parent.getAdapter().getItem(position);
         if(swipeDetector.swipeDetected()) {
             if(object.getClass() == TrackDTO.class) {
-                Log.v("KJ", "FUE UN SWIPE");
                 TrackDTO track = (TrackDTO) object;
                 if(swipeDetector.getAction() == SwipeDetector.Action.LR) {
                     Operation operation = new Operation();

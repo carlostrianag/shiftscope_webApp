@@ -40,6 +40,7 @@ public class SwipeDetector implements View.OnTouchListener {
     private int absMoveY = 0;
     private float newX;
     private float deltaWidth = 0;
+    private boolean isAdded;
     private int[] listViewCoords = new int[2];
     private View selectedView = null;
     private Action mSwipeDetected = Action.None;
@@ -84,6 +85,7 @@ public class SwipeDetector implements View.OnTouchListener {
                             selectedView = null;
                         } else {
                             selectedView = child.findViewById(R.id.contentLayout);
+                            isAdded = (selectedView.getX() == MAX_X_POSITION);
                             deltaWidth = absDownX - selectedView.getX();
                         }
                     }
@@ -103,6 +105,7 @@ public class SwipeDetector implements View.OnTouchListener {
                 float absDeltaX = absDownX - absMoveX;
                 newX = absMoveX - deltaWidth;
                 if(Math.abs(absDeltaY) < 70) {
+
                     if ( selectedView != null ) {
                         if(Math.abs(absDeltaX) > 40) {
                             selectedView.setX(newX);
@@ -111,11 +114,17 @@ public class SwipeDetector implements View.OnTouchListener {
                         if (deltaX < 0) {
                             //Log.i(logTag, "Swipe Left to Right");
                             mSwipeDetected = Action.LR;
+                            if(isAdded) {
+                                mSwipeDetected = Action.None;
+                            }
                         }
 
                         if (deltaX > 0) {
                             //Log.i(logTag, "Swipe Right to Left");
                             mSwipeDetected = Action.RL;
+                            if(!isAdded) {
+                                mSwipeDetected = Action.None;
+                            }
                         }
 
                         if(mSwipeDetected == Action.LR && newX > MAX_X_POSITION) {
