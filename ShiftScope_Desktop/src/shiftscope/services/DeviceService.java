@@ -7,6 +7,7 @@
 package shiftscope.services;
 
 import com.google.gson.Gson;
+import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 import shiftscope.criteria.DeviceCriteria;
 import shiftscope.model.Device;
@@ -18,15 +19,11 @@ import shiftscope.netservices.HTTPService;
  */
 public class DeviceService {
     private static Gson JSONParser;
-    public static Response createDevice(Device device){
+    public static Response createDevice(Device device, AsyncCompletionHandler<Void> responseHandler){
         JSONParser = new Gson();
         String object = JSONParser.toJson(device);
         return HTTPService.HTTPPost("/device/create", object);        
     }
-    
-    public static Response getDeviceByUUID(DeviceCriteria criteria){
-        return HTTPService.HTTPGet("/device/getDeviceByUUID?UUID="+criteria.getUUID());
-    }    
 
     public static Response connectDevice(DeviceCriteria criteria) {
         JSONParser = new Gson();

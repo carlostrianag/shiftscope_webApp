@@ -35,7 +35,6 @@ public class TCPService extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-
         Operation request = new Operation();
         request.setUserId(SessionConstants.USER_ID);
         request.setOperationType(OperationType.CONNECT);

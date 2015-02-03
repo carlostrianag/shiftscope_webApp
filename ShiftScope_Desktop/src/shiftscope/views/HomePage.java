@@ -640,7 +640,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
     private void calculateDifference() {
         layoutWidth = jSplitPane1.getDividerLocation() - 22;
-        //difference = this.getWidth() - jSplitPane1.getDividerLocation();
     }
 
     public void playSong(Track t, boolean playedFromPlaylist) {

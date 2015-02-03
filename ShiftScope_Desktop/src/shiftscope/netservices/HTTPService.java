@@ -5,6 +5,7 @@
  */
 package shiftscope.netservices;
 
+import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 
@@ -19,21 +20,14 @@ import shiftscope.util.Constants;
  */
 public class HTTPService {
 
-    public static Response HTTPGet(String targetURL) {
+    public static Response HTTPGet(String targetURL, AsyncCompletionHandler<Void> responseHandler) {
         AsyncHttpClient client = new AsyncHttpClient();
-        try {
-            Response r = client.prepareGet(Constants.SERVER_URL + targetURL).execute().get();
-            //System.out.println(r.getResponseBody() + " from: " + Constants.SERVER_URL+targetURL);
-            return r;
-        } catch (InterruptedException ex) {
-            Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            System.out.println("Se ha producido un error de conexion");
-        }
+        client.prepareGet(Constants.SERVER_URL + targetURL).execute(responseHandler);
+        //System.out.println(r.getResponseBody() + " from: " + Constants.SERVER_URL+targetURL);
         return null;
     }
 
-    public static Response HTTPPost(String targetURL, String urlParameters) {
+    public static Response HTTPPost(String targetURL, String urlParameters, AsyncCompletionHandler<Void> responseHandler) {
         AsyncHttpClient client = new AsyncHttpClient();
         try {
             Response r = client.preparePost(Constants.SERVER_URL + targetURL)

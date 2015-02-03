@@ -6,9 +6,12 @@
 
 package shiftscope.controller;
 
+import com.google.gson.Gson;
+import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 import shiftscope.criteria.DeviceCriteria;
 import shiftscope.model.Device;
+import shiftscope.netservices.HTTPService;
 import shiftscope.services.DeviceService;
 
 /**
@@ -16,16 +19,35 @@ import shiftscope.services.DeviceService;
  * @author carlos
  */
 public class DeviceController {
+    private static Gson JSONParser;
         
-    public static Response createDevice(Device device){
-        return DeviceService.createDevice(device);
+    public static void createDevice(Device device){
+        JSONParser = new Gson();
+        String object = JSONParser.toJson(device);
+        AsyncCompletionHandler<Void> responseHandler = new AsyncCompletionHandler<Void>() {
+            @Override
+            public Void onCompleted(Response response) throws Exception {
+                return null;
+            };
+            
+        };
+        HTTPService.HTTPPost("/device/create", object, responseHandler); 
     }
     
-    public static Response getDeviceByUUID(DeviceCriteria criteria) {
-        return DeviceService.getDeviceByUUID(criteria);
+    public static void getDeviceByUUID(DeviceCriteria criteria) {
+        AsyncCompletionHandler<Void> responseHandler = new AsyncCompletionHandler<Void>() {
+
+            @Override
+            public Void onCompleted(Response response) throws Exception {
+                return null;
+            }
+        };
+        HTTPService.HTTPGet("/device/getDeviceByUUID?UUID="+criteria.getUUID(), responseHandler);
     }
 
     public static Response connectDevice(DeviceCriteria criteria) {
         return DeviceService.connectDevice(criteria);
     }
+    
+    
 }

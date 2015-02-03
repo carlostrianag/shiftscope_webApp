@@ -5,6 +5,7 @@
         <group>
             <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shiftscope/views/HomePage.java</file>
             <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shiftscope/netservices/TCPService.java</file>
+            <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shiftscope/views/dialogs/LoginDialog.java</file>
             <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shiftscope/controller/TrackController.java</file>
         </group>
     </open-files>
