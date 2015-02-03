@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/checkLayout"
         android:layout_width="70dp"
+        android:padding="10dp"
         android:layout_height="match_parent"
         android:layout_marginEnd="5dp"
         android:background="@color/fluor_pink"
         android:layout_alignParentTop="true"
         android:layout_alignBottom="@+id/contentLayout">
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:src="@drawable/ic_check"
-            android:layout_alignParentRight="false"
-            android:layout_alignWithParentIfMissing="false"
-            android:layout_centerInParent="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/contentLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="10dp"
-        android:background="@color/lighter_purple">
+        android:background="@color/lighter_purple"
+        android:visibility="visible">
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
