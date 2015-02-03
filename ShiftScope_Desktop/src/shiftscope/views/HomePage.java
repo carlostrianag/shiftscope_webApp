@@ -606,13 +606,13 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
             @Override
             public void mouseEntered(MouseEvent e) {
                 JLabel btn = (JLabel) e.getSource();
-                btn.setBackground(new Color(34, 34, 80));
+                btn.setBackground(new Color(57, 6 , 57));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 JLabel btn = (JLabel) e.getSource();
-                btn.setBackground(new Color(34, 34, 34));
+                btn.setBackground(new Color(38, 0 , 38));
             }
         };
 
@@ -1278,15 +1278,16 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         });
 
         jPanel4.setBackground(new java.awt.Color(38, 0, 38));
+        jPanel4.setLayout(new java.awt.BorderLayout());
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/logo_shudder.png"))); // NOI18N
         jLabel1.setAlignmentX(-0.0F);
-        jPanel4.add(jLabel1);
+        jPanel4.add(jLabel1, java.awt.BorderLayout.CENTER);
 
         jPanel3.setBackground(new java.awt.Color(38, 0, 38));
 
         backButton.setBackground(new java.awt.Color(38, 0, 38));
-        backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/back.png"))); // NOI18N
+        backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/ic_unknown.png"))); // NOI18N
         backButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 backButtonMouseClicked(evt);
@@ -1294,7 +1295,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         });
         jPanel3.add(backButton);
 
-        selectFolderButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/folder-o.png"))); // NOI18N
+        selectFolderButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/ic_folder.png"))); // NOI18N
         selectFolderButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 selectFolderButtonMouseClicked(evt);
@@ -1305,9 +1306,9 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         jPanel2.setBackground(new java.awt.Color(38, 0, 38));
         jPanel2.setPreferredSize(new java.awt.Dimension(150, 40));
 
-        backBtn.setBackground(new java.awt.Color(34, 34, 34));
+        backBtn.setBackground(new java.awt.Color(38, 0, 38));
         backBtn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/backward.png"))); // NOI18N
+        backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/ic_back.png"))); // NOI18N
         backBtn.setOpaque(true);
         backBtn.setPreferredSize(new java.awt.Dimension(30, 30));
         backBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1320,10 +1321,10 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         });
         jPanel2.add(backBtn);
 
-        pauseBtn.setBackground(new java.awt.Color(34, 34, 34));
+        pauseBtn.setBackground(new java.awt.Color(38, 0, 38));
         pauseBtn.setForeground(new java.awt.Color(254, 254, 254));
         pauseBtn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        pauseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/pause.png"))); // NOI18N
+        pauseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/ic_pause.png"))); // NOI18N
         pauseBtn.setOpaque(true);
         pauseBtn.setPreferredSize(new java.awt.Dimension(30, 30));
         pauseBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1333,9 +1334,9 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         });
         jPanel2.add(pauseBtn);
 
-        stopBtn.setBackground(new java.awt.Color(34, 34, 34));
+        stopBtn.setBackground(new java.awt.Color(38, 0, 38));
         stopBtn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        stopBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/stop.png"))); // NOI18N
+        stopBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/ic_stop.png"))); // NOI18N
         stopBtn.setOpaque(true);
         stopBtn.setPreferredSize(new java.awt.Dimension(30, 30));
         stopBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1345,9 +1346,9 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         });
         jPanel2.add(stopBtn);
 
-        nextBtn.setBackground(new java.awt.Color(34, 34, 34));
+        nextBtn.setBackground(new java.awt.Color(38, 0, 38));
         nextBtn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        nextBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/forward.png"))); // NOI18N
+        nextBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/shiftscope/views/images/ic_next.png"))); // NOI18N
         nextBtn.setOpaque(true);
         nextBtn.setPreferredSize(new java.awt.Dimension(30, 30));
         nextBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1525,7 +1526,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 692, Short.MAX_VALUE)))
+                                .addGap(0, 664, Short.MAX_VALUE)))
                         .addContainerGap())))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 763, Short.MAX_VALUE))
@@ -1538,7 +1539,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
