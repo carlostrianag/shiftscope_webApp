@@ -1,6 +1,8 @@
 package com.shiftscope.utils;
 
+import android.content.res.Resources;
 import android.graphics.Rect;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -8,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.shiftscope.dto.FolderDTO;
+
+import shiftscope.com.shiftscope.R;
 
 /**
  * Created by Carlos on 1/16/2015.
@@ -28,7 +32,7 @@ public class SwipeDetector implements View.OnTouchListener {
 
 
     private static final String logTag = "SwipeDetector";
-    private static final int MAX_X_POSITION = 180;
+    private final int MAX_X_POSITION = convertToPx(75);
     private float downX, downY, upX, upY;
     private int absDownX = 0;
     private int absDownY = 0;
@@ -79,7 +83,7 @@ public class SwipeDetector implements View.OnTouchListener {
                         if(item.getClass() == FolderDTO.class) {
                             selectedView = null;
                         } else {
-                            selectedView = child;
+                            selectedView = child.findViewById(R.id.contentLayout);
                             deltaWidth = absDownX - selectedView.getX();
                         }
                     }
@@ -142,5 +146,10 @@ public class SwipeDetector implements View.OnTouchListener {
                 return false;
         }
         return false;
+    }
+
+    private int convertToPx(int dp) {
+        final float scale = Resources.getSystem().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
     }
 }
