@@ -85,7 +85,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         public void OnContentFetched(FolderDTO folderContent) {
             drawFolder(folderContent);
         }
-
+        
         @Override
         public void fetchingContent() {
             folderPane.removeAll();
