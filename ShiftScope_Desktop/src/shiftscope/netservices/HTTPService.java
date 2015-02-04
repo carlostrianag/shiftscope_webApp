@@ -20,26 +20,48 @@ import shiftscope.util.Constants;
  */
 public class HTTPService {
 
-    public static Response HTTPGet(String targetURL, AsyncCompletionHandler<Void> responseHandler) {
+    public static void HTTPGet(String targetURL, AsyncCompletionHandler<Void> responseHandler) {
         AsyncHttpClient client = new AsyncHttpClient();
         client.prepareGet(Constants.SERVER_URL + targetURL).execute(responseHandler);
         //System.out.println(r.getResponseBody() + " from: " + Constants.SERVER_URL+targetURL);
-        return null;
     }
-
-    public static Response HTTPPost(String targetURL, String urlParameters, AsyncCompletionHandler<Void> responseHandler) {
+    
+    public static Response HTTPSyncGet(String targetURL) {
         AsyncHttpClient client = new AsyncHttpClient();
+        Response r;
         try {
-            Response r = client.preparePost(Constants.SERVER_URL + targetURL)
-                    .addHeader("content-type", "application/json; charset=utf-8")
-                    .setBody(urlParameters)
-                    .execute()
-                    .get();
+            r = client.prepareGet(Constants.SERVER_URL + targetURL).execute().get();
             return r;
         } catch (InterruptedException ex) {
             Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
-            System.out.println("Se ha producido un error de conexion");
+            Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+        //System.out.println(r.getResponseBody() + " from: " + Constants.SERVER_URL+targetURL);
+    }
+
+    public static void HTTPPost(String targetURL, String urlParameters, AsyncCompletionHandler<Void> responseHandler) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.preparePost(Constants.SERVER_URL + targetURL)
+            .addHeader("content-type", "application/json; charset=utf-8")
+            .setBody(urlParameters)
+            .execute(responseHandler);
+    }
+    
+    public static Response HTTPSyncPost(String targetURL, String urlParameters) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        Response r;
+        try {
+            r = client.preparePost(Constants.SERVER_URL + targetURL)
+                    .addHeader("content-type", "application/json; charset=utf-8")
+                    .setBody(urlParameters)
+                    .execute().get();
+            return r;
+        } catch (InterruptedException ex) {
+            Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(HTTPService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
