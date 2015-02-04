@@ -67,10 +67,7 @@ public class FolderController {
                     JSONParser = new Gson();
                     FolderDTO folderContent = JSONParser.fromJson(response.getResponseBody(), FolderDTO.class);
                     SessionConstants.PARENT_FOLDER_ID = folderContent.getParentFolder();
-                    for (FolderListener listener : listeners) {
-                        listener.OnContentFetched(folderContent);
-                    }
-                    //new FolderWorker(folderContent).execute();
+                    new FolderWorker(folderContent).execute();
                 } else {
                     SessionConstants.PARENT_FOLDER_ID = -1;
                 }
@@ -81,7 +78,6 @@ public class FolderController {
         for (FolderListener listener : listeners) {
             listener.fetchingContent();
         }
-        System.out.println("SE FUE LA PETICION!");
     }
     
     public static void drawFolder(FolderDTO folderContent) {
