@@ -5,6 +5,7 @@
     <ImageView
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:src="@drawable/ic_device"
         android:id="@+id/deviceStatusImage"
         android:layout_alignParentTop="false"
         android:layout_alignParentLeft="true"

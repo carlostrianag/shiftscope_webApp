@@ -127,6 +127,7 @@ public class SwipeDetector implements View.OnTouchListener {
                         }
 
                         if(Math.abs(absDeltaX) > 40) {
+                            newX -= 40;
                             selectedView.setX(newX);
                         }
 

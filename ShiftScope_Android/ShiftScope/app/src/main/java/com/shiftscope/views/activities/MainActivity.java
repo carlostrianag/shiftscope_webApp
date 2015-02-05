@@ -109,7 +109,6 @@ public class MainActivity extends ActionBarActivity implements TCPService.Player
                 } else {
                     currentSongText.setText("");
                 }
-
                 SessionConstants.PLAYER_VOLUME = syncObject.getCurrentVolume();
                 if(volumeDialog != null) {
                     volumeDialog.updateVolume();

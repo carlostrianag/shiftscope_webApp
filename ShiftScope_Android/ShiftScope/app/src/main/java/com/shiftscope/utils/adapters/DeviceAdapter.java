@@ -37,11 +37,11 @@ public class DeviceAdapter extends ArrayAdapter<DeviceDTO> {
         TextView deviceName = (TextView)v.findViewById(R.id.deviceNameText);
         ImageView deviceStatus = (ImageView) v.findViewById(R.id.deviceStatusImage);
         deviceName.setText(device.getName());
-        if(device.isOnline()) {
-            deviceStatus.setImageResource(R.drawable.ic_action_computer); //CAMBIAR POR ICONO ONLINE
-        } else {
-            deviceStatus.setImageResource(R.drawable.ic_action_computer);
-        }
+//        if(device.isOnline()) {
+//            deviceStatus.setImageResource(R.drawable.ic_action_computer); //CAMBIAR POR ICONO ONLINE
+//        } else {
+//            deviceStatus.setImageResource(R.drawable.ic_action_computer);
+//        }
         return v;
     }
 }
