@@ -5,9 +5,6 @@
  */
 package shudder.views;
 
-import com.beaglebuddy.mp3.MP3;
-import com.google.gson.Gson;
-import com.ning.http.client.Response;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -22,20 +19,14 @@ import java.awt.event.MouseMotionAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -56,7 +47,6 @@ import javazoom.jlgui.basicplayer.BasicPlayerListener;
 import shudder.controllers.FolderController;
 import shudder.controllers.UserCotroller;
 import shudder.criteria.FolderCriteria;
-import shudder.dto.FolderCreationDTO;
 import shudder.dto.FolderDTO;
 import shudder.listeners.FolderListener;
 import shudder.listeners.LoginListener;
@@ -78,14 +68,12 @@ import shudder.views.dialogs.MainDialog;
  */
 public class HomePage extends javax.swing.JFrame implements BasicPlayerListener {
 
-    //Listeners
     private final FolderListener folderListener = new FolderListener() {
-
         @Override
         public void OnContentFetched(FolderDTO folderContent) {
             drawFolder(folderContent);
         }
-        
+
         @Override
         public void fetchingContent() {
             folderPane.removeAll();
@@ -101,31 +89,56 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         public void OnError(String error) {
 
         }
+
+        @Override
+        public void OnProgressUpdated(int progress) {
+            progressBar.setValue((int) progress);
+        }
+
+        @Override
+        public void OnFilesScanned(int filesCount) {
+            progressBar.setMaximum((int) filesCount);
+            progressBar.setVisible(true);
+        }
+
+        @Override
+        public void OnBuildFolderFinished() {
+            sync.setNewFolders(true);
+            Operation request = new Operation();
+            request.setOperationType(OperationType.SYNC);
+            request.setUserId(SessionConstants.USER_ID);
+            request.setSync(sync);
+            webSocket.sendRequest(request);
+            sync.setNewFolders(false);
+            progressBar.setVisible(false);
+            getFolderContent(-1);
+            System.out.println("ShiftScope has finished...");
+        }
     };
-    
+
     private final LoginListener loginListener = new LoginListener() {
 
         @Override
         public void OnInit() {
             init();
         }
-        
+
         @Override
         public void loading() {
-            
+
         }
 
         @Override
         public void laoded() {
-            
+
         }
 
         @Override
         public void OnError(String error) {
-            
+
         }
     };
-    
+
     //IMAGES
     ImageIcon musicIcon;
     ImageIcon folderIcon;
@@ -135,10 +148,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
     //GUI VARIABLES
     public TCPService webSocket;
-    private Gson JSONParser;
     private JFileChooser fileChooser;
-    private float totalFiles;
-    private float currentFileScanned;
 
     private int currentSongPosition;
     private int layoutWidth;
@@ -163,7 +173,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
     @Override
     public void opened(Object o, Map map) {
-        //display("opened : " + map.toString());
         Long duration = (Long) map.get("duration");
         int mili = (int) (duration / 1000);
         int sec = (int) (mili / 1000) % 60;
@@ -178,7 +187,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
     @Override
     public void progress(int i, long l, byte[] bytes, Map map) {
-        //display("progress : " + map.toString());
         Long duration1 = (Long) map.get("mp3.position.microseconds");
         int mili = (int) (duration1 / 1000);
         int sec = (int) (mili / 1000) % 60;
@@ -191,7 +199,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
     @Override
     public void stateUpdated(BasicPlayerEvent event) {
-        display("stateUpdated : " + event.toString());
+        //display("stateUpdated : " + event.toString());
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
@@ -231,7 +239,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
             case BasicPlayerEvent.GAIN:
                 if (volumeAdjustedByUser) {
-                    //enviar por socket
                     System.out.println("enviar por sockett");
                 } else {
                     System.out.println("AJUSTADO DE SOCKET");
@@ -239,12 +246,10 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                 }
                 break;
         }
-
     }
 
     @Override
     public void setController(BasicController controller) {
-        //display("setController : " + controller); 
     }
 
     private void drawFolder(FolderDTO fetchedFolder) {
@@ -265,7 +270,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
             folderPane.repaint();
             int totalElements = fetchedFolder.getFolders().size() + fetchedFolder.getTracks().size();
 
-            //folderPane.removeAll();
             folderPane.setPreferredSize(new Dimension(layoutWidth, totalElements * 45));
             foldersScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             foldersScrollPane.getVerticalScrollBar().setValue(0);
@@ -293,20 +297,20 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                         if (e.getClickCount() == 2) {
                             getFolderContent(folder.getId());
                         } else if (e.getButton() == MouseEvent.BUTTON3) {
-//                                JPopupMenu popupMenu = new JPopupMenu();
-//                                popupMenu.setLabel("Folder");
-//                                JMenuItem remove = new JMenuItem("Remove folder");
-//                                remove.addActionListener(new ActionListener() {
-//
-//                                    @Override
-//                                    public void actionPerformed(ActionEvent e) {
-//                                        
-//                                    }
-//
-//                                });
-//
-//                                popupMenu.add(remove);
-//                                popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                            JPopupMenu popupMenu = new JPopupMenu();
+                            popupMenu.setLabel("Folder");
+                            JMenuItem remove = new JMenuItem("Remove folder");
+                            remove.addActionListener(new ActionListener() {
+
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+
+                                }
+
+                            });
+
+                            popupMenu.add(remove);
+                            popupMenu.show(e.getComponent(), e.getX(), e.getY());
                         }
 
                     }
@@ -359,15 +363,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                     }
 
                 };
-                trackPanel.addMouseMotionListener(new MouseMotionAdapter() {
-
-                    @Override
-                    public void mouseDragged(MouseEvent e) {
-                            //e.translatePoint(e.getComponent().getLocation().x, e.getComponent().getLocation().y);
-                        //trackPanel.setLocation(0, e.getY()+5);
-                    }
-
-                });
                 trackPanel.addMouseListener(new MouseListener() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
@@ -375,7 +370,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                             playSong(track, false);
                         } else if (e.getButton() == MouseEvent.BUTTON3) {
                             JPopupMenu popupMenu = new JPopupMenu();
-                            popupMenu.setLabel("Folder");
+                            popupMenu.setLabel("Track");
                             JMenuItem play = new JMenuItem("Play");
                             play.addActionListener(new ActionListener() {
 
@@ -451,41 +446,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         folderPane.repaint();
         foldersScrollPane.revalidate();
         foldersScrollPane.repaint();
-    }
-
-    public class FolderBuilder extends SwingWorker<Void, Void> {
-
-        @Override
-        protected Void doInBackground() throws Exception {
-            totalFiles = 0;
-            currentFileScanned = 0;
-            File[] selectedFiles = fileChooser.getSelectedFiles();
-            for (File f : selectedFiles) {
-                countFiles(f);
-            }
-            progressBar.setMaximum((int) totalFiles);
-            System.out.println(totalFiles);
-            progressBar.setVisible(true);
-            System.out.println("Fetching your files...");
-            for (File f : fileChooser.getSelectedFiles()) {
-                buildFolderOptimized(f, -1);
-            }
-            return null;
-        }
-
-        @Override
-        protected void done() {
-            sync.setNewFolders(true);
-            Operation request = new Operation();
-            request.setOperationType(OperationType.SYNC);
-            request.setUserId(SessionConstants.USER_ID);
-            request.setSync(sync);
-            webSocket.sendRequest(request);
-            sync.setNewFolders(false);
-            progressBar.setVisible(false);
-            getFolderContent(-1);
-            System.out.println("ShiftScope has finished...");
-        }
     }
 
     public class TrackOrderer extends SwingWorker<Void, Void> {
@@ -773,7 +733,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         request.setSync(sync);
         webSocket.sendRequest(request);
     }
-    
+
     public void dequeueSong(Track t) {
         if (t.equals(currentSong)) {
             next();
@@ -825,131 +785,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
     public void display(String msg) {
         System.out.println(msg);
-    }
-
-    private void countFiles(File selectedFile) {
-        File[] selectedFiles;
-        if (selectedFile.isDirectory() && !selectedFile.isHidden()) {
-            selectedFiles = selectedFile.listFiles();
-            for (File f : selectedFiles) {
-                totalFiles++;
-                countFiles(f);
-            }
-        } else if (!selectedFile.isFile() && !selectedFile.isHidden() && selectedFile.getName().endsWith(".mp3")) {
-            totalFiles++;
-        }
-    }
-
-    private void buildFolderOptimized(File folder, int parentId) {
-        JSONParser = new Gson();
-        Folder createdFolder;
-        FolderCreationDTO folderToCreate = new FolderCreationDTO();
-
-        ArrayList<File> folders = new ArrayList<>();
-        ArrayList<Track> tracks = new ArrayList<>();
-
-        Folder newFolder = new Folder();
-        newFolder.setPath(folder.getAbsolutePath());
-        newFolder.setTitle(folder.getName());
-        newFolder.setParentFolder(parentId);
-        newFolder.setLibrary(SessionConstants.LIBRARY_ID);
-
-        folderToCreate.setFolder(newFolder);
-
-        File[] files = folder.listFiles();
-
-        for (File f : files) {
-            if (f.isDirectory()) {
-                folders.add(f);
-            } else if (f.getName().endsWith(".mp3") && !f.isHidden()) {
-                Track track = new Track();
-                try {
-                    MP3 mp3 = new MP3(f);
-                    AudioFileFormat baseFileFormat = AudioSystem.getAudioFileFormat(f);
-                    Map properties = baseFileFormat.properties();
-                    Long duration1 = (Long) properties.get("duration");
-                    int mili = (int) (duration1 / 1000);
-                    int sec = (int) (mili / 1000) % 60;
-                    int min = (int) (mili / 1000) / 60;
-                    track.setDuration(min + ":" + String.format("%02d", sec));
-                    String path = f.getAbsolutePath();
-                    String artist = mp3.getLeadPerformer();
-                    String title = mp3.getTitle();
-                    track.setArtist(artist);
-                    track.setTitle(title);
-                    if (artist != null) {
-                        track.setArtist(artist);
-                    } else {
-                        track.setArtist("Unknown");
-                    }
-                    if (title != null) {
-                        track.setTitle(title);
-                    } else {
-                        track.setTitle(f.getName());
-                    }
-
-                    track.setPath(path);
-                    track.setLibrary(SessionConstants.LIBRARY_ID);
-                    //jLabel2.setText(f.getAbsolutePath());
-                    currentFileScanned++;
-                    progressBar.setValue((int) currentFileScanned);
-                    tracks.add(track);
-                } catch (IOException ex) {
-                } catch (UnsupportedAudioFileException ex) {
-                    //Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
-        folderToCreate.setTracks(tracks);
-        System.out.println("Crear " + folder + "   " + new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
-        createdFolder = createFolderByLimit(folderToCreate, 300);
-        if (createdFolder != null) {
-            for (File file : folders) {
-                buildFolderOptimized(file, createdFolder.getId());
-            }
-        }
-    }
-
-    private Folder createFolderByLimit(FolderCreationDTO folder, int trackLimit) {
-        Folder createdFolder = null;
-        ArrayList<Track> tracks = folder.getTracks();
-        ArrayList<Track> tracksToCreate;
-        int total = tracks.size();
-        int start = 0;
-        int end = 0;
-        if (total > trackLimit) {
-            start = 0;
-            end = (start + trackLimit <= total - 1) ? start + trackLimit : total - 1;
-            System.out.println(start + "  " + end);
-            tracksToCreate = new ArrayList<>(tracks.subList(start, end));
-            folder.setTracks(tracksToCreate);
-        }
-
-        Response response = FolderController.createFolderOptimized(folder);
-        try {
-            if (response.getStatusCode() == 200) {
-                createdFolder = (Folder) JSONParser.fromJson(response.getResponseBody(), Folder.class);
-                int parentId = createdFolder.getId();
-                if (total > trackLimit) {
-                    for (int i = end; i < total; i++) {
-                        tracks.get(i).setParentFolder(parentId);
-                    }
-                    do {
-                        start = end + 1;
-                        end = (start + trackLimit <= total - 1) ? start + trackLimit : total - 1;
-                        System.out.println(start + "  " + end + " " + new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
-                        tracksToCreate = new ArrayList<>(tracks.subList(start, end));
-                        folder.setFolder(null);
-                        folder.setTracks(tracksToCreate);
-                        FolderController.createFolderTracks(folder);
-                    } while (response.getStatusCode() == 200 && start < total);
-                }
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return createdFolder;
     }
 
     private void drawFetchedFolder(FolderDTO fetchedFolder) {
@@ -1069,7 +904,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
         for (int i = 0; i < tracks.size(); i++) {
             final Track track = tracks.get(i);
-            final int position = i;
             final JPanel trackPanel = new JPanel() {
 
                 @Override
@@ -1522,7 +1356,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         fileChooser.setMultiSelectionEnabled(true);
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            new FolderBuilder().execute();
+            FolderController.buildFolder(fileChooser.getSelectedFiles());
         }
     }//GEN-LAST:event_selectFolderButtonMouseClicked
 
