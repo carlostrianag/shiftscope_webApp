@@ -16,9 +16,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -32,6 +34,8 @@ import shudder.model.Track;
 import shudder.netservices.HTTPService;
 import shudder.util.Events;
 import shudder.util.SessionConstants;
+import shudder.util.comparators.ArtistComparator;
+import shudder.util.comparators.TitleComparator;
 import shudder.views.HomePage;
 
 /**
@@ -41,9 +45,12 @@ import shudder.views.HomePage;
 public class FolderController {
     
     private static ArrayList<FolderListener> listeners = new ArrayList<>();
+    private static FolderDTO folderContent;
     private static Gson JSONParser;
     private static int currentFileScanned = 0;
     private static int totalFiles;
+    private static boolean orderBySongName = true;
+    private static boolean orderByArtists = false;
     
     
     public static void addListener(FolderListener listener) {
@@ -83,9 +90,9 @@ public class FolderController {
             public Void onCompleted(Response response) throws Exception {
                 if (response.getStatusCode() == 200) {
                     JSONParser = new Gson();
-                    FolderDTO folderContent = JSONParser.fromJson(response.getResponseBody(), FolderDTO.class);
+                    folderContent = JSONParser.fromJson(response.getResponseBody(), FolderDTO.class);
                     SessionConstants.PARENT_FOLDER_ID = folderContent.getParentFolder();
-                    new FolderWorker(Events.ON_CONTENT_FETCHED, folderContent).execute();
+                    new FolderWorker(Events.ON_CONTENT_FETCHED).execute();
                 } else {
                     SessionConstants.PARENT_FOLDER_ID = -1;
                 }
@@ -98,10 +105,9 @@ public class FolderController {
         }
     }
     
-    public static void drawFolder(FolderDTO folderContent) {
-        new FolderWorker(Events.ON_DRAW_FOLDER, folderContent).execute();
+    public static void drawFolder() {
+        new FolderWorker(Events.ON_DRAW_FOLDER).execute();
     }
-    
     
     public static void buildFolder(File[] files) {
         new FolderWorker(Events.BUILD_FOLDER_HIERARCHY, files).execute();
@@ -122,6 +128,25 @@ public class FolderController {
             for (File f : selectedFiles) {
                 buildFolderOptimized(f, -1);
             }
+    }
+    
+    
+    public static void orderTracksBySongName() {
+        orderBySongName = true;
+        orderByArtists = false;
+        new FolderWorker(Events.ON_ORDER_TRACKS).execute();
+    }
+    
+    public static void orderTracksByArtistName() {
+        orderByArtists = true;
+        orderBySongName = false;
+        new FolderWorker(Events.ON_ORDER_TRACKS).execute();
+    }
+    
+    public static void search(String text) {     
+        new FolderWorker(Events.ON_SEARCH, text).execute();
+        
+        //drawSearchResults(tracks);
     }
     
     private static void buildFolderOptimized(File folder, int parentId) {
@@ -254,12 +279,11 @@ public class FolderController {
     
     private static class FolderWorker extends SwingWorker<Void, Void> {
 
-        private FolderDTO fetchedFolder;
         private Events event;
         private File[] files;
+        private String matchingCriteria;
 
-        public FolderWorker(Events event, FolderDTO fetchedFolder) {
-            this.fetchedFolder = fetchedFolder;
+        public FolderWorker(Events event) {
             this.event = event;
         }
 
@@ -267,6 +291,12 @@ public class FolderController {
             this.event = event;
             this.files = files;
         }
+
+        public FolderWorker(Events event, String matchingCriteria) {
+            this.event = event;
+            this.matchingCriteria = matchingCriteria;
+        }
+        
         
         
         @Override
@@ -275,17 +305,40 @@ public class FolderController {
             switch(event) {
                 case ON_CONTENT_FETCHED:
                     for (FolderListener listener : listeners) {
-                        listener.OnContentFetched(fetchedFolder);
+                        listener.OnContentFetched(folderContent);
                     }
                     break;
                 case ON_DRAW_FOLDER:
+                    if (orderBySongName) {
+                        Collections.sort(folderContent.getTracks(), new TitleComparator());
+                    } else {
+                        Collections.sort(folderContent.getTracks(), new ArtistComparator());
+                    }
                     for (FolderListener listener : listeners) {
-                        listener.OnContentFetched(fetchedFolder);
+                        listener.OnContentFetched(folderContent);
                     }                    
                     break;
                     
                 case BUILD_FOLDER_HIERARCHY:
                     buildFolderHierarchy(files);
+                    break;
+                    
+                case ON_ORDER_TRACKS:
+                    if (orderBySongName) {
+                        Collections.sort(folderContent.getTracks(), new TitleComparator());
+                    } else {
+                        Collections.sort(folderContent.getTracks(), new ArtistComparator());
+                    }
+                    for (FolderListener listener : listeners) {
+                        listener.OnContentFetched(folderContent);
+                    }                        
+                    break;
+                    
+                case ON_SEARCH:
+                    ArrayList<Track> tracks = new ArrayList<>(folderContent.getTracks().stream().filter(p -> p.getTitle().contains(matchingCriteria) || p.getArtist().contains(matchingCriteria)).collect(Collectors.toList()));
+                    for(FolderListener listener : listeners) {
+                        listener.drawSearchResults(tracks);
+                    }
                     break;
             }
             return null;

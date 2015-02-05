@@ -22,11 +22,9 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -36,7 +34,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
-import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javazoom.jlgui.basicplayer.BasicController;
@@ -58,8 +55,6 @@ import shudder.util.Operation;
 import shudder.util.OperationType;
 import shudder.util.SessionConstants;
 import shudder.util.Sync;
-import shudder.util.comparators.ArtistComparator;
-import shudder.util.comparators.TitleComparator;
 import shudder.views.dialogs.MainDialog;
 
 /**
@@ -74,6 +69,11 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
             drawFolder(folderContent);
         }
 
+        @Override
+        public void drawSearchResults(ArrayList<Track> tracks) {
+            drawResults(tracks);
+        }
+        
         @Override
         public void fetchingContent() {
             folderPane.removeAll();
@@ -152,10 +152,8 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
     private int currentSongPosition;
     private int layoutWidth;
-    private boolean orderBySongName;
-    private boolean orderByArtist;
     private ArrayList<Track> queuePaths;
-    private FolderDTO folderContent;
+
     private Track currentSong;
     private Sync sync;
 
@@ -204,7 +202,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
         switch (event.getCode()) {
-
+ 
             case BasicPlayerEvent.PLAYING:
                 sync.setCurrentSongId(currentSong.getId());
                 sync.setCurrentSongName(currentSong.getTitle());
@@ -253,14 +251,8 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
     }
 
     private void drawFolder(FolderDTO fetchedFolder) {
-        folderContent = fetchedFolder;
         ArrayList<JPanel> panels = new ArrayList<>();
         if (fetchedFolder != null) {
-            if (orderByArtist) {
-                Collections.sort(folderContent.getTracks(), new ArtistComparator());
-            } else {
-                Collections.sort(folderContent.getTracks(), new TitleComparator());
-            }
             folderPane.removeAll();
             JLabel loadingLabel = new JLabel("Loading please wait...");
             loadingLabel.setFont(serifFont);
@@ -447,26 +439,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         foldersScrollPane.revalidate();
         foldersScrollPane.repaint();
     }
-
-    public class TrackOrderer extends SwingWorker<Void, Void> {
-
-        @Override
-        protected Void doInBackground() throws Exception {
-            if (orderBySongName) {
-                Collections.sort(folderContent.getTracks(), new TitleComparator());
-            } else {
-                Collections.sort(folderContent.getTracks(), new ArtistComparator());
-            }
-            drawFetchedFolder(folderContent);
-            return null;
-        }
-
-        @Override
-        protected void done() {
-
-        }
-    };
-
+    
     public HomePage() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -787,11 +760,9 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         System.out.println(msg);
     }
 
-    private void drawFetchedFolder(FolderDTO fetchedFolder) {
-        FolderController.drawFolder(fetchedFolder);
-    }
+  
 
-    private void drawSearchResults(ArrayList<Track> tracks) {
+    private void drawResults(ArrayList<Track> tracks) {
         folderPane.setPreferredSize(new Dimension(layoutWidth, tracks.size() * 45));
         foldersScrollPane.getVerticalScrollBar().setValue(0);
         folderPane.removeAll();
@@ -1393,7 +1364,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
         jSplitPane1.setDividerLocation(this.getWidth() - 300);
         calculateDifference();
-        drawFetchedFolder(folderContent);
+        FolderController.drawFolder();
     }//GEN-LAST:event_formComponentResized
 
     private void jSplitPane1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSplitPane1PropertyChange
@@ -1419,9 +1390,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
     private void songTitleRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_songTitleRadioActionPerformed
         if (songTitleRadio.isSelected()) {
-            orderBySongName = true;
-            orderByArtist = false;
-            new TrackOrderer().execute();
+            FolderController.orderTracksBySongName();
         }
     }//GEN-LAST:event_songTitleRadioActionPerformed
 
@@ -1432,10 +1401,9 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
     private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
         if (searchTextField.getText().length() > 2) {
             String matchCriteria = searchTextField.getText();
-            ArrayList<Track> tracks = new ArrayList<Track>(folderContent.getTracks().stream().filter(p -> p.getTitle().contains(matchCriteria) || p.getArtist().contains(matchCriteria)).collect(Collectors.toList()));
-            drawSearchResults(tracks);
+            FolderController.search(matchCriteria);            
         } else if (searchTextField.getText().length() == 0) {
-            drawFetchedFolder(folderContent);
+            FolderController.drawFolder();
         }
     }//GEN-LAST:event_searchTextFieldKeyReleased
 
@@ -1445,9 +1413,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
     private void artistRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_artistRadioActionPerformed
         if (artistRadio.isSelected()) {
-            orderByArtist = true;
-            orderBySongName = false;
-            new TrackOrderer().execute();
+            FolderController.orderTracksByArtistName();
         }
     }//GEN-LAST:event_artistRadioActionPerformed
 

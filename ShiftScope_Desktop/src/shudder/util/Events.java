@@ -12,5 +12,7 @@ package shudder.util;
 public enum Events {
     ON_CONTENT_FETCHED,
     ON_DRAW_FOLDER,
-    BUILD_FOLDER_HIERARCHY
+    BUILD_FOLDER_HIERARCHY,
+    ON_ORDER_TRACKS,
+    ON_SEARCH
 }

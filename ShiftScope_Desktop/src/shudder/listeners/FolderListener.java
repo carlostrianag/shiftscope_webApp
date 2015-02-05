@@ -5,7 +5,9 @@
  */
 package shudder.listeners;
 
+import java.util.ArrayList;
 import shudder.dto.FolderDTO;
+import shudder.model.Track;
 
 /**
  *
@@ -19,6 +21,10 @@ public abstract class FolderListener {
     public abstract void OnError(String error);
 
     public void OnBuildFolderFinished() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void drawSearchResults(ArrayList<Track> tracks) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
