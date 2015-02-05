@@ -138,28 +138,25 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
         }
     };
-
+    
     public TCPService webSocket;
     private JFileChooser fileChooser;
-
     private int currentSongPosition;
-    private int layoutWidth;
-    private ArrayList<Track> queuePaths;
-
-    private Track currentSong;
-    private Sync sync;
-
-    private BasicPlayer player;
-    private BasicController control;
-    private boolean playlistPlaying;
-    private boolean paused;
-    private boolean volumeAdjustedByUser;
-    private String totalTimeString;
-    private String elapsedTimeString;
+    private int layoutWidth;    
     private int totalSeconds;
     private int currentSecond;
     private int frameLength;
-    private Float frameRate;
+    private boolean playlistPlaying;
+    private boolean paused;
+    private boolean volumeAdjustedByUser;
+    private Float frameRate;   
+    private String totalTimeString;
+    private String elapsedTimeString;
+    private ArrayList<Track> queuePaths;
+    private Track currentSong;
+    private Sync sync;
+    private BasicPlayer player;
+    private BasicController control;
 
     @Override
     public void opened(Object o, Map map) {
