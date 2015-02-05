@@ -51,7 +51,7 @@ public class MainActivity extends ActionBarActivity implements TCPService.Player
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Shudder");
+        getSupportActionBar().setLogo(R.drawable.logo_shudder);
 
         TCPService.setPlayerCommunicator(this);
         Constants.init();
