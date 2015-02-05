@@ -35,6 +35,8 @@ import com.shiftscope.views.dialogs.VolumeDialog;
 import com.shiftscope.views.fragments.LibraryFragment;
 import com.shiftscope.views.fragments.PlayListFragment;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import shiftscope.com.shiftscope.R;
@@ -57,9 +59,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     Gson JSONParser = new Gson();
                     Sync syncObject = o.getSync();
                     sharedPreferences = getSharedPreferences("ShudderSharedPreferences", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("currentPlaylist", JSONParser.toJson(syncObject.getCurrentPlaylist()));
-                    editor.commit();
+                    String JSONPlaylist = JSONParser.toJson(syncObject.getCurrentPlaylist());
+                    if(JSONPlaylist != null) {
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("currentPlaylist", JSONPlaylist);
+                        editor.apply();
+                    } else {
+                        sharedPreferences.getAll().remove("currentPlaylist");
+                    }
+
                     if(syncObject.getCurrentSongName() != null && syncObject.getCurrentSongArtist() != null) {
                         currentSongText.setText(syncObject.getCurrentSongName() + " - " + syncObject.getCurrentSongArtist());
                     } else {

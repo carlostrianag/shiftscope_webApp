@@ -30,6 +30,10 @@ public class TCPService{
         listeners.add(listener);
     }
 
+    public static void removeListener(WebSocketListener listener) {
+        listeners.remove(listener);
+    }
+
     public static void initTCPService() {
         webSocket = new WebSocketConnection();
         try {
