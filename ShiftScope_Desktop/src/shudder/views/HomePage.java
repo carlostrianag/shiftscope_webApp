@@ -1120,6 +1120,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
         jPanel1.setBackground(new java.awt.Color(38, 0, 38));
 
+        elapsedTime.setForeground(new java.awt.Color(204, 0, 51));
         elapsedTime.setText("0:00");
         jPanel1.add(elapsedTime);
 
@@ -1127,12 +1128,14 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         songPositionSlider.setValue(0);
         jPanel1.add(songPositionSlider);
 
+        totalTime.setForeground(new java.awt.Color(204, 0, 51));
         totalTime.setText("0:00");
         jPanel1.add(totalTime);
 
         jPanel5.setBackground(new java.awt.Color(38, 0, 38));
 
         currentSongLabel.setFont(new java.awt.Font("SansSerif", 0, 15)); // NOI18N
+        currentSongLabel.setForeground(new java.awt.Color(204, 0, 51));
         jPanel5.add(currentSongLabel);
 
         toolBar.setBackground(new java.awt.Color(38, 0, 38));
@@ -1208,6 +1211,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         });
 
         songTitleRadio.setBackground(new java.awt.Color(38, 0, 38));
+        songTitleRadio.setForeground(new java.awt.Color(204, 0, 51));
         songTitleRadio.setText("Song Title");
         songTitleRadio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1216,6 +1220,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         });
 
         artistRadio.setBackground(new java.awt.Color(38, 0, 38));
+        artistRadio.setForeground(new java.awt.Color(204, 0, 51));
         artistRadio.setText("Artist");
         artistRadio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

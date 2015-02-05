@@ -5,9 +5,12 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.shiftscope.listeners.WebSocketListener;
 import com.shiftscope.utils.Operation;
 import com.shiftscope.utils.constants.RequestTypes;
 import com.shiftscope.utils.constants.SessionConstants;
+
+import java.util.ArrayList;
 
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
@@ -19,12 +22,12 @@ import de.tavendo.autobahn.WebSocketHandler;
 public class TCPService{
 
 
-    private static PlayerCommunicator playerCommunicator;
+    private static ArrayList<WebSocketListener> listeners = new ArrayList<>();
     private static WebSocketConnection webSocket;
     private static final String TAG  = "WEB_SOCKET";
 
-    public static void setPlayerCommunicator(Activity activity){
-        playerCommunicator = (PlayerCommunicator)activity;
+    public static void addListener(WebSocketListener listener) {
+        listeners.add(listener);
     }
 
     public static void initTCPService() {
@@ -61,7 +64,10 @@ public class TCPService{
                     Log.v(TAG, payload);
                     Gson JSONParser = new Gson();
                     Operation operation = JSONParser.fromJson(payload, Operation.class);
-                    playerCommunicator.onSync(operation);
+                    for (WebSocketListener listener : listeners) {
+                        listener.OnSync(operation);
+                    }
+
                 }
 
 
@@ -74,9 +80,5 @@ public class TCPService{
     public static void send(Operation operation){
         Gson JSONParser = new Gson();
         webSocket.sendTextMessage(JSONParser.toJson(operation));
-    }
-
-    public interface PlayerCommunicator {
-        public void onSync(Operation operation);
     }
 }

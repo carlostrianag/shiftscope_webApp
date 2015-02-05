@@ -1,5 +1,7 @@
 package com.shiftscope.views.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,7 +19,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.shiftscope.controllers.FolderController;
+import com.shiftscope.dto.TrackDTO;
+import com.shiftscope.listeners.WebSocketListener;
 import com.shiftscope.netservices.TCPService;
 import com.shiftscope.utils.Operation;
 import com.shiftscope.utils.Sync;
@@ -29,16 +35,44 @@ import com.shiftscope.views.dialogs.VolumeDialog;
 import com.shiftscope.views.fragments.LibraryFragment;
 import com.shiftscope.views.fragments.PlayListFragment;
 
+import java.util.ArrayList;
+
 import shiftscope.com.shiftscope.R;
 
 
-public class MainActivity extends ActionBarActivity implements TCPService.PlayerCommunicator, View.OnClickListener, SearchView.OnQueryTextListener, MenuItem.OnMenuItemClickListener{
+public class MainActivity extends ActionBarActivity implements View.OnClickListener, SearchView.OnQueryTextListener, MenuItem.OnMenuItemClickListener{
 
 
     private LibraryFragment libraryFragment;
     private PlayListFragment playListFragment;
     private ListView navListView;
     private TextView currentSongText;
+    private SharedPreferences sharedPreferences;
+
+    private WebSocketListener socketListener = new WebSocketListener() {
+        @Override
+        public void OnSync(Operation o) {
+            switch (o.getOperationType()) {
+                case RequestTypes.SYNC:
+                    Gson JSONParser = new Gson();
+                    Sync syncObject = o.getSync();
+                    sharedPreferences = getSharedPreferences("ShudderSharedPreferences", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("currentPlaylist", JSONParser.toJson(syncObject.getCurrentPlaylist()));
+                    editor.commit();
+                    if(syncObject.getCurrentSongName() != null && syncObject.getCurrentSongArtist() != null) {
+                        currentSongText.setText(syncObject.getCurrentSongName() + " - " + syncObject.getCurrentSongArtist());
+                    } else {
+                        currentSongText.setText("");
+                    }
+                    SessionConstants.PLAYER_VOLUME = syncObject.getCurrentVolume();
+                    if(volumeDialog != null) {
+                        volumeDialog.updateVolume();
+                    }
+                    break;
+            }
+        }
+    };
 
 
     private AdapterView.OnItemClickListener navDrawerOnClickListener = new AdapterView.OnItemClickListener() {
@@ -76,7 +110,7 @@ public class MainActivity extends ActionBarActivity implements TCPService.Player
         setContentView(R.layout.activity_main);
         getSupportActionBar().setLogo(R.drawable.logo_shudder);
 
-        TCPService.setPlayerCommunicator(this);
+        TCPService.addListener(socketListener);
         Constants.init();
         DrawerAdapter navListAdapter = new DrawerAdapter(this, android.R.layout.simple_list_item_1, Constants.ENTRIES,  getLayoutInflater());
         navListView = (ListView)findViewById(R.id.drawerList);
@@ -147,23 +181,6 @@ public class MainActivity extends ActionBarActivity implements TCPService.Player
         drawerListener.syncState();
     }
 
-    @Override
-    public void onSync(Operation operation) {
-        switch (operation.getOperationType()) {
-            case RequestTypes.SYNC:
-                Sync syncObject = operation.getSync();
-                if(syncObject.getCurrentSongName() != null && syncObject.getCurrentSongArtist() != null) {
-                    currentSongText.setText(syncObject.getCurrentSongName() + " - " + syncObject.getCurrentSongArtist());
-                } else {
-                    currentSongText.setText("");
-                }
-                SessionConstants.PLAYER_VOLUME = syncObject.getCurrentVolume();
-                if(volumeDialog != null) {
-                    volumeDialog.updateVolume();
-                }
-                break;
-        }
-    }
 
     @Override
     public void onClick(View v) {
