@@ -7,7 +7,6 @@ package shudder.views;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -51,6 +50,7 @@ import shudder.model.Folder;
 import shudder.model.Track;
 import shudder.netservices.TCPService;
 import shudder.util.Constants;
+import shudder.util.GUIConstants;
 import shudder.util.Operation;
 import shudder.util.OperationType;
 import shudder.util.SessionConstants;
@@ -78,7 +78,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         public void fetchingContent() {
             folderPane.removeAll();
             JLabel loadingLabel = new JLabel("Fetching please wait...");
-            loadingLabel.setFont(serifFont);
+            loadingLabel.setFont(GUIConstants.serifFont);
             loadingLabel.setBounds(0, 0, 200, 20);
             folderPane.add(loadingLabel);
             folderPane.revalidate();
@@ -139,14 +139,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         }
     };
 
-    //IMAGES
-    ImageIcon musicIcon;
-    ImageIcon folderIcon;
-    //FONTS
-    Font serifFont = new Font("sans-serif", Font.PLAIN, 14);
-    Font serifFontArtist = new Font("sans-serif", Font.PLAIN, 12);
-
-    //GUI VARIABLES
     public TCPService webSocket;
     private JFileChooser fileChooser;
 
@@ -255,7 +247,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         if (fetchedFolder != null) {
             folderPane.removeAll();
             JLabel loadingLabel = new JLabel("Loading please wait...");
-            loadingLabel.setFont(serifFont);
+            loadingLabel.setFont(GUIConstants.serifFont);
             loadingLabel.setBounds(0, 0, 200, 20);
             folderPane.add(loadingLabel);
             folderPane.revalidate();
@@ -331,9 +323,9 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                 folderPanel.setBackground(Color.white);
                 folderPanel.setBounds(0, (i * 45), layoutWidth, 45);
                 JLabel folderLabel = new JLabel(folder.getTitle());
-                folderLabel.setFont(serifFont);
+                folderLabel.setFont(GUIConstants.serifFont);
                 JLabel iconLabel = new JLabel();
-                iconLabel.setIcon(folderIcon);
+                iconLabel.setIcon(GUIConstants.folderIcon);
 
                 iconLabel.setBounds(15, 0, 35, 45);
                 folderLabel.setBounds(45, 0, layoutWidth - 35, 45);
@@ -413,11 +405,11 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                 trackPanel.setBackground(Color.white);
                 trackPanel.setBounds(0, (i * 45) + delta, layoutWidth, 45);
                 JLabel trackLabel = new JLabel(track.getTitle());
-                trackLabel.setFont(serifFont);
+                trackLabel.setFont(GUIConstants.serifFont);
                 JLabel artistLabel = new JLabel(track.getArtist());
-                artistLabel.setFont(serifFontArtist);
+                artistLabel.setFont(GUIConstants.serifFontArtist);
                 JLabel iconLabel = new JLabel();
-                iconLabel.setIcon(musicIcon);
+                iconLabel.setIcon(GUIConstants.musicIcon);
 
                 iconLabel.setBounds(10, 10, 35, 20);
                 trackLabel.setBounds(35, 0, layoutWidth - 35, 20);
@@ -453,11 +445,11 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         progressBar.setVisible(false);
         foldersScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         initPlayer();
-
+        
         buttonGroup2.add(songTitleRadio);
         buttonGroup2.add(artistRadio);
-        musicIcon = createImageIcon("images/music.png", "music_icon");
-        folderIcon = createImageIcon("images/folder.png", "music_icon");
+        GUIConstants.musicIcon = createImageIcon("images/music.png", "music_icon");
+        GUIConstants.folderIcon = createImageIcon("images/folder.png", "music_icon");
         songTitleRadio.setSelected(true);
         PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
             @Override
@@ -844,11 +836,11 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
             trackPanel.setBackground(Color.white);
             trackPanel.setBounds(0, (i * 45), layoutWidth, 45);
             JLabel trackLabel = new JLabel(track.getTitle());
-            trackLabel.setFont(serifFont);
+            trackLabel.setFont(GUIConstants.serifFont);
             JLabel artistLabel = new JLabel(track.getArtist());
-            artistLabel.setFont(serifFontArtist);
+            artistLabel.setFont(GUIConstants.serifFontArtist);
             JLabel iconLabel = new JLabel();
-            iconLabel.setIcon(musicIcon);
+            iconLabel.setIcon(GUIConstants.musicIcon);
 
             iconLabel.setBounds(10, 10, 35, 20);
             trackLabel.setBounds(35, 0, layoutWidth - 35, 20);
@@ -933,11 +925,11 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
             trackPanel.setBackground(Color.white);
             trackPanel.setBounds(0, (i * 45) + delta, 230, 45);
             JLabel trackLabel = new JLabel(track.getTitle());
-            trackLabel.setFont(serifFont);
+            trackLabel.setFont(GUIConstants.serifFont);
             JLabel artistLabel = new JLabel(track.getArtist());
-            artistLabel.setFont(serifFontArtist);
+            artistLabel.setFont(GUIConstants.serifFontArtist);
             JLabel iconLabel = new JLabel();
-            iconLabel.setIcon(musicIcon);
+            iconLabel.setIcon(GUIConstants.musicIcon);
 
             iconLabel.setBounds(10, 10, 35, 20);
             trackLabel.setBounds(35, 0, 230 - 35, 20);
