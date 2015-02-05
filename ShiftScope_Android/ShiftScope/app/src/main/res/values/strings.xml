@@ -4,6 +4,8 @@
     <string name="app_name">Shudder</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="openDrawer">Opening Drawer</string>
+    <string name="closeDrawer">Closing Drawer</string>
 
     <string-array name="menuOptions">
         <item>Library</item>

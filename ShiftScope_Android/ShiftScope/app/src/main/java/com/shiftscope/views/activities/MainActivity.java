@@ -2,8 +2,11 @@ package com.shiftscope.views.activities;
 
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,18 +27,36 @@ import com.shiftscope.utils.constants.RequestTypes;
 import com.shiftscope.utils.constants.SessionConstants;
 import com.shiftscope.views.dialogs.VolumeDialog;
 import com.shiftscope.views.fragments.LibraryFragment;
+import com.shiftscope.views.fragments.PlayListFragment;
 
 import shiftscope.com.shiftscope.R;
 
 
 public class MainActivity extends ActionBarActivity implements TCPService.PlayerCommunicator, View.OnClickListener, SearchView.OnQueryTextListener, MenuItem.OnMenuItemClickListener{
 
+
+    private LibraryFragment libraryFragment;
+    private PlayListFragment playListFragment;
     private ListView navListView;
     private TextView currentSongText;
+
+
     private AdapterView.OnItemClickListener navDrawerOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Toast.makeText(getApplicationContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+            navListView.setItemChecked(position, true);
+            switch(position) {
+                case 0:
+                    libraryFragment = new LibraryFragment();
+                    drawerLayout.closeDrawers();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.mainContent, libraryFragment).commit();
+                    break;
+                case 1:
+                    playListFragment = new PlayListFragment();
+                    drawerLayout.closeDrawers();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.mainContent, playListFragment).commit();
+                    break;
+            }
         }
     };
 
@@ -46,6 +67,8 @@ public class MainActivity extends ActionBarActivity implements TCPService.Player
     private ImageView volumeBtn;
     private SearchView searchView;
     private VolumeDialog volumeDialog;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +93,32 @@ public class MainActivity extends ActionBarActivity implements TCPService.Player
         playBtn.setOnClickListener(this);
         stopBtn.setOnClickListener(this);
         volumeBtn.setOnClickListener(this);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        drawerListener = new ActionBarDrawerToggle(this, drawerLayout, R.string.openDrawer, R.string.closeDrawer) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
 
-        LibraryFragment fragment = new LibraryFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.mainContent, fragment).commit();
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        drawerLayout.setDrawerListener(drawerListener);
+        libraryFragment = new LibraryFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.mainContent, libraryFragment).commit();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if(drawerListener.onOptionsItemSelected(item)) {
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -97,6 +138,13 @@ public class MainActivity extends ActionBarActivity implements TCPService.Player
         MenuItem orderByTitle = menu.findItem(R.id.action_order_by_title);
         orderByTitle.setOnMenuItemClickListener(this);
         return true;
+    }
+
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerListener.syncState();
     }
 
     @Override

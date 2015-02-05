@@ -19,11 +19,11 @@ public class Constants {
         ENTRIES.add(library);
         MenuEntry playlist = new MenuEntry();
         playlist.setEntryText("Playlist");
-        playlist.setImageId(R.drawable.music);
+        playlist.setImageId(R.drawable.ic_headphones);
         ENTRIES.add(playlist);
         MenuEntry devices = new MenuEntry();
         devices.setEntryText("Devices");
-        devices.setImageId(R.drawable.laptop);
+        devices.setImageId(R.drawable.ic_device);
         ENTRIES.add(devices);
 
     }

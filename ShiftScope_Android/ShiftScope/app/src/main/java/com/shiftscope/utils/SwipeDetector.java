@@ -103,7 +103,7 @@ public class SwipeDetector implements View.OnTouchListener {
                 float deltaY = downY - upY;
                 float absDeltaY = absDownY - absMoveY;
                 float absDeltaX = absDownX - absMoveX;
-                newX = absMoveX - deltaWidth;
+                newX = absMoveX - deltaWidth - 40;
                 if(Math.abs(absDeltaY) < 70) {
 
                     if ( selectedView != null ) {
@@ -127,7 +127,6 @@ public class SwipeDetector implements View.OnTouchListener {
                         }
 
                         if(Math.abs(absDeltaX) > 40) {
-                            newX -= 40;
                             selectedView.setX(newX);
                         }
 

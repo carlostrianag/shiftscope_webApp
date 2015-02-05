@@ -19,7 +19,7 @@
         android:text="New Text"
         android:id="@+id/menuEntryText"
         android:gravity="center_vertical"
-        android:textColor="#FFF"
+        android:textColor="@color/fluor_pink"
         android:layout_alignTop="@+id/entryImage"
         android:layout_toRightOf="@+id/entryImage"
         android:layout_toEndOf="@+id/entryImage"
