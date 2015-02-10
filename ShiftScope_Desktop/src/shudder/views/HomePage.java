@@ -41,7 +41,6 @@ import javazoom.jlgui.basicplayer.BasicPlayerException;
 import javazoom.jlgui.basicplayer.BasicPlayerListener;
 import shudder.controllers.FolderController;
 import shudder.controllers.TCPController;
-import static shudder.controllers.TCPController.init;
 import shudder.controllers.UserCotroller;
 import shudder.criteria.FolderCriteria;
 import shudder.dto.FolderDTO;
@@ -61,7 +60,7 @@ import shudder.views.dialogs.MainDialog;
  *
  * @author VeronicaEncinales
  */
-public class HomePage extends javax.swing.JFrame implements BasicPlayerListener {
+public class HomePage extends javax.swing.JFrame{
 
     private final FolderListener folderListener = new FolderListener() {
         @Override
@@ -164,103 +163,9 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
     };
     
     private JFileChooser fileChooser;
-    private int currentSongPosition;
+    
     private int layoutWidth;    
-    private int totalSeconds;
-    private int currentSecond;
-    private int frameLength;
-    private boolean playlistPlaying;
-    private boolean paused;
-    private boolean volumeAdjustedByUser;
-    private Float frameRate;   
-    private String totalTimeString;
-    private String elapsedTimeString;
-    private ArrayList<Track> queuePaths;
-    private Track currentSong;
-    private Sync sync;
-    private BasicPlayer player;
-    private BasicController control;
 
-    @Override
-    public void opened(Object o, Map map) {
-        Long duration = (Long) map.get("duration");
-        int mili = (int) (duration / 1000);
-        int sec = (int) (mili / 1000) % 60;
-        int min = (int) (mili / 1000) / 60;
-        totalTimeString = min + ":" + String.format("%02d", sec);
-        totalTime.setText(totalTimeString);
-        totalSeconds = (Integer.parseInt(totalTimeString.split(":")[0]) * 60) + Integer.parseInt(totalTimeString.split(":")[1]);
-        frameRate = (Float) map.get("mp3.framerate.fps");
-        frameLength = (int) map.get("mp3.framesize.bytes");
-        songPositionSlider.setMaximum(totalSeconds);
-    }
-
-    @Override
-    public void progress(int i, long l, byte[] bytes, Map map) {
-        Long duration1 = (Long) map.get("mp3.position.microseconds");
-        int mili = (int) (duration1 / 1000);
-        int sec = (int) (mili / 1000) % 60;
-        int min = (int) (mili / 1000) / 60;
-        elapsedTimeString = min + ":" + String.format("%02d", sec);
-        elapsedTime.setText(elapsedTimeString);
-        currentSecond = (Integer.parseInt(elapsedTimeString.split(":")[0]) * 60) + Integer.parseInt(elapsedTimeString.split(":")[1]);
-        songPositionSlider.setValue(currentSecond);
-    }
-
-    @Override
-    public void stateUpdated(BasicPlayerEvent event) {
-        //display("stateUpdated : " + event.toString());
-        Operation request = new Operation();
-        request.setOperationType(OperationType.SYNC);
-        request.setUserId(SessionConstants.USER_ID);
-        switch (event.getCode()) {
- 
-            case BasicPlayerEvent.PLAYING:
-                sync.setCurrentSongId(currentSong.getId());
-                sync.setCurrentSongName(currentSong.getTitle());
-                sync.setCurrentSongArtist(currentSong.getArtist());
-                sync.setCurrentSongDuration(currentSong.getDuration());
-                sync.setCurrentVolume((int) player.getGainValue());
-                sync.setIsPlaying(true);
-                sync.setIsPaused(false);
-                request.setSync(sync);
-                TCPController.sendRequest(request);
-                paused = false;
-                break;
-
-            case BasicPlayerEvent.PAUSED:
-                sync.setIsPlaying(false);
-                sync.setIsPaused(true);
-                request.setSync(sync);
-                TCPController.sendRequest(request);
-                paused = true;
-                break;
-            case BasicPlayerEvent.RESUMED:
-                sync.setIsPlaying(true);
-                sync.setIsPaused(false);
-                request.setSync(sync);
-                TCPController.sendRequest(request);
-                paused = false;
-                break;
-
-            case BasicPlayerEvent.EOM:
-                next();
-                break;
-
-            case BasicPlayerEvent.GAIN:
-                if (volumeAdjustedByUser) {
-                    System.out.println("enviar por sockett");
-                } else {
-                    System.out.println("AJUSTADO DE SOCKET");
-                    volumeSlider.setValue((int) (player.getGainValue() * 100));
-                }
-                break;
-        }
-    }
-
-    @Override
-    public void setController(BasicController controller) {
-    }
 
     private void drawFolder(FolderDTO fetchedFolder) {
         ArrayList<JPanel> panels = new ArrayList<>();
@@ -503,7 +408,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                 if (source.getValueIsAdjusting()) {
                     //System.out.println("esta ajustandose");
                     int value = source.getValue();
-                    long skippedBytes = (long) (value * frameRate * frameLength);
+                    //long skippedBytes = (long) (value * frameRate * frameLength);
 //                    try {
 //                        
 //                        control.seek(skippedBytes);
@@ -539,8 +444,10 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
         calculateDifference();
         drawPlaylist();
+        
         MainDialog mainDialog = new MainDialog(this, true);
         mainDialog.setVisible(true);
+        
         TCPController.addListener(webSocketListener);
         FolderController.addListener(folderListener);
         UserCotroller.addListener(loginListener);
@@ -550,211 +457,6 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         layoutWidth = jSplitPane1.getDividerLocation() - 22;
     }
 
-    public void playSong(Track t, boolean playedFromPlaylist) {
-        try {
-            control.open(new File(t.getPath()));
-            control.play();
-            currentSong = t;
-            if (playedFromPlaylist) {
-                getPosition(t);
-            }
-            currentSongLabel.setText(t.getTitle() + " - " + t.getArtist());
-            playlistPlaying = playedFromPlaylist;
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void merge() {
-//        Track t;
-//        if (playlistPlaying) {
-//            if (currentSongPosition < queuePaths.size() - 1) {
-//                currentSongPosition++;
-//                currentSong = queuePaths.get(currentSongPosition);
-//                t = currentSong;
-//                player.loadSong(t.getPath());
-//                sync.setCurrentSongId(t.getId());
-//                sync.setCurrentSongName(t.getTitle());
-//                sync.setCurrentSongArtist(t.getArtist());
-//                sync.setCurrentSongDuration(t.getDuration());
-//                sync.setIsPlaying(true);
-//                sync.setIsPaused(false);
-//
-//                currentSongLabel.setText(t.getTitle() + " - " + t.getArtist());
-//
-//                if (timeCounter != null) {
-//                    timeCounter.cancel(true);
-//                }
-//
-//                player.determineLine();
-//                timeCounter = new TimeCounter();
-//                timeCounter.execute();
-//                Operation request = new Operation();
-//                request.setOperationType(OperationType.SYNC);
-//                request.setUserId(SessionConstants.USER_ID);
-//                request.setSync(sync);
-//
-//                webSocket.sendRequest(request);
-//                playlistPlaying = true;
-//            }
-//        }
-
-    }
-
-    public void getPosition(Track t) {
-        for (int i = 0; i < queuePaths.size(); i++) {
-            if (t.equals(queuePaths.get(i))) {
-                currentSongPosition = i;
-                break;
-            }
-        }
-    }
-
-    public void playPlaylist() {
-        currentSongPosition = 0;
-        currentSong = queuePaths.get(currentSongPosition);
-        playSong(currentSong, true);
-    }
-
-    public void resume() {
-        try {
-            control.resume();
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void pause() {
-        try {
-            control.pause();
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void stop() {
-        try {
-            control.stop();
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void next() {
-        if (playlistPlaying) {
-            if (currentSongPosition < queuePaths.size() - 1) {
-                currentSongPosition++;
-                currentSong = queuePaths.get(currentSongPosition);
-                playSong(currentSong, true);
-            }
-        }
-    }
-
-    public void back() {
-        if (playlistPlaying) {
-            if (currentSongPosition > 0) {
-                currentSongPosition--;
-                currentSong = queuePaths.get(currentSongPosition);
-                playSong(currentSong, true);
-            }
-        }
-    }
-
-    public void mute() {
-//        player.mute();
-    }
-
-    public void volumeDown() {
-//        player.volumeDown();
-    }
-
-    public void volumeUp() {
-//        player.volumeUp();
-    }
-
-    public void setVolumeFromValue(double value, boolean fromUser) {
-        try {
-            volumeAdjustedByUser = fromUser;
-            player.setGain(value);
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void setVolume(float value) {
-//        player.setVolumeFromValue(value);
-//        volumeSlider.setValue((int) value);
-    }
-
-    public boolean isPlaying() {
-//        return player.isPlaying();
-        return false;
-    }
-
-    public boolean isPaused() {
-//        return player.isPaused();
-        return false;
-    }
-
-    public void enqueueSong(Track q) {
-        queuePaths.add(q);
-        drawPlaylist();
-        Operation request = new Operation();
-        request.setOperationType(OperationType.SYNC);
-        request.setUserId(SessionConstants.USER_ID);
-        sync.setCurrentPlaylist(queuePaths);
-        request.setSync(sync);
-        TCPController.sendRequest(request);
-    }
-
-    public void dequeueSong(Track t) {
-        if (t.equals(currentSong)) {
-            next();
-        }
-
-        for (Track track : queuePaths) {
-            if (track.getId() == t.getId()) {
-                queuePaths.remove(track);
-                break;
-            }
-        }
-        getPosition(currentSong);
-        drawPlaylist();
-        Operation request = new Operation();
-        request.setOperationType(OperationType.SYNC);
-        request.setUserId(SessionConstants.USER_ID);
-        sync.setCurrentPlaylist(queuePaths);
-        request.setSync(sync);
-        TCPController.sendRequest(request);
-    }
-
-    public Sync getSync() {
-        return sync;
-    }
-
-//    public final void initPlayer() {
-//        player = new Music(this);
-//        queuePaths = new ArrayList<>();
-//        currentSong = null;
-//        currentSongPosition = 0;
-//        playlistPlaying = false;
-//        sync = new Sync();
-//    }
-    public final void initPlayer() {
-        player = new BasicPlayer();
-        player.addBasicPlayerListener(this);
-        control = (BasicController) player;
-        try {
-            control.setGain(1.0);
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        queuePaths = new ArrayList<>();
-        currentSong = null;
-        currentSongPosition = 0;
-        playlistPlaying = false;
-        sync = new Sync();
-    }
 
     public void display(String msg) {
         System.out.println(msg);

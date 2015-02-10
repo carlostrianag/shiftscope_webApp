@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import shudder.criteria.TrackCriteria;
@@ -164,7 +162,6 @@ public class TCPController {
                             request.setUserId(SessionConstants.USER_ID);
                             request.setSync(Main.home.getSync());
                             TCPController.sendRequest(request);
-
                     }
                 }
 
