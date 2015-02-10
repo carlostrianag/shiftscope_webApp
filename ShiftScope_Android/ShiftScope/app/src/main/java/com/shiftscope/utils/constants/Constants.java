@@ -10,6 +10,7 @@ import shiftscope.com.shiftscope.R;
  * Created by Carlos on 1/3/2015.
  */
 public class Constants {
+    public static int MAX_X_POSITION;
     public static ArrayList<MenuEntry> ENTRIES = new ArrayList<>();
 
     public static void init(){

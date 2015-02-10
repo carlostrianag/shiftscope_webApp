@@ -145,8 +145,6 @@ public class FolderController {
     
     public static void search(String text) {     
         new FolderWorker(Events.ON_SEARCH, text).execute();
-        
-        //drawSearchResults(tracks);
     }
     
     private static void buildFolderOptimized(File folder, int parentId) {
@@ -335,7 +333,14 @@ public class FolderController {
                     break;
                     
                 case ON_SEARCH:
-                    ArrayList<Track> tracks = new ArrayList<>(folderContent.getTracks().stream().filter(p -> p.getTitle().contains(matchingCriteria) || p.getArtist().contains(matchingCriteria)).collect(Collectors.toList()));
+                    ArrayList<Track> tracks = new ArrayList<>(folderContent.getTracks()
+                            .stream()
+                            .filter(p -> p.getTitle()
+                                    .toLowerCase()
+                                    .contains(matchingCriteria.toLowerCase()) || p.getArtist()
+                                            .toLowerCase()
+                                            .contains(matchingCriteria.toLowerCase()))
+                            .collect(Collectors.toList()));
                     for(FolderListener listener : listeners) {
                         listener.drawSearchResults(tracks);
                     }

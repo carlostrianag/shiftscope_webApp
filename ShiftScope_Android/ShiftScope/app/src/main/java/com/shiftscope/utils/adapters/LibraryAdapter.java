@@ -16,10 +16,12 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.daimajia.swipe.implments.SwipeItemMangerImpl;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
+import com.shiftscope.controllers.LibraryController;
 import com.shiftscope.dto.FolderDTO;
 import com.shiftscope.dto.TrackDTO;
 import com.shiftscope.netservices.TCPService;
 import com.shiftscope.utils.Operation;
+import com.shiftscope.utils.constants.Constants;
 import com.shiftscope.utils.constants.RequestTypes;
 import com.shiftscope.utils.constants.SessionConstants;
 import com.shiftscope.utils.filters.LibraryFilter;
@@ -151,6 +153,9 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
             case 1:
                 track = (TrackDTO)folderContent.get(position);
                 v  = layoutInflater.inflate(R.layout.item_library_track, parent, false);
+                if (LibraryController.isAdded(track.getId())) {
+                    v.findViewById(R.id.contentLayout).setX(Constants.MAX_X_POSITION);
+                }
                 TextView trackTitle = (TextView) v.findViewById(R.id.trackTitle);
                 trackTitle.setText(track.getTitle());
                 TextView artistName = (TextView) v.findViewById(R.id.artistName);

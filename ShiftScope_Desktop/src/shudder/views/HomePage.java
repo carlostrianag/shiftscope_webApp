@@ -589,11 +589,9 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
     }
 
     public void getPosition(Track t) {
-        System.out.println("before " + currentSongPosition);
         for (int i = 0; i < queuePaths.size(); i++) {
             if (t.equals(queuePaths.get(i))) {
                 currentSongPosition = i;
-                System.out.println("after " + currentSongPosition);
                 break;
             }
         }

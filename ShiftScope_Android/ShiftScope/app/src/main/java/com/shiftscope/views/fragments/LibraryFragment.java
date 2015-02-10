@@ -25,6 +25,8 @@ import com.shiftscope.utils.adapters.LibraryAdapter;
 import com.shiftscope.utils.constants.RequestTypes;
 import com.shiftscope.utils.constants.SessionConstants;
 
+import java.util.ArrayList;
+
 import shiftscope.com.shiftscope.R;
 
 /**
@@ -83,25 +85,20 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
         if(swipeDetector.swipeDetected()) {
             if(object.getClass() == TrackDTO.class) {
                 TrackDTO track = (TrackDTO) object;
+                Operation operation = new Operation();
+                operation.setId(track.getId());
+                operation.setUserId(SessionConstants.USER_ID);
+                operation.setTo(SessionConstants.DEVICE_ID);
                 if(swipeDetector.getAction() == SwipeDetector.Action.LR) {
-                    Operation operation = new Operation();
-                    operation.setId(track.getId());
-                    operation.setUserId(SessionConstants.USER_ID);
-                    operation.setTo(SessionConstants.DEVICE_ID);
                     operation.setOperationType(RequestTypes.ENQUEUE);
-                    TCPService.send(operation);
+                    LibraryController.addId(track.getId());
                 } else if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
-                    Operation operation = new Operation();
-                    operation.setId(track.getId());
-                    operation.setUserId(SessionConstants.USER_ID);
-                    operation.setTo(SessionConstants.DEVICE_ID);
                     operation.setOperationType(RequestTypes.REMOVE_FROM_PLAYLIST);
-                    TCPService.send(operation);
+                    LibraryController.removeId(track.getId());
                 }
+                TCPService.send(operation);
             }
-
         } else {
-            Log.v("fdsf", "FUE CLICK");
             if(object.getClass() == FolderDTO.class) {
                 FolderDTO selectedFolder = (FolderDTO) object;
                 getFolderContent(selectedFolder.getId(), libraryListView.onSaveInstanceState());
@@ -130,7 +127,6 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onSuccessfulFolderFetch(LibraryAdapter adapter, Parcelable restoredState) {
         libraryListView.setAdapter(adapter);
-        Log.v("DEBUG", adapter.toString() + " set");
 
         if(restoredState != null) {
             libraryListView.onRestoreInstanceState(restoredState);

@@ -16,13 +16,30 @@ import com.shiftscope.utils.constants.SessionConstants;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by Carlos on 1/4/2015.
  */
 public class LibraryController {
 
+    private static ArrayList<Integer> addedToPlaylistIds = new ArrayList<>();
     private static LibraryCommunicator communicator;
 
+
+    public static void addId(int id) {
+        addedToPlaylistIds.add(id);
+    }
+
+    public static void removeId(int id) {
+        Integer idNumber = new Integer(id);
+        addedToPlaylistIds.remove(idNumber);
+        Log.v("LOG", "  REMOVIDO");
+    }
+
+    public static boolean isAdded(int id) {
+        return addedToPlaylistIds.contains(id);
+    }
     public static void setCommunicator(Fragment fragment) {
         communicator = (LibraryCommunicator) fragment;
     }

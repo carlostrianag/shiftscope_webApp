@@ -9,7 +9,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.shiftscope.controllers.LibraryController;
 import com.shiftscope.dto.FolderDTO;
+import com.shiftscope.dto.TrackDTO;
+import com.shiftscope.utils.constants.Constants;
 
 import shiftscope.com.shiftscope.R;
 
@@ -32,7 +35,6 @@ public class SwipeDetector implements View.OnTouchListener {
 
 
     private static final String logTag = "SwipeDetector";
-    private final int MAX_X_POSITION = convertToPx(75);
     private float downX, downY, upX, upY;
     private int absDownX = 0;
     private int absDownY = 0;
@@ -47,6 +49,7 @@ public class SwipeDetector implements View.OnTouchListener {
 
     public SwipeDetector(ListView mListView) {
         this.mListView = mListView;
+        Constants.MAX_X_POSITION = convertToPx(75);
 
     }
 
@@ -85,7 +88,7 @@ public class SwipeDetector implements View.OnTouchListener {
                             selectedView = null;
                         } else {
                             selectedView = child.findViewById(R.id.contentLayout);
-                            isAdded = (selectedView.getX() == MAX_X_POSITION);
+                            isAdded = LibraryController.isAdded(((TrackDTO) item).getId());
                             deltaWidth = absDownX - selectedView.getX();
                         }
                     }
@@ -105,9 +108,7 @@ public class SwipeDetector implements View.OnTouchListener {
                 float absDeltaX = absDownX - absMoveX;
                 newX = absMoveX - deltaWidth - 40;
                 if(Math.abs(absDeltaY) < 70) {
-
-                    if ( selectedView != null ) {
-
+                    if (selectedView != null) {
                         if (deltaX < 0) {
                             //Log.i(logTag, "Swipe Left to Right");
                             mSwipeDetected = Action.LR;
@@ -126,12 +127,16 @@ public class SwipeDetector implements View.OnTouchListener {
                             }
                         }
 
-                        if(Math.abs(absDeltaX) > 40) {
+                        if(isAdded) {
                             selectedView.setX(newX);
+                        } else {
+                            if(Math.abs(absDeltaX) > 40) {
+                                selectedView.setX(newX);
+                            }
                         }
 
-                        if(mSwipeDetected == Action.LR && newX > MAX_X_POSITION) {
-                            newX = MAX_X_POSITION;
+                        if(mSwipeDetected == Action.LR && newX > Constants.MAX_X_POSITION) {
+                            newX = Constants.MAX_X_POSITION;
                             selectedView.setX(newX);
                         }
 
@@ -149,8 +154,8 @@ public class SwipeDetector implements View.OnTouchListener {
 
             case MotionEvent.ACTION_UP:
                 if (selectedView != null) {
-                    if(mSwipeDetected == Action.LR && newX != MAX_X_POSITION) {
-                        selectedView.animate().x(MAX_X_POSITION).setDuration(150).start();
+                    if(mSwipeDetected == Action.LR && newX != Constants.MAX_X_POSITION) {
+                        selectedView.animate().x(Constants.MAX_X_POSITION).setDuration(150).start();
                     } else if(mSwipeDetected == Action.RL && newX != 0) {
                         selectedView.animate().x(0).setDuration(150).start();
                     }

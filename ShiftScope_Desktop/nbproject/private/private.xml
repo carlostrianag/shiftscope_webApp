@@ -5,8 +5,11 @@
         <group>
             <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shudder/netservices/HTTPService.java</file>
             <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shudder/util/Events.java</file>
+            <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shudder/model/Device.java</file>
             <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shudder/controllers/UserCotroller.java</file>
+            <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shudder/views/dialogs/LoginDialog.java</file>
             <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shudder/views/HomePage.java</file>
+            <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shudder/model/User.java</file>
             <file>file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shudder/controllers/FolderController.java</file>
         </group>
     </open-files>

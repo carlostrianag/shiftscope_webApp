@@ -5,7 +5,6 @@
  */
 package shudder.views.dialogs;
 
-import com.google.gson.Gson;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -15,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -56,7 +56,7 @@ public class LoginDialog extends JDialog{
 
         @Override
         public void OnError(String error) {
-            
+            JOptionPane.showMessageDialog(getRootPane(), error, "Shudder - An error has occured.", JOptionPane.ERROR_MESSAGE);
         }
     };
     private ActionListener getInActionListener = new ActionListener() {

@@ -68,6 +68,15 @@ public class UserCotroller {
                 }
                 return null;
             }
+
+            @Override
+            public void onThrowable(Throwable t) {
+                for (LoginListener listener : listeners) {
+                    listener.OnError(t.getMessage());
+                }
+            }
+            
+            
         };
         JSONParser = new Gson();
         String object = JSONParser.toJson(credentials);

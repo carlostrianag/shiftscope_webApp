@@ -45,7 +45,7 @@ module.exports = {
 			if(err) {
 				res.serverError();
 			} else if(tracks.length !== 0){
-				res.json(tracks);
+				res.json(track);
 			} else {
 				res.notFound();
 			}

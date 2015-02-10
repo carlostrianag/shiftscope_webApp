@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -19,6 +20,8 @@ import com.shiftscope.netservices.TCPService;
 import com.shiftscope.utils.Operation;
 import com.shiftscope.utils.Sync;
 import com.shiftscope.utils.adapters.LibraryAdapter;
+import com.shiftscope.utils.constants.RequestTypes;
+import com.shiftscope.utils.constants.SessionConstants;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -28,7 +31,7 @@ import shiftscope.com.shiftscope.R;
 /**
  * Created by Carlos on 2/4/2015.
  */
-public class PlayListFragment extends Fragment {
+public class PlayListFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private WebSocketListener socketListener = new WebSocketListener() {
         @Override
@@ -45,12 +48,13 @@ public class PlayListFragment extends Fragment {
     };
     private SharedPreferences sharedPreferences;
     private ListView playListListView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_playlist, container, false);
         sharedPreferences = getActivity().getSharedPreferences("ShudderSharedPreferences", Context.MODE_PRIVATE);
         playListListView = (ListView) v.findViewById(R.id.playListListView);
-
+        playListListView.setOnItemClickListener(this);
         return v;
     }
 
@@ -59,7 +63,6 @@ public class PlayListFragment extends Fragment {
         super.onStart();
         TCPService.addListener(socketListener);
         drawPlaylist();
-        Log.v("FRAGMENT", "START");
     }
 
     @Override
@@ -87,5 +90,16 @@ public class PlayListFragment extends Fragment {
             LibraryAdapter adapter = new LibraryAdapter(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, playList);
             playListListView.setAdapter(adapter);
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        TrackDTO track = (TrackDTO) playListListView.getAdapter().getItem(position);
+        Operation operation = new Operation();
+        operation.setId(track.getId());
+        operation.setUserId(SessionConstants.USER_ID);
+        operation.setOperationType(RequestTypes.PLAY_FROM_PLAYLIST);
+        operation.setTo(SessionConstants.DEVICE_ID);
+        TCPService.send(operation);
     }
 }
