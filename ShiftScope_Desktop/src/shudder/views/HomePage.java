@@ -18,8 +18,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
@@ -28,6 +26,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -41,15 +40,16 @@ import javazoom.jlgui.basicplayer.BasicPlayerEvent;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
 import javazoom.jlgui.basicplayer.BasicPlayerListener;
 import shudder.controllers.FolderController;
+import shudder.controllers.TCPController;
+import static shudder.controllers.TCPController.init;
 import shudder.controllers.UserCotroller;
 import shudder.criteria.FolderCriteria;
 import shudder.dto.FolderDTO;
 import shudder.listeners.FolderListener;
 import shudder.listeners.LoginListener;
+import shudder.listeners.WebSocketListener;
 import shudder.model.Folder;
 import shudder.model.Track;
-import shudder.netservices.TCPService;
-import shudder.util.Constants;
 import shudder.util.GUIConstants;
 import shudder.util.Operation;
 import shudder.util.OperationType;
@@ -108,7 +108,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
             request.setOperationType(OperationType.SYNC);
             request.setUserId(SessionConstants.USER_ID);
             request.setSync(sync);
-            webSocket.sendRequest(request);
+            TCPController.sendRequest(request);
             sync.setNewFolders(false);
             progressBar.setVisible(false);
             getFolderContent(-1);
@@ -120,7 +120,8 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
         @Override
         public void OnInit() {
-            init();
+            TCPController.init();
+            getFolderContent(-1);
         }
 
         @Override
@@ -135,11 +136,33 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
 
         @Override
         public void OnError(String error) {
-
+            JOptionPane.showMessageDialog(getRootPane(), error, "Shudder - Login Error", JOptionPane.ERROR_MESSAGE);
         }
     };
     
-    public TCPService webSocket;
+    private final WebSocketListener webSocketListener = new WebSocketListener() {
+
+        @Override
+        public void OnError(String error) {
+            JOptionPane.showMessageDialog(getRootPane(), error, "Shudder - Connection Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        @Override
+        public void loading() {
+            
+        }
+
+        @Override
+        public void loaded() {
+            
+        }
+
+        @Override
+        public void OnOpened() {
+            System.out.println("WebSocket Conectado....");
+        }
+    };
+    
     private JFileChooser fileChooser;
     private int currentSongPosition;
     private int layoutWidth;    
@@ -201,7 +224,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                 sync.setIsPlaying(true);
                 sync.setIsPaused(false);
                 request.setSync(sync);
-                webSocket.sendRequest(request);
+                TCPController.sendRequest(request);
                 paused = false;
                 break;
 
@@ -209,14 +232,14 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
                 sync.setIsPlaying(false);
                 sync.setIsPaused(true);
                 request.setSync(sync);
-                webSocket.sendRequest(request);
+                TCPController.sendRequest(request);
                 paused = true;
                 break;
             case BasicPlayerEvent.RESUMED:
                 sync.setIsPlaying(true);
                 sync.setIsPaused(false);
                 request.setSync(sync);
-                webSocket.sendRequest(request);
+                TCPController.sendRequest(request);
                 paused = false;
                 break;
 
@@ -518,19 +541,9 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         drawPlaylist();
         MainDialog mainDialog = new MainDialog(this, true);
         mainDialog.setVisible(true);
+        TCPController.addListener(webSocketListener);
         FolderController.addListener(folderListener);
         UserCotroller.addListener(loginListener);
-    }
-
-    private void init() {
-        try {
-            System.out.println("Conectando........");
-            webSocket = new TCPService(new URI(Constants.SOCKET_SERVER));
-            webSocket.connect();
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        getFolderContent(-1);
     }
 
     private void calculateDifference() {
@@ -691,7 +704,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         request.setUserId(SessionConstants.USER_ID);
         sync.setCurrentPlaylist(queuePaths);
         request.setSync(sync);
-        webSocket.sendRequest(request);
+        TCPController.sendRequest(request);
     }
 
     public void dequeueSong(Track t) {
@@ -712,7 +725,7 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
         request.setUserId(SessionConstants.USER_ID);
         sync.setCurrentPlaylist(queuePaths);
         request.setSync(sync);
-        webSocket.sendRequest(request);
+        TCPController.sendRequest(request);
     }
 
     public Sync getSync() {
@@ -1348,9 +1361,8 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
     }//GEN-LAST:event_backBtnMouseClicked
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if (webSocket != null) {
-            webSocket.closeConnection(5, "hola");
-        }
+
+        TCPController.closeConnection();
     }//GEN-LAST:event_formWindowClosing
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
@@ -1370,13 +1382,11 @@ public class HomePage extends javax.swing.JFrame implements BasicPlayerListener 
     private void clearPlaylistBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearPlaylistBtnActionPerformed
         queuePaths.clear();
         sync.setCurrentPlaylist(queuePaths);
-
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
         request.setSync(sync);
-
-        webSocket.sendRequest(request);
+        TCPController.sendRequest(request);
         drawPlaylist();
     }//GEN-LAST:event_clearPlaylistBtnActionPerformed
 
