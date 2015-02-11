@@ -17,11 +17,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -34,11 +30,6 @@ import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javazoom.jlgui.basicplayer.BasicController;
-import javazoom.jlgui.basicplayer.BasicPlayer;
-import javazoom.jlgui.basicplayer.BasicPlayerEvent;
-import javazoom.jlgui.basicplayer.BasicPlayerException;
-import javazoom.jlgui.basicplayer.BasicPlayerListener;
 import shudder.controllers.FolderController;
 import shudder.controllers.PlayerController;
 import shudder.controllers.TCPController;
@@ -52,10 +43,7 @@ import shudder.listeners.WebSocketListener;
 import shudder.model.Folder;
 import shudder.model.Track;
 import shudder.util.GUIConstants;
-import shudder.util.Operation;
-import shudder.util.OperationType;
 import shudder.util.SessionConstants;
-import shudder.util.Sync;
 import shudder.views.dialogs.MainDialog;
 
 /**
@@ -104,13 +92,6 @@ public class HomePage extends javax.swing.JFrame{
 
         @Override
         public void OnBuildFolderFinished() {
-            sync.setNewFolders(true);
-            Operation request = new Operation();
-            request.setOperationType(OperationType.SYNC);
-            request.setUserId(SessionConstants.USER_ID);
-            request.setSync(sync);
-            TCPController.sendRequest(request);
-            sync.setNewFolders(false);
             progressBar.setVisible(false);
             getFolderContent(-1);
             System.out.println("ShiftScope has finished...");
@@ -197,9 +178,7 @@ public class HomePage extends javax.swing.JFrame{
     };
     
     private JFileChooser fileChooser;
-    
     private int layoutWidth;    
-
 
     private void drawFolder(FolderDTO fetchedFolder) {
         ArrayList<JPanel> panels = new ArrayList<>();
@@ -310,7 +289,7 @@ public class HomePage extends javax.swing.JFrame{
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         if (e.getClickCount() == 2) {
-                            playSong(track, false);
+                            PlayerController.playSong(track, false);
                         } else if (e.getButton() == MouseEvent.BUTTON3) {
                             JPopupMenu popupMenu = new JPopupMenu();
                             popupMenu.setLabel("Track");
@@ -319,7 +298,7 @@ public class HomePage extends javax.swing.JFrame{
 
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
-                                    playSong(track, false);
+                                    PlayerController.playSong(track, false);
                                 }
 
                             });
@@ -329,7 +308,7 @@ public class HomePage extends javax.swing.JFrame{
 
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
-                                    enqueueSong(track);
+                                    PlayerController.enqueueSong(track);
                                 }
 
                             });
@@ -403,7 +382,7 @@ public class HomePage extends javax.swing.JFrame{
         getContentPane().setBackground(new Color(38, 0, 38));
         progressBar.setVisible(false);
         foldersScrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        initPlayer();
+        PlayerController.initPlayer();
         
         buttonGroup2.add(songTitleRadio);
         buttonGroup2.add(artistRadio);
@@ -430,7 +409,7 @@ public class HomePage extends javax.swing.JFrame{
                 if (source.getValueIsAdjusting()) {
 
                     double value = new Double(String.valueOf(source.getValue()));
-                    setVolumeFromValue(value / 100d, true);
+                    PlayerController.setVolumeFromValue(value / 100d, true);
                 }
             }
         });
@@ -491,12 +470,9 @@ public class HomePage extends javax.swing.JFrame{
         layoutWidth = jSplitPane1.getDividerLocation() - 22;
     }
 
-
     public void display(String msg) {
         System.out.println(msg);
     }
-
-  
 
     private void drawResults(ArrayList<Track> tracks) {
         folderPane.setPreferredSize(new Dimension(layoutWidth, tracks.size() * 45));
@@ -526,7 +502,7 @@ public class HomePage extends javax.swing.JFrame{
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
-                        playSong(track, false);
+                        PlayerController.playSong(track, false);
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
                         JPopupMenu popupMenu = new JPopupMenu();
                         popupMenu.setLabel("Folder");
@@ -535,7 +511,7 @@ public class HomePage extends javax.swing.JFrame{
 
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                playSong(track, false);
+                                PlayerController.playSong(track, false);
                             }
 
                         });
@@ -545,7 +521,7 @@ public class HomePage extends javax.swing.JFrame{
 
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                enqueueSong(track);
+                                PlayerController.enqueueSong(track);
                             }
 
                         });
@@ -626,7 +602,7 @@ public class HomePage extends javax.swing.JFrame{
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
-                        playSong(track, true);
+                        PlayerController.playSong(track, true);
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
                         JPopupMenu popupMenu = new JPopupMenu();
                         popupMenu.setLabel("Folder");
@@ -635,7 +611,7 @@ public class HomePage extends javax.swing.JFrame{
 
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                dequeueSong(track);
+                                PlayerController.dequeueSong(track);
                             }
 
                         });
@@ -1073,15 +1049,15 @@ public class HomePage extends javax.swing.JFrame{
     }//GEN-LAST:event_selectFolderButtonMouseClicked
 
     private void pauseBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pauseBtnMouseClicked
-        if (paused) {
-            resume();
+        if (PlayerController.isPaused()) {
+            PlayerController.resume();
         } else {
-            pause();
+            PlayerController.pause();
         }
     }//GEN-LAST:event_pauseBtnMouseClicked
 
     private void stopBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stopBtnMouseClicked
-        stop();
+        PlayerController.stop();
     }//GEN-LAST:event_stopBtnMouseClicked
 
     private void backButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backButtonMouseClicked
@@ -1089,11 +1065,11 @@ public class HomePage extends javax.swing.JFrame{
     }//GEN-LAST:event_backButtonMouseClicked
 
     private void nextBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nextBtnMouseClicked
-        next();
+        PlayerController.next();
     }//GEN-LAST:event_nextBtnMouseClicked
 
     private void backBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backBtnMouseClicked
-        back();
+        PlayerController.back();
     }//GEN-LAST:event_backBtnMouseClicked
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -1116,13 +1092,7 @@ public class HomePage extends javax.swing.JFrame{
     }//GEN-LAST:event_backBtnMouseEntered
 
     private void clearPlaylistBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearPlaylistBtnActionPerformed
-        queuePaths.clear();
-        sync.setCurrentPlaylist(queuePaths);
-        Operation request = new Operation();
-        request.setOperationType(OperationType.SYNC);
-        request.setUserId(SessionConstants.USER_ID);
-        request.setSync(sync);
-        TCPController.sendRequest(request);
+        PlayerController.clearPlaylist();
         drawPlaylist();
     }//GEN-LAST:event_clearPlaylistBtnActionPerformed
 

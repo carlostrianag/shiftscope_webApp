@@ -15,6 +15,7 @@ import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerEvent;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
 import javazoom.jlgui.basicplayer.BasicPlayerListener;
+import shudder.listeners.FolderListener;
 import shudder.listeners.PlayerListener;
 import shudder.model.Track;
 import shudder.util.Operation;
@@ -45,6 +46,35 @@ public class PlayerController {
     private static BasicPlayer player;
     private static BasicController control;
     private static ArrayList<PlayerListener> listeners;
+    private static FolderListener folderListener = new FolderListener() {
+        
+        @Override
+        public void OnBuildFolderFinished() {
+            sync.setNewFolders(true);
+            Operation request = new Operation();
+            request.setOperationType(OperationType.SYNC);
+            request.setUserId(SessionConstants.USER_ID);
+            request.setSync(sync);
+            TCPController.sendRequest(request);
+            sync.setNewFolders(false);
+        }
+        
+        
+        @Override
+        public void OnProgressUpdated(int progress) {
+            
+        }
+
+        @Override
+        public void OnFilesScanned(int filesCount) {
+            
+        }
+
+        @Override
+        public void OnError(String error) {
+            
+        }
+    };
     private static BasicPlayerListener basicPlayerListener = new BasicPlayerListener() {
         @Override
         public void opened(Object o, Map map) {
@@ -149,6 +179,20 @@ public class PlayerController {
             listener.OnOpened(totalTime, totalSeconds);
         }
     }
+    
+    public static boolean isPaused() {
+        return paused;
+    }
+    
+    public static void clearPlaylist() {
+        queuePaths.clear();
+        sync.setCurrentPlaylist(queuePaths);
+        Operation request = new Operation();
+        request.setOperationType(OperationType.SYNC);
+        request.setUserId(SessionConstants.USER_ID);
+        request.setSync(sync);
+        TCPController.sendRequest(request);
+    }
 
     private static void invokeOnProgress(String elapsedTime, int currentSecond) {
         for (PlayerListener listener : listeners) {
@@ -182,7 +226,6 @@ public class PlayerController {
             if (playedFromPlaylist) {
                 getPosition(t);
             }
-
             playlistPlaying = playedFromPlaylist;
         } catch (BasicPlayerException ex) {
             Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
@@ -315,11 +358,6 @@ public class PlayerController {
         return false;
     }
 
-    public static boolean isPaused() {
-//        return player.isPaused();
-        return false;
-    }
-
     public static void enqueueSong(Track q) {
         queuePaths.add(q);
 
@@ -356,16 +394,8 @@ public class PlayerController {
     public static Sync getSync() {
         return sync;
     }
-
-//    public final void initPlayer() {
-//        player = new Music(this);
-//        queuePaths = new ArrayList<>();
-//        currentSong = null;
-//        currentSongPosition = 0;
-//        playlistPlaying = false;
-//        sync = new Sync();
-//    }
-    public final void initPlayer() {
+    
+    public static void initPlayer() {
         player = new BasicPlayer();
         player.addBasicPlayerListener(basicPlayerListener);
         control = (BasicController) player;
