@@ -15,6 +15,7 @@ import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerEvent;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
 import javazoom.jlgui.basicplayer.BasicPlayerListener;
+import shudder.listeners.PlayerListener;
 import shudder.model.Track;
 import shudder.util.Operation;
 import shudder.util.OperationType;
@@ -26,106 +27,154 @@ import shudder.views.HomePage;
  *
  * @author Carlos
  */
-public class PlayerController implements BasicPlayerListener {
-    private int currentSongPosition;
-    private int totalSeconds;
-    private int currentSecond;
-    private int frameLength;
-    private boolean playlistPlaying;
-    private boolean paused;
-    private boolean volumeAdjustedByUser;
-    private Float frameRate;   
-    private String totalTimeString;
-    private String elapsedTimeString;
-    private ArrayList<Track> queuePaths;
-    private Track currentSong;
-    private Sync sync;
-    private BasicPlayer player;
-    private BasicController control;
+public class PlayerController {
 
-    @Override
-    public void opened(Object o, Map map) {
-        Long duration = (Long) map.get("duration");
-        int mili = (int) (duration / 1000);
-        int sec = (int) (mili / 1000) % 60;
-        int min = (int) (mili / 1000) / 60;
-        totalTimeString = min + ":" + String.format("%02d", sec);
-        totalTime.setText(totalTimeString);
-        totalSeconds = (Integer.parseInt(totalTimeString.split(":")[0]) * 60) + Integer.parseInt(totalTimeString.split(":")[1]);
-        frameRate = (Float) map.get("mp3.framerate.fps");
-        frameLength = (int) map.get("mp3.framesize.bytes");
-        songPositionSlider.setMaximum(totalSeconds);
+    private static int currentSongPosition;
+    private static int totalSeconds;
+    private static int currentSecond;
+    private static int frameLength;
+    private static boolean playlistPlaying;
+    private static boolean paused;
+    private static boolean volumeAdjustedByUser;
+    private static Float frameRate;
+    private static String totalTimeString;
+    private static String elapsedTimeString;
+    private static ArrayList<Track> queuePaths;
+    private static Track currentSong;
+    private static Sync sync;
+    private static BasicPlayer player;
+    private static BasicController control;
+    private static ArrayList<PlayerListener> listeners;
+    private static BasicPlayerListener basicPlayerListener = new BasicPlayerListener() {
+        @Override
+        public void opened(Object o, Map map) {
+            Long duration = (Long) map.get("duration");
+            int mili = (int) (duration / 1000);
+            int sec = (int) (mili / 1000) % 60;
+            int min = (int) (mili / 1000) / 60;
+            totalTimeString = min + ":" + String.format("%02d", sec);
+            totalSeconds = (Integer.parseInt(totalTimeString.split(":")[0]) * 60) + Integer.parseInt(totalTimeString.split(":")[1]);
+            frameRate = (Float) map.get("mp3.framerate.fps");
+            frameLength = (int) map.get("mp3.framesize.bytes");
+            invokeOnOpened(totalTimeString, totalSeconds);
+        }
+
+        @Override
+        public void progress(int i, long l, byte[] bytes, Map map) {
+            Long duration1 = (Long) map.get("mp3.position.microseconds");
+            int mili = (int) (duration1 / 1000);
+            int sec = (int) (mili / 1000) % 60;
+            int min = (int) (mili / 1000) / 60;
+            elapsedTimeString = min + ":" + String.format("%02d", sec);
+            currentSecond = (Integer.parseInt(elapsedTimeString.split(":")[0]) * 60) + Integer.parseInt(elapsedTimeString.split(":")[1]);
+            invokeOnProgress(elapsedTimeString, currentSecond);
+        }
+
+        @Override
+        public void stateUpdated(BasicPlayerEvent event) {
+            //display("stateUpdated : " + event.toString());
+            Operation request = new Operation();
+            request.setOperationType(OperationType.SYNC);
+            request.setUserId(SessionConstants.USER_ID);
+            switch (event.getCode()) {
+
+                case BasicPlayerEvent.PLAYING:
+                    invokeOnPlaying(currentSong.getTitle(), currentSong.getArtist());
+                    sync.setCurrentSongId(currentSong.getId());
+                    sync.setCurrentSongName(currentSong.getTitle());
+                    sync.setCurrentSongArtist(currentSong.getArtist());
+                    sync.setCurrentSongDuration(currentSong.getDuration());
+                    sync.setCurrentVolume((int) player.getGainValue());
+                    sync.setIsPlaying(true);
+                    sync.setIsPaused(false);
+                    request.setSync(sync);
+                    TCPController.sendRequest(request);
+                    paused = false;
+                    break;
+
+                case BasicPlayerEvent.PAUSED:
+                    sync.setIsPlaying(false);
+                    sync.setIsPaused(true);
+                    request.setSync(sync);
+                    TCPController.sendRequest(request);
+                    paused = true;
+                    break;
+
+                case BasicPlayerEvent.RESUMED:
+                    sync.setIsPlaying(true);
+                    sync.setIsPaused(false);
+                    request.setSync(sync);
+                    TCPController.sendRequest(request);
+                    paused = false;
+                    break;
+
+                case BasicPlayerEvent.EOM:
+                    next();
+                    break;
+
+                case BasicPlayerEvent.GAIN:
+                    if (volumeAdjustedByUser) {
+                        System.out.println("enviar por sockett");
+                    } else {
+                        System.out.println("AJUSTADO DE SOCKET");
+                        invokeOnVolumeChanged((int) (player.getGainValue() * 100));
+                    }
+                    break;
+            }
+        }
+
+        @Override
+        public void setController(BasicController controller) {
+        }
+    };
+
+    public static void addListener(PlayerListener listener) {
+        listeners.add(listener);
     }
 
-    @Override
-    public void progress(int i, long l, byte[] bytes, Map map) {
-        Long duration1 = (Long) map.get("mp3.position.microseconds");
-        int mili = (int) (duration1 / 1000);
-        int sec = (int) (mili / 1000) % 60;
-        int min = (int) (mili / 1000) / 60;
-        elapsedTimeString = min + ":" + String.format("%02d", sec);
-        elapsedTime.setText(elapsedTimeString);
-        currentSecond = (Integer.parseInt(elapsedTimeString.split(":")[0]) * 60) + Integer.parseInt(elapsedTimeString.split(":")[1]);
-        songPositionSlider.setValue(currentSecond);
+    public static void removeListener(PlayerListener listener) {
+        listeners.remove(listener);
     }
 
-    @Override
-    public void stateUpdated(BasicPlayerEvent event) {
-        //display("stateUpdated : " + event.toString());
-        Operation request = new Operation();
-        request.setOperationType(OperationType.SYNC);
-        request.setUserId(SessionConstants.USER_ID);
-        switch (event.getCode()) {
- 
-            case BasicPlayerEvent.PLAYING:
-                sync.setCurrentSongId(currentSong.getId());
-                sync.setCurrentSongName(currentSong.getTitle());
-                sync.setCurrentSongArtist(currentSong.getArtist());
-                sync.setCurrentSongDuration(currentSong.getDuration());
-                sync.setCurrentVolume((int) player.getGainValue());
-                sync.setIsPlaying(true);
-                sync.setIsPaused(false);
-                request.setSync(sync);
-                TCPController.sendRequest(request);
-                paused = false;
-                break;
+    public static ArrayList<Track> getQueue() {
+        return queuePaths;
+    }
 
-            case BasicPlayerEvent.PAUSED:
-                sync.setIsPlaying(false);
-                sync.setIsPaused(true);
-                request.setSync(sync);
-                TCPController.sendRequest(request);
-                paused = true;
-                break;
-                
-            case BasicPlayerEvent.RESUMED:
-                sync.setIsPlaying(true);
-                sync.setIsPaused(false);
-                request.setSync(sync);
-                TCPController.sendRequest(request);
-                paused = false;
-                break;
+    public static int getCount() {
+        return queuePaths.size();
+    }
 
-            case BasicPlayerEvent.EOM:
-                next();
-                break;
-
-            case BasicPlayerEvent.GAIN:
-                if (volumeAdjustedByUser) {
-                    System.out.println("enviar por sockett");
-                } else {
-                    System.out.println("AJUSTADO DE SOCKET");
-                    volumeSlider.setValue((int) (player.getGainValue() * 100));
-                }
-                break;
+    private static void invokeOnOpened(String totalTime, int totalSeconds) {
+        for (PlayerListener listener : listeners) {
+            listener.OnOpened(totalTime, totalSeconds);
         }
     }
 
-    @Override
-    public void setController(BasicController controller) {
+    private static void invokeOnProgress(String elapsedTime, int currentSecond) {
+        for (PlayerListener listener : listeners) {
+            listener.OnProgress(elapsedTime, currentSecond);
+        }
     }
-    
-        public void playSong(Track t, boolean playedFromPlaylist) {
+
+    private static void invokeOnVolumeChanged(int value) {
+        for (PlayerListener listener : listeners) {
+            listener.OnVolumeChanged(value);
+        }
+    }
+
+    private static void invokeOnPlaying(String songName, String artistName) {
+        for (PlayerListener listener : listeners) {
+            listener.OnPlaying(songName, artistName);
+        }
+    }
+
+    private static void invokeOnQueueChanged() {
+        for (PlayerListener listener : listeners) {
+            listener.OnQueueChanged();
+        }
+    }
+
+    public static void playSong(Track t, boolean playedFromPlaylist) {
         try {
             control.open(new File(t.getPath()));
             control.play();
@@ -133,14 +182,14 @@ public class PlayerController implements BasicPlayerListener {
             if (playedFromPlaylist) {
                 getPosition(t);
             }
-            currentSongLabel.setText(t.getTitle() + " - " + t.getArtist());
+
             playlistPlaying = playedFromPlaylist;
         } catch (BasicPlayerException ex) {
             Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void merge() {
+    public static void merge() {
 //        Track t;
 //        if (playlistPlaying) {
 //            if (currentSongPosition < queuePaths.size() - 1) {
@@ -176,7 +225,7 @@ public class PlayerController implements BasicPlayerListener {
 
     }
 
-    public void getPosition(Track t) {
+    public static void getPosition(Track t) {
         for (int i = 0; i < queuePaths.size(); i++) {
             if (t.equals(queuePaths.get(i))) {
                 currentSongPosition = i;
@@ -185,13 +234,13 @@ public class PlayerController implements BasicPlayerListener {
         }
     }
 
-    public void playPlaylist() {
+    public static void playPlaylist() {
         currentSongPosition = 0;
         currentSong = queuePaths.get(currentSongPosition);
         playSong(currentSong, true);
     }
 
-    public void resume() {
+    public static void resume() {
         try {
             control.resume();
         } catch (BasicPlayerException ex) {
@@ -199,7 +248,7 @@ public class PlayerController implements BasicPlayerListener {
         }
     }
 
-    public void pause() {
+    public static void pause() {
         try {
             control.pause();
         } catch (BasicPlayerException ex) {
@@ -207,7 +256,7 @@ public class PlayerController implements BasicPlayerListener {
         }
     }
 
-    public void stop() {
+    public static void stop() {
         try {
             control.stop();
         } catch (BasicPlayerException ex) {
@@ -215,7 +264,7 @@ public class PlayerController implements BasicPlayerListener {
         }
     }
 
-    public void next() {
+    public static void next() {
         if (playlistPlaying) {
             if (currentSongPosition < queuePaths.size() - 1) {
                 currentSongPosition++;
@@ -225,7 +274,7 @@ public class PlayerController implements BasicPlayerListener {
         }
     }
 
-    public void back() {
+    public static void back() {
         if (playlistPlaying) {
             if (currentSongPosition > 0) {
                 currentSongPosition--;
@@ -235,19 +284,19 @@ public class PlayerController implements BasicPlayerListener {
         }
     }
 
-    public void mute() {
+    public static void mute() {
 //        player.mute();
     }
 
-    public void volumeDown() {
+    public static void volumeDown() {
 //        player.volumeDown();
     }
 
-    public void volumeUp() {
+    public static void volumeUp() {
 //        player.volumeUp();
     }
 
-    public void setVolumeFromValue(double value, boolean fromUser) {
+    public static void setVolumeFromValue(double value, boolean fromUser) {
         try {
             volumeAdjustedByUser = fromUser;
             player.setGain(value);
@@ -256,24 +305,25 @@ public class PlayerController implements BasicPlayerListener {
         }
     }
 
-    public void setVolume(float value) {
+    public static void setVolume(float value) {
 //        player.setVolumeFromValue(value);
 //        volumeSlider.setValue((int) value);
     }
 
-    public boolean isPlaying() {
+    public static boolean isPlaying() {
 //        return player.isPlaying();
         return false;
     }
 
-    public boolean isPaused() {
+    public static boolean isPaused() {
 //        return player.isPaused();
         return false;
     }
 
-    public void enqueueSong(Track q) {
+    public static void enqueueSong(Track q) {
         queuePaths.add(q);
-        drawPlaylist();
+
+        invokeOnQueueChanged();
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
@@ -282,7 +332,7 @@ public class PlayerController implements BasicPlayerListener {
         TCPController.sendRequest(request);
     }
 
-    public void dequeueSong(Track t) {
+    public static void dequeueSong(Track t) {
         if (t.equals(currentSong)) {
             next();
         }
@@ -294,7 +344,7 @@ public class PlayerController implements BasicPlayerListener {
             }
         }
         getPosition(currentSong);
-        drawPlaylist();
+        invokeOnQueueChanged();
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
@@ -303,7 +353,7 @@ public class PlayerController implements BasicPlayerListener {
         TCPController.sendRequest(request);
     }
 
-    public Sync getSync() {
+    public static Sync getSync() {
         return sync;
     }
 
@@ -317,7 +367,7 @@ public class PlayerController implements BasicPlayerListener {
 //    }
     public final void initPlayer() {
         player = new BasicPlayer();
-        player.addBasicPlayerListener(this);
+        player.addBasicPlayerListener(basicPlayerListener);
         control = (BasicController) player;
         try {
             control.setGain(1.0);

@@ -40,12 +40,14 @@ import javazoom.jlgui.basicplayer.BasicPlayerEvent;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
 import javazoom.jlgui.basicplayer.BasicPlayerListener;
 import shudder.controllers.FolderController;
+import shudder.controllers.PlayerController;
 import shudder.controllers.TCPController;
 import shudder.controllers.UserCotroller;
 import shudder.criteria.FolderCriteria;
 import shudder.dto.FolderDTO;
 import shudder.listeners.FolderListener;
 import shudder.listeners.LoginListener;
+import shudder.listeners.PlayerListener;
 import shudder.listeners.WebSocketListener;
 import shudder.model.Folder;
 import shudder.model.Track;
@@ -160,6 +162,38 @@ public class HomePage extends javax.swing.JFrame{
         public void OnOpened() {
             System.out.println("WebSocket Conectado....");
         }
+    };
+    
+    private final PlayerListener playerListener = new PlayerListener() {
+
+        @Override
+        public void OnOpened(String totalTimeString, int totalSeconds) {
+            totalTime.setText(totalTimeString);
+            songPositionSlider.setMaximum(totalSeconds);   
+        }
+
+        @Override
+        public void OnProgress(String elapsedTimeString, int currentSecond) {
+            elapsedTime.setText(elapsedTimeString);
+            songPositionSlider.setValue(currentSecond);
+        }
+
+        @Override
+        public void OnVolumeChanged(int value) {
+            volumeSlider.setValue(value);
+        }
+
+        @Override
+        public void OnPlaying(String songName, String artistName) {
+            currentSongLabel.setText(songName + " - " + artistName);
+        }
+
+        @Override
+        public void OnQueueChanged() {
+            drawPlaylist();
+        }
+        
+        
     };
     
     private JFileChooser fileChooser;
@@ -567,12 +601,12 @@ public class HomePage extends javax.swing.JFrame{
     }
 
     private void drawPlaylist() {
-        int totalElements = queuePaths.size();
+        int totalElements = PlayerController.getCount();
         playlistPanel.removeAll();
         playlistPanel.setPreferredSize(new Dimension(230, totalElements * 45));
         playlistScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        ArrayList<Track> tracks = queuePaths;
+        ArrayList<Track> tracks = PlayerController.getQueue();
         int delta = 0;
 
         for (int i = 0; i < tracks.size(); i++) {
