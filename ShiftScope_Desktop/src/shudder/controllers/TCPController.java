@@ -169,7 +169,7 @@ public class TCPController {
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
-
+                    System.out.println("WebSocket Closed ...");
                 }
 
                 @Override
