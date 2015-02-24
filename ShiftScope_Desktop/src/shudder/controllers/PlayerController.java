@@ -45,7 +45,7 @@ public class PlayerController {
     private static Sync sync;
     private static BasicPlayer player;
     private static BasicController control;
-    private static ArrayList<PlayerListener> listeners;
+    private static ArrayList<PlayerListener> listeners = new ArrayList<>();
     private static FolderListener folderListener = new FolderListener() {
         
         @Override
@@ -75,6 +75,7 @@ public class PlayerController {
             
         }
     };
+    
     private static BasicPlayerListener basicPlayerListener = new BasicPlayerListener() {
         @Override
         public void opened(Object o, Map map) {

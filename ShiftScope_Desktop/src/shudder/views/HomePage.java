@@ -126,7 +126,7 @@ public class HomePage extends javax.swing.JFrame{
 
         @Override
         public void OnError(String error) {
-            JOptionPane.showMessageDialog(getRootPane(), error, "Shudder - Connection Error", JOptionPane.ERROR_MESSAGE);
+            //JOptionPane.showMessageDialog(getRootPane(), error, "Shudder - Connection Error", JOptionPane.ERROR_MESSAGE);
         }
 
         @Override
@@ -173,7 +173,6 @@ public class HomePage extends javax.swing.JFrame{
         public void OnQueueChanged() {
             drawPlaylist();
         }
-        
         
     };
     
@@ -460,7 +459,7 @@ public class HomePage extends javax.swing.JFrame{
         
         MainDialog mainDialog = new MainDialog(this, true);
         mainDialog.setVisible(true);
-        
+        PlayerController.addListener(playerListener);
         TCPController.addListener(webSocketListener);
         FolderController.addListener(folderListener);
         UserCotroller.addListener(loginListener);
