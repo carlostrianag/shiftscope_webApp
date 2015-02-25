@@ -33,7 +33,7 @@ import javax.swing.event.ChangeListener;
 import shudder.controllers.FolderController;
 import shudder.controllers.PlayerController;
 import shudder.controllers.TCPController;
-import shudder.controllers.UserCotroller;
+import shudder.controllers.UserController;
 import shudder.criteria.FolderCriteria;
 import shudder.dto.FolderDTO;
 import shudder.listeners.FolderListener;
@@ -462,7 +462,7 @@ public class HomePage extends javax.swing.JFrame{
         PlayerController.addListener(playerListener);
         TCPController.addListener(webSocketListener);
         FolderController.addListener(folderListener);
-        UserCotroller.addListener(loginListener);
+        UserController.addListener(loginListener);
     }
 
     private void calculateDifference() {

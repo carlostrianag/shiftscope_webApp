@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import shudder.controllers.UserCotroller;
+import shudder.controllers.UserController;
 import shudder.model.User;
 
 /**
@@ -53,7 +53,7 @@ public class RegistrationDialog extends JDialog {
                 user.setLastName(lastNameTextField.getText());
                 user.setEmail(emailTextField.getText());
                 user.setPassword(new String(passwordTextField.getPassword()));
-                Response response = UserCotroller.createUser(user);
+                Response response = UserController.createUser(user);
                 if (response.getStatusCode() == 200){
                     dispose();
                     openLoginDialog();

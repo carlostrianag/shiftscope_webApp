@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello World!</title>
+    
+  </head>
+  <body onload="sayHello()">
+    <h1>Hello World!</h1>
+    We are using java:
+  </body>
+  <script type="text/javascript">
+      loginCredentials = {email: "trianag24@gmail.com", password: "medellin0707"};
+      function sayHello() {
+        UserController.login(JSON.stringify(loginCredentials));
+      }
+      
+      function OnSuccessfulLogin() {
+          document.location.href = "hola.html";
+      }
+  </script>
+  
+</html>

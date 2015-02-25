@@ -20,7 +20,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import shudder.listeners.LoginListener;
-import shudder.controllers.UserCotroller;
+import shudder.controllers.UserController;
 import shudder.util.LoginCredentials;
 
 /**
@@ -66,7 +66,7 @@ public class LoginDialog extends JDialog{
             LoginCredentials credentials = new LoginCredentials();
             credentials.setEmail(emailTextField.getText());
             credentials.setPassword(new String(passwordField.getPassword()));
-            UserCotroller.login(credentials);
+            UserController.login(credentials);
 
         }
     };
@@ -77,7 +77,7 @@ public class LoginDialog extends JDialog{
         setResizable(false);
         setModalityType(ModalityType.MODELESS);
         setLocationRelativeTo(owner);
-        UserCotroller.addListener(loginListener);
+        UserController.addListener(loginListener);
     }
     
     private void createComponents() {
