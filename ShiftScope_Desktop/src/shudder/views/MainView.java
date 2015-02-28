@@ -25,12 +25,14 @@ public class MainView extends Application {
         System.setProperty("prism.lcdtext", "false");
         stage.setTitle("Web View");
         scene = new Scene(mainBrowser, 750, 500, Color.web("#666970"));
-        stage.setScene(scene);      
+        stage.setScene(scene);
+        stage.setMinWidth(300);
+        stage.setMinHeight(500);        
         stage.show();
+
     }
 
     public static void main(String[] args) {
         launch(args);
     }
-
 }

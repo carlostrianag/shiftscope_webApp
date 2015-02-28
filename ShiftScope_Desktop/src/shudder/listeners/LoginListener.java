@@ -5,14 +5,32 @@
  */
 package shudder.listeners;
 
+import javafx.application.Platform;
+import shudder.views.MainView;
+
 /**
  *
  * @author Carlos
  */
 public abstract class LoginListener {
     public void OnInit(){};
-    public void OnSuccessfulLogin(){};
-    public abstract void loading();
-    public abstract void laoded();
-    public abstract void OnError(String error);
+    public void OnSuccessfulLogin(){                
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnSuccessfulLogin();");
+            }
+        });
+    };
+    public void OnFailedLogin(){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnFailedLogin();");
+            }
+        });
+    };
+    public void loading() {};
+    public void laoded() {};
+    public void OnError(String error) {};
 }

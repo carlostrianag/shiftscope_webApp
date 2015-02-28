@@ -53,13 +53,13 @@ public class RegistrationDialog extends JDialog {
                 user.setLastName(lastNameTextField.getText());
                 user.setEmail(emailTextField.getText());
                 user.setPassword(new String(passwordTextField.getPassword()));
-                Response response = UserController.createUser(user);
-                if (response.getStatusCode() == 200){
-                    dispose();
-                    openLoginDialog();
-                } else {
-
-                }
+//                Response response = UserController.createUser(user);
+//                if (response.getStatusCode() == 200){
+//                    dispose();
+//                    openLoginDialog();
+//                } else {
+//
+//                }
             }            
         }
     };

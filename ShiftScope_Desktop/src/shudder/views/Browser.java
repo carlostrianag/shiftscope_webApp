@@ -5,15 +5,10 @@
  */
 package shudder.views;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
@@ -25,9 +20,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import jdk.nashorn.internal.runtime.Debug;
 import netscape.javascript.JSObject;
-import shudder.controllers.UserController2;
+import shudder.controllers.UserController;
 import shudder.listeners.LoginListener;
 import shudder.util.Debugger;
 
@@ -37,7 +31,7 @@ import shudder.util.Debugger;
  */
 public class Browser extends Region {
 
-    private Debugger mainDebugger;
+    final Debugger mainDebugger;
     final WebView browser = new WebView();
     final WebEngine webEngine = browser.getEngine();
     final ChangeListener<? super Worker.State> changeListener = (ObservableValue<? extends Worker.State> ov, Worker.State oldState, Worker.State newState) -> {
@@ -49,13 +43,13 @@ public class Browser extends Region {
         }
     };
 
-    public Browser() {
+    public Browser() {       
         mainDebugger = new Debugger();
         getStyleClass().add("browser");
         webEngine.getLoadWorker().stateProperty().addListener(changeListener);
         getChildren().add(browser);
         openHTML("index.html");
-        
+        setMinSize(300, 300);
     }
 
     private Node createSpacer() {
@@ -66,36 +60,10 @@ public class Browser extends Region {
     
     private void setControllers() {
         JSObject javaScriptObject = (JSObject) webEngine.executeScript("window");
-        UserController2 uc = new UserController2();
-        LoginListener listener = new LoginListener() {
-
-            @Override
-            public void OnSuccessfulLogin() {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        webEngine.executeScript("OnSuccessfulLogin();");
-                    }
-                });
-            }
-            
-            @Override
-            public void loading() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void laoded() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void OnError(String error) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-        uc.addListener(listener);
-        javaScriptObject.setMember("UserController", uc);
+        UserController userController = new UserController();
+        LoginListener listener = new LoginListener() {};
+        userController.addListener(listener);
+        javaScriptObject.setMember("UserController", userController);
         javaScriptObject.setMember("Debugger", mainDebugger);
     }
     
@@ -138,5 +106,7 @@ public class Browser extends Region {
     protected double computePrefHeight(double width) {
         return 500;
     }
+    
+
 }
 

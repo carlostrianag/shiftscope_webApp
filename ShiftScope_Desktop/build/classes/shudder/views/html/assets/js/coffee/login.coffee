@@ -1,6 +1,7 @@
 $(document).ready ->
 	$('#login-form').submit (e) ->
 		e.preventDefault()
-		alert 'mk que fue'
+		credentials = $(this).serializeObject()
+		UserController.login JSON.stringify credentials
 		return
 	return

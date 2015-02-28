@@ -462,7 +462,7 @@ public class HomePage extends javax.swing.JFrame{
         PlayerController.addListener(playerListener);
         TCPController.addListener(webSocketListener);
         FolderController.addListener(folderListener);
-        UserController.addListener(loginListener);
+        //UserController.addListener(loginListener);
     }
 
     private void calculateDifference() {

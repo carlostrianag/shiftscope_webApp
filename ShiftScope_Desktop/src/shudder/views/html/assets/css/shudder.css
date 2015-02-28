@@ -1,0 +1,26 @@
+.btn-shudder {
+	background-color: rgb(204, 0, 51);
+	color: white;
+}
+
+.btn-shudder:hover {
+	background-color: rgb(38, 0, 38);
+	color: white;
+}
+
+#logo_image {
+	padding-top: 20px;
+}
+
+#options_bar {
+	padding-top: 15px;
+}
+
+.options-btn {
+	background-color: white;
+}
+
+.options-btn:hover {
+	background-color: green;
+	cursor: pointer;
+}

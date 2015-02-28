@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 import shudder.listeners.LoginListener;
 import shudder.criteria.DeviceCriteria;
 import shudder.criteria.LibraryCriteria;
-import shudder.main.Main;
 import shudder.model.Device;
 import shudder.model.Library;
 import shudder.model.User;
@@ -38,20 +37,22 @@ import shudder.views.dialogs.LoginDialog;
  */
 public class UserController {
 
-    private static ArrayList<LoginListener> listeners = new ArrayList<>();
-    private static Gson JSONParser;
+    private ArrayList<LoginListener> listeners = new ArrayList<>();
+    private Gson JSONParser;
     
-    public static void addListener(LoginListener listener) {
+    public void addListener(LoginListener listener) {
         listeners.add(listener);
     }
     
-    public static void login(LoginCredentials credentials) {
+    public void login(String JSONObject) {
+        System.out.println(JSONObject);
+        JSONParser = new Gson();
+        LoginCredentials credentials = JSONParser.fromJson(JSONObject, LoginCredentials.class);
         AsyncCompletionHandler<Void> responseHandler = new AsyncCompletionHandler<Void>() {
 
             @Override
             public Void onCompleted(Response response) throws Exception {
                 if (response.getStatusCode() == 200) {
-                    JSONParser = new Gson();
                     try {
                         User user = JSONParser.fromJson(response.getResponseBody(), User.class);
                         SessionConstants.USER_ID = user.getId();
@@ -65,6 +66,10 @@ public class UserController {
                         Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
+                } else {
+                    for (LoginListener listener : listeners) {
+                        listener.OnFailedLogin();
+                    }
                 }
                 return null;
             }
@@ -83,13 +88,13 @@ public class UserController {
         HTTPService.HTTPPost("/user/login", object, responseHandler);
     }
 
-    public static Response createUser(User user) {
+    public Response createUser(User user) {
         JSONParser = new Gson();
         String object = JSONParser.toJson(user);
         return HTTPService.HTTPSyncPost("/user/create", object); 
     }
     
-    private static void verifyDeviceExistence() {
+    private void verifyDeviceExistence() {
         String uuid;
         String pcName;
         Device device;

@@ -66,7 +66,7 @@ public class LoginDialog extends JDialog{
             LoginCredentials credentials = new LoginCredentials();
             credentials.setEmail(emailTextField.getText());
             credentials.setPassword(new String(passwordField.getPassword()));
-            UserController.login(credentials);
+            //UserController.login(credentials);
 
         }
     };
@@ -77,7 +77,7 @@ public class LoginDialog extends JDialog{
         setResizable(false);
         setModalityType(ModalityType.MODELESS);
         setLocationRelativeTo(owner);
-        UserController.addListener(loginListener);
+        //UserController.addListener(loginListener);
     }
     
     private void createComponents() {
