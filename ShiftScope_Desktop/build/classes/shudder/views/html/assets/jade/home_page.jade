@@ -1,4 +1,4 @@
-div.top-bar
+nav.top-bar
 	div(class="logo-container" align="left")
 		img(id="top-bar-logo" src="assets/images/logo_shudder.png")
 
@@ -7,14 +7,30 @@ div.top-bar
 		img(src="assets/images/ic_unknown.png")
 
 div.tab-wrapper
-	div.library-tab Library
+	div.library-tab.active-tab Library
 	div.playlist-tab Playlist
 
 div.tab-content
+	div.list-group
+		a.list-group-item
+			img(src="assets/images/ic_folder.png")
+			| Holi song
+		a.list-group-item
+			img(src="assets/images/ic_folder.png")
+			| Holi song
+		a.list-group-item
+			img(src="assets/images/ic_folder.png")
+			| Holi song
+		a.list-group-item
+			img(src="assets/images/ic_folder.png")
+			| Holi song
+		a.list-group-item
+			img(src="assets/images/ic_folder.png")
+			| Holi song												
 
 
 
-div.bottom-container
+footer.bottom-container
 	div(class="player-actions" align="left")
 		img(id="back-btn" src="assets/images/ic_back.png")
 		img(id="play-btn" src="assets/images/ic_play.png")
