@@ -1,3 +1,18 @@
+@font-face {
+    font-family: "ShudderFont";
+    src: url(../shudderfonts/FuturaLTBook.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "ShudderFontBold";
+    src: url(../shudderfonts/FuturaLTBold.ttf) format("truetype");
+}
+
+.main-body {
+	background-color: rgb(38, 0, 38); 
+	height:100%;
+}
+
 .btn-shudder {
 	background-color: rgb(204, 0, 51);
 	color: white;
@@ -23,4 +38,275 @@
 .options-btn:hover {
 	background-color: green;
 	cursor: pointer;
+}
+
+.main-btns {
+	padding-top: 30px;
+}
+
+.main-logo {
+	padding-top: 20%;
+}
+
+#main-screen-logo {
+	display: block;
+	margin: auto;
+	width: 150px;
+	height: auto;
+}
+
+
+.bar-container {
+	padding-bottom: 5px;
+}
+
+.btn-bar {
+	height: 46px;
+	background-color: rgb(57, 6, 57);
+	width: 100%;
+	display: table;
+}
+
+.input-bar {
+	height: 46px;
+	background-color: rgb(204, 0, 51);
+	width: 100%;
+}
+
+.btn-bar:hover {
+	background-color: rgb(28,0 , 28);
+	cursor: pointer;
+}
+
+.btn-text {
+	font-family: "ShudderFont";
+	font-size: 20px;
+	color: rgb(204, 0, 51);
+	text-align: center;
+	height: auto;
+	vertical-align: middle;
+	display: table-cell;
+}
+
+.textbox {
+	border: none;
+	outline:0;
+	background: transparent;
+	text-align: center;
+	margin: auto;
+	height: 100%;
+	color: white;
+	font-family: "ShudderFont";
+	font-size: 20px;
+	display: block;
+	vertical-align: middle;
+	width: 250px;
+}
+
+.top-bar {
+	width: 100%;
+	height: 46px;
+	background-color: rgb(57, 6, 57);
+}
+
+.logo-container {
+	padding-top: 15px;
+	padding-left: 14px;
+	float: left;
+}
+
+.actions-container-right {
+	padding-top: 15px;
+	padding-right: 14px;
+}
+
+.actions-container-right img{
+	width: 23px;
+}
+
+#top-bar-logo {
+	width: 75px;
+}
+
+.bottom-container {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 95px;
+	background-color: rgb(57, 6, 57);
+}
+
+.player-actions {
+	padding-left: 48px;
+	margin-top: 20px;
+	float: left;
+}
+
+.player-volume {
+	margin-top: 15px;
+}
+
+.player-volume img {
+	height: 23px;
+	margin-right: 7px;
+}
+
+#back-btn, #next-btn, #stop-btn, #play-btn {
+	height: 23px;
+	margin-right: 7px;
+	cursor: pointer;
+}
+
+.player-song-bar {
+	margin-right: 48px;
+	float: right;
+	margin-top: 20px;
+}
+
+.elapsed-time {
+	float: left;
+}
+
+.remaining-time {
+	float: right;
+}
+
+.elapsed-time p, .remaining-time p {
+	font-family: "ShudderFont";
+	font-size: 15px;
+	color: rgb(204, 0, 51);
+	text-align: center;
+}
+
+.song-slider {
+	margin-top: 10px;
+	margin-left: 7px;
+	margin-right: 7px;
+	width: 335px;
+	float: left;
+}
+
+.volume-image-container {
+	float: left;
+}
+
+.volume-slider {
+	margin-top: 10px;
+	float: left;
+	width: 83px;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  
+}
+
+.song-name p {
+	font-family: "ShudderFont";
+	font-size: 15px;
+	color: white;
+	text-align: center;
+	width: 100%;
+}
+
+.main-wrapper {
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+	height: 25px;
+}
+
+.tab-wrapper div {
+    display: table-cell;
+    height:25px;
+}
+
+
+.active-tab {
+	background-color: rgb(57, 6, 57);
+}
+
+.library-tab {
+	font-family: "ShudderFont";
+	font-size: 15px;
+    text-align: center;
+    background-color: rgb(38, 0, 38);
+    color: rgb(204, 0, 51);
+}
+
+.playlist-tab {
+	font-family: "ShudderFont";
+	font-size: 15px;
+	background-color: rgb(38, 0, 38);
+	text-align: center;
+	color: rgb(204, 0, 51);
+}
+
+.tab-content {
+	padding-bottom: 95px;
+	background-color: red;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 12px;
+  width: 4px;
+  background: rgb(204, 0 , 51);
+  cursor: pointer;
+  margin-top: -4px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+}
+
+input[type=range]::-moz-range-thumb {
+  height: 12px;
+  width: 4px;
+  border-radius: 3px;
+  background: rgb(204, 0 , 51);;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 2px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgb(38, 0 , 38), 0px 0px 1px rgb(38, 0 , 38);
+  background: rgb(38, 0 , 38);
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: rgb(38, 0 , 38);
+}
+
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 2px;
+  cursor: pointer;
+  background: rgb(38, 0 , 38);
+  border-radius: 1.3px;
+  border: 0.2px solid #010101;
+}
+
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 2px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  border-width: 16px 0;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #2a6495;
+  border: 0.2px solid #010101;
+  border-radius: 2.6px;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: rgb(38, 0 , 38);
+}
+input[type=range]::-ms-fill-upper {
+  background: #3071a9;
+  border: 0.2px solid #010101;
+  border-radius: 2.6px;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #367ebd;
 }

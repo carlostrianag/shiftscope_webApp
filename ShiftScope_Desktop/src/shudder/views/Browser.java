@@ -49,7 +49,7 @@ public class Browser extends Region {
         webEngine.getLoadWorker().stateProperty().addListener(changeListener);
         getChildren().add(browser);
         openHTML("index.html");
-        setMinSize(300, 300);
+        
     }
 
     private Node createSpacer() {
@@ -99,12 +99,12 @@ public class Browser extends Region {
 
     @Override
     protected double computePrefWidth(double height) {
-        return 750;
+        return 600;
     }
 
     @Override
     protected double computePrefHeight(double width) {
-        return 500;
+        return 400;
     }
     
 

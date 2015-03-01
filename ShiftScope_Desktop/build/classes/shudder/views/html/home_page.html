@@ -1,9 +1,34 @@
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-4"><img id="logo_image" src="assets/images/logo_shudder.png"/></div>
+<div class="top-bar">
+  <div align="left" class="logo-container"><img id="top-bar-logo" src="assets/images/logo_shudder.png"/></div>
+  <div align="right" class="actions-container-right"><img src="assets/images/ic_folder.png"/><img src="assets/images/ic_unknown.png"/></div>
+</div>
+<div class="tab-wrapper">
+  <div class="library-tab">Library</div>
+  <div class="playlist-tab">Playlist</div>
+</div>
+<div class="tab-content"></div>
+<div class="bottom-container">
+  <div align="left" class="player-actions"><img id="back-btn" src="assets/images/ic_back.png"/><img id="play-btn" src="assets/images/ic_play.png"/><img id="stop-btn" src="assets/images/ic_stop.png"/><img id="next-btn" src="assets/images/ic_next.png"/>
+    <div class="player-volume">
+      <div class="volume-image-container"><img src="assets/images/ic_volume_up.png"/></div>
+      <div class="volume-slider">
+        <input type="range" value="0" min="0" max="100"/>
+      </div>
+    </div>
   </div>
-  <div id="options_bar" class="row">
-    <div class="col-md-2"><img src="assets/images/ic_folder.png" class="options-btn"/><img src="assets/images/ic_unknown.png" class="options-btn"/></div>
+  <div align="right" class="player-song-bar">
+    <div class="song-name">
+      <p id="song-name-text">EL AGUA - EL MAGO</p>
+    </div>
+    <div class="elapsed-time">
+      <p id="elapsed-time-text">3:10</p>
+    </div>
+    <div class="song-slider">
+      <input type="range" value="0" min="0" max="100"/>
+    </div>
+    <div class="remaining-time">
+      <p id="remaining-time-text">4:01</p>
+    </div>
   </div>
 </div>

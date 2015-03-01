@@ -1,5 +1,5 @@
 $(document).ready -> 
-	$('#log-in-shiftscope').click ->
+	$('#log-in').click ->
 		loadPage 'login_shiftscope.html'
 		return
 	return
