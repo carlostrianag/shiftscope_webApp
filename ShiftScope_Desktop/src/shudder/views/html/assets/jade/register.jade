@@ -1,0 +1,32 @@
+div.container
+	div.main-logo
+		img(id="main-screen-logo" src="assets/images/logo_shudder.png")
+
+	div.row.main-btns
+		form(id="register-form")
+			div.bar-container
+				div.input-bar
+					input(type="text" name="name" class="textbox" placeholder="Type your name" value="Carlos" autofocus)
+			div.bar-container
+				div.input-bar
+					input(type="text" name="lastName" class="textbox" placeholder="Type your Last Name" value="Triana" autofocus)					
+			div.bar-container
+				div.input-bar
+					input(type="text" name="email" class="textbox" placeholder="Type your email" value="trianag24@gmail.com" autofocus)
+			div.bar-container
+				div.input-bar
+					input(type="password" name="password" class="textbox" value="medellin0707" placeholder="Password")
+			div.bar-container
+				div#register-btn.btn-bar
+					p.btn-text
+						| Register
+
+
+
+script(src="assets/js/jquery-1.11.0.js")
+script(src="assets/js/bootstrap.min.js")
+script(src="assets/js/plugins/metisMenu/metisMenu.min.js")
+script(type="text/javascript" src="assets/js/main.js")
+script(type="text/javascript" src="assets/js/form_parser.js")
+script(type="text/javascript" src="assets/js/register.js")
+script(type="text/javascript" src="assets/js/listeners/RegisterListener.js")

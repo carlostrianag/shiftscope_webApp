@@ -45,7 +45,6 @@ public class UserController {
     }
     
     public void login(String JSONObject) {
-        System.out.println(JSONObject);
         JSONParser = new Gson();
         LoginCredentials credentials = JSONParser.fromJson(JSONObject, LoginCredentials.class);
         AsyncCompletionHandler<Void> responseHandler = new AsyncCompletionHandler<Void>() {
@@ -88,13 +87,12 @@ public class UserController {
         HTTPService.HTTPPost("/user/login", object, responseHandler);
     }
 
-    public Response createUser(User user) {
-        JSONParser = new Gson();
-        String object = JSONParser.toJson(user);
-        return HTTPService.HTTPSyncPost("/user/create", object); 
+    public Response createUser(String JSONUser) {
+        return HTTPService.HTTPSyncPost("/user/create", JSONUser); 
     }
     
     private void verifyDeviceExistence() {
+        System.out.println("vino");
         String uuid;
         String pcName;
         Device device;

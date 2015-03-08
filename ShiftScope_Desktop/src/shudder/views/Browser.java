@@ -99,12 +99,12 @@ public class Browser extends Region {
 
     @Override
     protected double computePrefWidth(double height) {
-        return 600;
+        return 700;
     }
 
     @Override
     protected double computePrefHeight(double width) {
-        return 400;
+        return 450;
     }
     
 

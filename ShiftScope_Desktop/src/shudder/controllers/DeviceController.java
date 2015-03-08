@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
 import java.util.ArrayList;
-import javax.swing.SwingWorker;
 import shudder.listeners.DeviceListener;
 import shudder.criteria.DeviceCriteria;
 import shudder.model.Device;

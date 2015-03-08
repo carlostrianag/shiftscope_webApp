@@ -1,19 +1,19 @@
+div#wrapper
+	div.top-bar
+		div(class="logo-container" align="left")
+			img(id="top-bar-logo" src="assets/images/logo_shudder.png")
 
-nav.top-bar.navbar-fixed-top
-	div(class="logo-container" align="left")
-		img(id="top-bar-logo" src="assets/images/logo_shudder.png")
+		div(class="actions-container-right" align="right")
+			img(src="assets/images/ic_folder.png")
+			img(src="assets/images/ic_unknown.png")
 
-	div(class="actions-container-right" align="right")
-		img(src="assets/images/ic_folder.png")
-		img(src="assets/images/ic_unknown.png")
+		div.tab-wrapper
+			div.library-tab.active-tab Library
+			div.playlist-tab Playlist
 
-div.body-content
-	div.tab-wrapper
-		div.library-tab.active-tab Library
-		div.playlist-tab Playlist
 
 	div.tab-content
-		div.list-group
+		div#library-list.list-group
 			a.list-group-item
 				img(src="assets/images/ic_folder.png")
 				| Holi song
@@ -55,33 +55,44 @@ div.body-content
 				| Holi song	
 			a.list-group-item
 				img(src="assets/images/ic_folder.png")
-				| Holi song	
+				| Holi song
 																																																									
 
 
-div.bottom-container
-	div(class="player-actions" align="left")
-		img(id="back-btn" src="assets/images/ic_back.png")
-		img(id="play-btn" src="assets/images/ic_play.png")
-		img(id="stop-btn" src="assets/images/ic_stop.png")
-		img(id="next-btn" src="assets/images/ic_next.png")
-		div(class="player-volume")
-			div.volume-image-container
-				img(src="assets/images/ic_volume_up.png")
-			div.volume-slider
+	div.bottom-container
+		div.search-bar
+			div.checkboxes
+				div#artist-checkbox
+					p Artist
+				div#title-checkbox
+					p Title
+				div.search-bar-container
+					div.search-input-bar
+						input(type="text" name="query" class="search-textbox" placeholder="Search ..." autofocus)								
+
+		div(class="player-actions" align="left")
+			img(id="back-btn" src="assets/images/ic_back.png")
+			img(id="play-btn" src="assets/images/ic_play.png")
+			img(id="stop-btn" src="assets/images/ic_stop.png")
+			img(id="next-btn" src="assets/images/ic_next.png")
+			div(class="player-volume")
+				div.volume-image-container
+					img(src="assets/images/ic_volume_up.png")
+				div.volume-slider
+					input(type="range" value="0" min="0" max="100")
+
+
+		div(class="player-song-bar" align="right")
+			div.song-name
+				p#song-name-text EL AGUA - EL MAGO
+
+			div.elapsed-time
+				p#elapsed-time-text 3:10
+
+			div.song-slider
 				input(type="range" value="0" min="0" max="100")
 
+			div.remaining-time
+				p#remaining-time-text 4:01
 
-	div(class="player-song-bar" align="right")
-		div.song-name
-			p#song-name-text EL AGUA - EL MAGO
-
-		div.elapsed-time
-			p#elapsed-time-text 3:10
-
-		div.song-slider
-			input(type="range" value="0" min="0" max="100")
-
-		div.remaining-time
-			p#remaining-time-text 4:01
-
+script(src="assets/js/home_page.js")
