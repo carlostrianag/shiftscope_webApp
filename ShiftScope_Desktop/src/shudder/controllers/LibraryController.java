@@ -8,6 +8,7 @@ package shudder.controllers;
 
 import com.google.gson.Gson;
 import com.ning.http.client.Response;
+import javax.swing.JFileChooser;
 import shudder.criteria.LibraryCriteria;
 import shudder.model.Library;
 import shudder.netservices.HTTPService;
@@ -26,5 +27,9 @@ public class LibraryController {
     
     public static Response getLibraryByDeviceId(LibraryCriteria criteria) {
         return HTTPService.HTTPSyncGet("/library/getLibraryByDeviceId?device="+criteria.getDevice());
+    }
+    
+    public static void showDialog() {
+
     }
 }

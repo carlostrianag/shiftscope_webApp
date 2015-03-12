@@ -102,7 +102,9 @@
 	vertical-align: middle;
 	width: 250px;
 }
-
+.textbox::selection {
+  background: red;
+}
 .search-textbox {
 	border: none;
 	outline:0;
