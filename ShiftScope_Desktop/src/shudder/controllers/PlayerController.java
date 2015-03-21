@@ -22,7 +22,6 @@ import shudder.util.Operation;
 import shudder.util.OperationType;
 import shudder.util.SessionConstants;
 import shudder.util.Sync;
-import shudder.views.HomePage;
 
 /**
  *
@@ -229,7 +228,7 @@ public class PlayerController {
             }
             playlistPlaying = playedFromPlaylist;
         } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -288,7 +287,7 @@ public class PlayerController {
         try {
             control.resume();
         } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -296,7 +295,7 @@ public class PlayerController {
         try {
             control.pause();
         } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -304,7 +303,7 @@ public class PlayerController {
         try {
             control.stop();
         } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -345,7 +344,7 @@ public class PlayerController {
             volumeAdjustedByUser = fromUser;
             player.setGain(value);
         } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -403,7 +402,7 @@ public class PlayerController {
         try {
             control.setGain(1.0);
         } catch (BasicPlayerException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
         queuePaths = new ArrayList<>();
         currentSong = null;

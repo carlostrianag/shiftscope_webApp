@@ -8,7 +8,6 @@ package shudder.controllers;
 
 import com.google.gson.Gson;
 import com.ning.http.client.Response;
-import javax.swing.JFileChooser;
 import shudder.criteria.LibraryCriteria;
 import shudder.model.Library;
 import shudder.netservices.HTTPService;

@@ -10,7 +10,6 @@ import com.beaglebuddy.mp3.MP3;
 import com.google.gson.Gson;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.Response;
-import java.awt.Event;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -21,6 +20,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -36,7 +37,6 @@ import shudder.util.Events;
 import shudder.util.SessionConstants;
 import shudder.util.comparators.ArtistComparator;
 import shudder.util.comparators.TitleComparator;
-import shudder.views.HomePage;
 
 /**
  *
@@ -44,26 +44,46 @@ import shudder.views.HomePage;
  */
 public class FolderController {
     
-    private static ArrayList<FolderListener> listeners = new ArrayList<>();
-    private static FolderDTO folderContent;
-    private static Gson JSONParser;
-    private static int currentFileScanned = 0;
-    private static int totalFiles;
-    private static boolean orderBySongName = true;
-    private static boolean orderByArtists = false;
+    private ArrayList<FolderListener> listeners = new ArrayList<>();
+    private FolderDTO folderContent;
+    private Gson JSONParser;
+    private int currentFileScanned = 0;
+    private int totalFiles;
+    private boolean orderBySongName = true;
+    private boolean orderByArtists = false;
+    private Stage stage;
+
+    public FolderController(Stage stage) {
+        this.stage = stage;
+    }
+    
+    public void openFile() {
+        
+        DirectoryChooser fileChooser = new DirectoryChooser();
+        fileChooser.setTitle("Please choose a folder");
+        File folder = fileChooser.showDialog(stage);
+        
+        if (folder != null) {
+            File[] files = new File[1];
+            files[0] = folder;
+            buildFolder(files);
+        }
+        
+            //buildFolder(fileChooser.ge);
+    }
     
     
-    public static void addListener(FolderListener listener) {
+    public void addListener(FolderListener listener) {
         listeners.add(listener);
     }
     
-    public static Response createFolder(Folder folder){
+    public Response createFolder(Folder folder){
         JSONParser = new Gson();
         String object = JSONParser.toJson(folder);
         return HTTPService.HTTPSyncPost("/folder/create", object);
     }
     
-    public static void createFolderTracks(FolderCreationDTO folderTracks) {
+    public void createFolderTracks(FolderCreationDTO folderTracks) {
         AsyncCompletionHandler<Void> responseHandler = new AsyncCompletionHandler<Void>() {
 
             @Override
@@ -78,18 +98,20 @@ public class FolderController {
         HTTPService.HTTPPost("/folder/createFolderTracks", object, responseHandler);
     }    
     
-    public static Response createFolderOptimized(FolderCreationDTO folder) {
+    public Response createFolderOptimized(FolderCreationDTO folder) {
         JSONParser = new Gson();
         String object = JSONParser.toJson(folder);
         return HTTPService.HTTPSyncPost("/folder/createOptimized", object);
     }
     
-    public static void getFolderContentById(FolderCriteria criteria) {
+    public void getFolderContentById(String JSONFolderCriteria) {
+        Gson JSONParser = new Gson();
+        FolderCriteria criteria = JSONParser.fromJson(JSONFolderCriteria, FolderCriteria.class);
+        criteria.setLibrary(SessionConstants.LIBRARY_ID);
         AsyncCompletionHandler<Void> responseHandler = new AsyncCompletionHandler<Void>() {
             @Override
             public Void onCompleted(Response response) throws Exception {
                 if (response.getStatusCode() == 200) {
-                    JSONParser = new Gson();
                     folderContent = JSONParser.fromJson(response.getResponseBody(), FolderDTO.class);
                     SessionConstants.PARENT_FOLDER_ID = folderContent.getParentFolder();
                     new FolderWorker(Events.ON_CONTENT_FETCHED).execute();
@@ -100,20 +122,21 @@ public class FolderController {
             }
         };
         HTTPService.HTTPGet("/folder/getFolderContentById?id="+criteria.getId()+"&library="+criteria.getLibrary(), responseHandler);
+        System.out.println("/folder/getFolderContentById?id="+criteria.getId()+"&library="+criteria.getLibrary());
         for (FolderListener listener : listeners) {
             listener.fetchingContent();
         }
     }
     
-    public static void drawFolder() {
+    public void drawFolder() {
         new FolderWorker(Events.ON_DRAW_FOLDER).execute();
     }
     
-    public static void buildFolder(File[] files) {
+    public void buildFolder(File[] files) {
         new FolderWorker(Events.BUILD_FOLDER_HIERARCHY, files).execute();
     }
     
-    public static void buildFolderHierarchy(File[] files){
+    public void buildFolderHierarchy(File[] files){
             totalFiles = 0;
             currentFileScanned = 0;
             File[] selectedFiles = files;
@@ -131,23 +154,23 @@ public class FolderController {
     }
     
     
-    public static void orderTracksBySongName() {
+    public void orderTracksBySongName() {
         orderBySongName = true;
         orderByArtists = false;
         new FolderWorker(Events.ON_ORDER_TRACKS).execute();
     }
     
-    public static void orderTracksByArtistName() {
+    public void orderTracksByArtistName() {
         orderByArtists = true;
         orderBySongName = false;
         new FolderWorker(Events.ON_ORDER_TRACKS).execute();
     }
     
-    public static void search(String text) {     
+    public void search(String text) {     
         new FolderWorker(Events.ON_SEARCH, text).execute();
     }
     
-    private static void buildFolderOptimized(File folder, int parentId) {
+    private void buildFolderOptimized(File folder, int parentId) {
         JSONParser = new Gson();
         Folder createdFolder;
         FolderCreationDTO folderToCreate = new FolderCreationDTO();
@@ -220,7 +243,7 @@ public class FolderController {
         }
     }
     
-    private static Folder createFolderByLimit(FolderCreationDTO folder, int trackLimit) {
+    private Folder createFolderByLimit(FolderCreationDTO folder, int trackLimit) {
         Folder createdFolder = null;
         ArrayList<Track> tracks = folder.getTracks();
         ArrayList<Track> tracksToCreate;
@@ -235,7 +258,7 @@ public class FolderController {
             folder.setTracks(tracksToCreate);
         }
 
-        Response response = FolderController.createFolderOptimized(folder);
+        Response response = createFolderOptimized(folder);
         try {
             if (response.getStatusCode() == 200) {
                 createdFolder = (Folder) JSONParser.fromJson(response.getResponseBody(), Folder.class);
@@ -251,17 +274,17 @@ public class FolderController {
                         tracksToCreate = new ArrayList<>(tracks.subList(start, end));
                         folder.setFolder(null);
                         folder.setTracks(tracksToCreate);
-                        FolderController.createFolderTracks(folder);
+                        createFolderTracks(folder);
                     } while (start < total);
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FolderController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return createdFolder;
     }
         
-    private static void countFiles(File selectedFile) {
+    private void countFiles(File selectedFile) {
         File[] selectedFiles;
         if (selectedFile.isDirectory() && !selectedFile.isHidden()) {
             selectedFiles = selectedFile.listFiles();
@@ -275,7 +298,7 @@ public class FolderController {
     }
 
     
-    private static class FolderWorker extends SwingWorker<Void, Void> {
+    private class FolderWorker extends SwingWorker<Void, Void> {
 
         private Events event;
         private File[] files;

@@ -18,18 +18,18 @@ import javafx.stage.Stage;
 public class MainView extends Application {
 
     private Scene scene;
-    public static Browser mainBrowser = new Browser();
+    public static Browser mainBrowser;
 
     @Override
     public void start(Stage stage) {
         System.setProperty("prism.lcdtext", "false");
         stage.setTitle("Web View");
+        mainBrowser = new Browser(stage);
         scene = new Scene(mainBrowser, 700, 450, Color.web("#666970"));
         stage.setScene(scene);
         stage.setMinWidth(700);
-        stage.setMinHeight(450);        
+        stage.setMinHeight(450);
         stage.show();
-
     }
 
     public static void main(String[] args) {

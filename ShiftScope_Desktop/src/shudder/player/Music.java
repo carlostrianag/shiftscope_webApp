@@ -9,7 +9,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
-import shudder.views.HomePage;
 
 public class Music {
 
@@ -38,7 +37,7 @@ public class Music {
         }
     };
 
-    public Music(HomePage parent) {
+    public Music() {
         file = null;
         playingMainLine = false;
         playingAuxLine = false;

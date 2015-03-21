@@ -46,6 +46,7 @@ public class UserController {
     
     public void login(String JSONObject) {
         JSONParser = new Gson();
+        System.out.println(JSONObject);
         LoginCredentials credentials = JSONParser.fromJson(JSONObject, LoginCredentials.class);
         AsyncCompletionHandler<Void> responseHandler = new AsyncCompletionHandler<Void>() {
 

@@ -5,23 +5,40 @@
  */
 package shudder.listeners;
 
+import com.google.gson.Gson;
 import java.util.ArrayList;
+import javafx.application.Platform;
 import shudder.dto.FolderDTO;
 import shudder.model.Track;
+import shudder.views.MainView;
 
 /**
  *
  * @author Carlos
  */
 public abstract class FolderListener {
-    public abstract void OnProgressUpdated(int progress);
-    public abstract void OnFilesScanned(int filesCount);
+    public void OnProgressUpdated(int progress){};
+    public void OnFilesScanned(int filesCount){};
     public void fetchingContent(){};
-    public void OnContentFetched(FolderDTO folderContent){};
-    public abstract void OnError(String error);
+    public void OnContentFetched(FolderDTO folderContent){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Gson JSONParser = new Gson();
+                String JSONObject = JSONParser.toJson(folderContent);
+                MainView.mainBrowser.execute("OnContentFetched("+JSONObject+");");
+            }
+        });
+    };
+    public void OnError(String error){};
 
     public void OnBuildFolderFinished() {
-        
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnBuildFolderFinished();");
+            }
+        });
     }
 
     public void drawSearchResults(ArrayList<Track> tracks) {

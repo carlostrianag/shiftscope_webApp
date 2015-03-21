@@ -8,14 +8,12 @@ package shudder.main;
 import java.io.IOException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import shudder.views.HomePage;
 
 /**
  *
  * @author carlos
  */
 public class Main {
-    public static HomePage home;
     public static void main(String[] args) throws IOException {
         try {
             // Set cross-platform Java L&F (also called "Metal")
@@ -31,9 +29,5 @@ public class Main {
             // handle exceptio
 
         }
-        
-        home = new HomePage();
-        home.setVisible(true);
-
     }
 }

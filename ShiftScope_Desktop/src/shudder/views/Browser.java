@@ -20,8 +20,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 import netscape.javascript.JSObject;
+import shudder.controllers.FolderController;
 import shudder.controllers.UserController;
+import shudder.listeners.FolderListener;
 import shudder.listeners.LoginListener;
 import shudder.util.Debugger;
 
@@ -34,7 +37,9 @@ public class Browser extends Region {
     final Debugger mainDebugger;
     final WebView browser = new WebView();
     final WebEngine webEngine = browser.getEngine();
+    final Stage stage;
     final ChangeListener<? super Worker.State> changeListener = (ObservableValue<? extends Worker.State> ov, Worker.State oldState, Worker.State newState) -> {
+        
           
         if (newState == Worker.State.SUCCEEDED) {
             
@@ -43,13 +48,13 @@ public class Browser extends Region {
         }
     };
 
-    public Browser() {       
+    public Browser(Stage stage) {
+        this.stage = stage;
         mainDebugger = new Debugger();
         getStyleClass().add("browser");
         webEngine.getLoadWorker().stateProperty().addListener(changeListener);
         getChildren().add(browser);
         openHTML("index.html");
-        
     }
 
     private Node createSpacer() {
@@ -61,11 +66,17 @@ public class Browser extends Region {
     private void setControllers() {
         JSObject javaScriptObject = (JSObject) webEngine.executeScript("window");
         UserController userController = new UserController();
-        LoginListener listener = new LoginListener() {};
-        userController.addListener(listener);
+        FolderController folderController = new FolderController(stage);
+        LoginListener loginListener = new LoginListener() {};
+        FolderListener folderListener = new FolderListener() {};
+        folderController.addListener(folderListener);
+        userController.addListener(loginListener);
         javaScriptObject.setMember("UserController", userController);
+        javaScriptObject.setMember("FolderController", folderController);
         javaScriptObject.setMember("Debugger", mainDebugger);
     }
+    
+
     
     public void execute(String code) {
         webEngine.executeScript(code);
@@ -74,7 +85,8 @@ public class Browser extends Region {
     public void openHTML(String file) {
         String path = getClass().getResource("html/" + file).toExternalForm();
         path = path.substring(6);
-        path = "file:///" + path;        
+        path = "file:///" + path;
+        System.out.println(path);
         webEngine.load(path);
     }
     
