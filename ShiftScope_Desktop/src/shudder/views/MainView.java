@@ -9,11 +9,15 @@ package shudder.views;
  *
  * @author Carlos
  */
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class MainView extends Application {
 
@@ -29,6 +33,17 @@ public class MainView extends Application {
         stage.setScene(scene);
         stage.setMinWidth(700);
         stage.setMinHeight(450);
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+
+            @Override
+            public void handle(WindowEvent event) {
+                try {
+                    System.exit(0);
+                } catch (Exception ex) {
+                    Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
         stage.show();
     }
 

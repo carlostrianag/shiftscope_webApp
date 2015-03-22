@@ -36,7 +36,7 @@ div#wrapper
 				div.volume-image-container
 					img(src="assets/images/ic_volume_up.png")
 				div.volume-slider
-					input(type="range" value="0" min="0" max="100")
+					input(type="range" value="100" min="0" max="100")
 
 
 		div(class="player-song-bar" align="right")
@@ -47,10 +47,11 @@ div#wrapper
 				p#elapsed-time-text 3:10
 
 			div.song-slider
-				input(type="range" value="0" min="0" max="100")
+				input(id="slider" type="range" value="0" min="0" max="100")
 
 			div.remaining-time
 				p#remaining-time-text 4:01
 
 script(src="assets/js/home_page.js")
 script(type="text/javascript" src="assets/js/listeners/FolderListener.js")
+script(type="text/javascript" src="assets/js/listeners/PlayerListener.js")

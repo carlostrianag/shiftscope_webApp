@@ -5,6 +5,7 @@
  */
 package shudder.controllers;
 
+import com.google.gson.Gson;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
@@ -29,23 +30,23 @@ import shudder.util.Sync;
  */
 public class PlayerController {
 
-    private static int currentSongPosition;
-    private static int totalSeconds;
-    private static int currentSecond;
-    private static int frameLength;
-    private static boolean playlistPlaying;
-    private static boolean paused;
-    private static boolean volumeAdjustedByUser;
-    private static Float frameRate;
-    private static String totalTimeString;
-    private static String elapsedTimeString;
-    private static ArrayList<Track> queuePaths;
-    private static Track currentSong;
-    private static Sync sync;
-    private static BasicPlayer player;
-    private static BasicController control;
-    private static ArrayList<PlayerListener> listeners = new ArrayList<>();
-    private static FolderListener folderListener = new FolderListener() {
+    private int currentSongPosition;
+    private int totalSeconds;
+    private int currentSecond;
+    private int frameLength;
+    private boolean playlistPlaying;
+    private boolean paused;
+    private boolean volumeAdjustedByUser;
+    private Float frameRate;
+    private String totalTimeString;
+    private String elapsedTimeString;
+    private ArrayList<Track> queuePaths;
+    private Track currentSong;
+    private Sync sync;
+    private BasicPlayer player;
+    private BasicController control;
+    private ArrayList<PlayerListener> listeners = new ArrayList<>();
+    private FolderListener folderListener = new FolderListener() {
         
         @Override
         public void OnBuildFolderFinished() {
@@ -75,7 +76,7 @@ public class PlayerController {
         }
     };
     
-    private static BasicPlayerListener basicPlayerListener = new BasicPlayerListener() {
+    private BasicPlayerListener basicPlayerListener = new BasicPlayerListener() {
         @Override
         public void opened(Object o, Map map) {
             Long duration = (Long) map.get("duration");
@@ -158,33 +159,33 @@ public class PlayerController {
         }
     };
 
-    public static void addListener(PlayerListener listener) {
+    public void addListener(PlayerListener listener) {
         listeners.add(listener);
     }
 
-    public static void removeListener(PlayerListener listener) {
+    public void removeListener(PlayerListener listener) {
         listeners.remove(listener);
     }
 
-    public static ArrayList<Track> getQueue() {
+    public ArrayList<Track> getQueue() {
         return queuePaths;
     }
 
-    public static int getCount() {
+    public int getCount() {
         return queuePaths.size();
     }
 
-    private static void invokeOnOpened(String totalTime, int totalSeconds) {
+    private void invokeOnOpened(String totalTime, int totalSeconds) {
         for (PlayerListener listener : listeners) {
             listener.OnOpened(totalTime, totalSeconds);
         }
     }
     
-    public static boolean isPaused() {
+    public boolean isPaused() {
         return paused;
     }
     
-    public static void clearPlaylist() {
+    public void clearPlaylist() {
         queuePaths.clear();
         sync.setCurrentPlaylist(queuePaths);
         Operation request = new Operation();
@@ -194,32 +195,33 @@ public class PlayerController {
         TCPController.sendRequest(request);
     }
 
-    private static void invokeOnProgress(String elapsedTime, int currentSecond) {
+    private void invokeOnProgress(String elapsedTime, int currentSecond) {
         for (PlayerListener listener : listeners) {
             listener.OnProgress(elapsedTime, currentSecond);
         }
     }
 
-    private static void invokeOnVolumeChanged(int value) {
+    private void invokeOnVolumeChanged(int value) {
         for (PlayerListener listener : listeners) {
             listener.OnVolumeChanged(value);
         }
     }
 
-    private static void invokeOnPlaying(String songName, String artistName) {
+    private void invokeOnPlaying(String songName, String artistName) {
         for (PlayerListener listener : listeners) {
             listener.OnPlaying(songName, artistName);
         }
     }
 
-    private static void invokeOnQueueChanged() {
+    private void invokeOnQueueChanged() {
         for (PlayerListener listener : listeners) {
             listener.OnQueueChanged();
         }
     }
 
-    public static void playSong(Track t, boolean playedFromPlaylist) {
+    public void playSong(String track, boolean playedFromPlaylist) {
         try {
+            Track t = new Gson().fromJson(track, Track.class);
             control.open(new File(t.getPath()));
             control.play();
             currentSong = t;
@@ -232,7 +234,20 @@ public class PlayerController {
         }
     }
 
-    public static void merge() {
+    public void playSong(Track t, boolean playedFromPlaylist) {
+        try {
+            control.open(new File(t.getPath()));
+            control.play();
+            currentSong = t;
+            if (playedFromPlaylist) {
+                getPosition(t);
+            }
+            playlistPlaying = playedFromPlaylist;
+        } catch (BasicPlayerException ex) {
+            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void merge() {
 //        Track t;
 //        if (playlistPlaying) {
 //            if (currentSongPosition < queuePaths.size() - 1) {
@@ -268,7 +283,7 @@ public class PlayerController {
 
     }
 
-    public static void getPosition(Track t) {
+    public void getPosition(Track t) {
         for (int i = 0; i < queuePaths.size(); i++) {
             if (t.equals(queuePaths.get(i))) {
                 currentSongPosition = i;
@@ -277,13 +292,13 @@ public class PlayerController {
         }
     }
 
-    public static void playPlaylist() {
+    public void playPlaylist() {
         currentSongPosition = 0;
         currentSong = queuePaths.get(currentSongPosition);
         playSong(currentSong, true);
     }
 
-    public static void resume() {
+    public void resume() {
         try {
             control.resume();
         } catch (BasicPlayerException ex) {
@@ -291,7 +306,7 @@ public class PlayerController {
         }
     }
 
-    public static void pause() {
+    public void pause() {
         try {
             control.pause();
         } catch (BasicPlayerException ex) {
@@ -299,7 +314,7 @@ public class PlayerController {
         }
     }
 
-    public static void stop() {
+    public void stop() {
         try {
             control.stop();
         } catch (BasicPlayerException ex) {
@@ -307,7 +322,7 @@ public class PlayerController {
         }
     }
 
-    public static void next() {
+    public void next() {
         if (playlistPlaying) {
             if (currentSongPosition < queuePaths.size() - 1) {
                 currentSongPosition++;
@@ -317,7 +332,7 @@ public class PlayerController {
         }
     }
 
-    public static void back() {
+    public void back() {
         if (playlistPlaying) {
             if (currentSongPosition > 0) {
                 currentSongPosition--;
@@ -327,19 +342,19 @@ public class PlayerController {
         }
     }
 
-    public static void mute() {
+    public void mute() {
 //        player.mute();
     }
 
-    public static void volumeDown() {
+    public void volumeDown() {
 //        player.volumeDown();
     }
 
-    public static void volumeUp() {
+    public void volumeUp() {
 //        player.volumeUp();
     }
 
-    public static void setVolumeFromValue(double value, boolean fromUser) {
+    public void setVolumeFromValue(double value, boolean fromUser) {
         try {
             volumeAdjustedByUser = fromUser;
             player.setGain(value);
@@ -348,17 +363,17 @@ public class PlayerController {
         }
     }
 
-    public static void setVolume(float value) {
+    public void setVolume(float value) {
 //        player.setVolumeFromValue(value);
 //        volumeSlider.setValue((int) value);
     }
 
-    public static boolean isPlaying() {
+    public boolean isPlaying() {
 //        return player.isPlaying();
         return false;
     }
 
-    public static void enqueueSong(Track q) {
+    public void enqueueSong(Track q) {
         queuePaths.add(q);
 
         invokeOnQueueChanged();
@@ -370,7 +385,7 @@ public class PlayerController {
         TCPController.sendRequest(request);
     }
 
-    public static void dequeueSong(Track t) {
+    public void dequeueSong(Track t) {
         if (t.equals(currentSong)) {
             next();
         }
@@ -391,11 +406,11 @@ public class PlayerController {
         TCPController.sendRequest(request);
     }
 
-    public static Sync getSync() {
+    public Sync getSync() {
         return sync;
     }
     
-    public static void initPlayer() {
+    public void initPlayer() {
         player = new BasicPlayer();
         player.addBasicPlayerListener(basicPlayerListener);
         control = (BasicController) player;

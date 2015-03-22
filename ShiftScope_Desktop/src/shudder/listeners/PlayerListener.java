@@ -5,14 +5,38 @@
  */
 package shudder.listeners;
 
+import javafx.application.Platform;
+import shudder.views.MainView;
+
 /**
  *
  * @author Carlos
  */
 public abstract class PlayerListener {
-    public void OnOpened(String totalTime, int totalSeconds) {};
-    public void OnProgress(String elapsedTime, int currentSecond) {};
+    public void OnOpened(String totalTime, int totalSeconds) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnOpened('"+totalTime+"',"+totalSeconds+");");
+            }
+        });
+    };
+    public void OnProgress(String elapsedTime, int currentSecond) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnProgress('"+elapsedTime+"',"+currentSecond+");");
+            }
+        });    
+    };
     public void OnVolumeChanged(int value) {};
-    public void OnPlaying(String songName, String artistName) {};
+    public void OnPlaying(String songName, String artistName) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnPlaying('"+songName+"','"+artistName+"');");
+            }
+        });
+    };
     public void OnQueueChanged() {};
 }

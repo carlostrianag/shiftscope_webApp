@@ -23,9 +23,12 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 import shudder.controllers.FolderController;
+import shudder.controllers.PlayerController;
 import shudder.controllers.UserController;
 import shudder.listeners.FolderListener;
 import shudder.listeners.LoginListener;
+import shudder.listeners.PlayerListener;
+import shudder.player.Music;
 import shudder.util.Debugger;
 
 /**
@@ -70,9 +73,13 @@ public class Browser extends Region {
         LoginListener loginListener = new LoginListener() {};
         FolderListener folderListener = new FolderListener() {};
         folderController.addListener(folderListener);
+        PlayerController playerController = new PlayerController();
+        PlayerListener playerListener = new PlayerListener() {};
+        playerController.addListener(playerListener);
         userController.addListener(loginListener);
         javaScriptObject.setMember("UserController", userController);
         javaScriptObject.setMember("FolderController", folderController);
+        javaScriptObject.setMember("PlayerController", playerController);
         javaScriptObject.setMember("Debugger", mainDebugger);
     }
     
@@ -86,7 +93,7 @@ public class Browser extends Region {
         String path = getClass().getResource("html/" + file).toExternalForm();
         path = path.substring(6);
         path = "file:///" + path;
-        System.out.println(path);
+        //System.out.println(path);
         webEngine.load(path);
     }
     

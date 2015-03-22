@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  PlayerController.initPlayer();
   $('#library-list').height($(window).height() - 215);
   $('.tab-content').height($(window).height() - 215);
   $('#folder-selector').click(function() {

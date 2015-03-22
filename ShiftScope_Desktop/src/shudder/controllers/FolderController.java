@@ -94,7 +94,6 @@ public class FolderController {
         };
         JSONParser = new Gson();
         String object = JSONParser.toJson(folderTracks);
-        System.out.println("Entró...");
         HTTPService.HTTPPost("/folder/createFolderTracks", object, responseHandler);
     }    
     
@@ -122,7 +121,6 @@ public class FolderController {
             }
         };
         HTTPService.HTTPGet("/folder/getFolderContentById?id="+criteria.getId()+"&library="+criteria.getLibrary(), responseHandler);
-        System.out.println("/folder/getFolderContentById?id="+criteria.getId()+"&library="+criteria.getLibrary());
         for (FolderListener listener : listeners) {
             listener.fetchingContent();
         }

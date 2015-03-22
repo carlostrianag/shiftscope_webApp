@@ -31,7 +31,7 @@
       <div class="player-volume">
         <div class="volume-image-container"><img src="assets/images/ic_volume_up.png"/></div>
         <div class="volume-slider">
-          <input type="range" value="0" min="0" max="100"/>
+          <input type="range" value="100" min="0" max="100"/>
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@
         <p id="elapsed-time-text">3:10</p>
       </div>
       <div class="song-slider">
-        <input type="range" value="0" min="0" max="100"/>
+        <input id="slider" type="range" value="0" min="0" max="100"/>
       </div>
       <div class="remaining-time">
         <p id="remaining-time-text">4:01</p>
@@ -53,3 +53,4 @@
 </div>
 <script src="assets/js/home_page.js"></script>
 <script type="text/javascript" src="assets/js/listeners/FolderListener.js"></script>
+<script type="text/javascript" src="assets/js/listeners/PlayerListener.js"></script>

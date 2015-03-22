@@ -56,23 +56,23 @@ public class TCPController {
                     Operation request = JSONParser.fromJson(message, Operation.class);
                     switch (request.getOperationType()) {
                         case OperationType.PAUSE:
-                            PlayerController.pause();
+                            //PlayerController.pause();
                             break;
 
                         case OperationType.RESUME:
-                            PlayerController.resume();
+                            //PlayerController.resume();
                             break;
 
                         case OperationType.STOP:
-                            PlayerController.stop();
+                            //PlayerController.stop();
                             break;
 
                         case OperationType.NEXT:
-                            PlayerController.next();
+                            //PlayerController.next();
                             break;
 
                         case OperationType.BACK:
-                            PlayerController.back();
+                            //PlayerController.back();
                             break;
 
                         case OperationType.PLAY:
@@ -82,7 +82,7 @@ public class TCPController {
                             response = TrackController.getTrackById(criteria);
                             try {
                                 t = JSONParser.fromJson(response.getResponseBody(), Track.class);
-                                PlayerController.playSong(t, false);
+                                //PlayerController.playSong(t, false);
                             } catch (IllegalStateException ex) {
                                 for (WebSocketListener listener : listeners) {
                                     listener.OnError(ex.getMessage());
@@ -100,7 +100,7 @@ public class TCPController {
                             response = TrackController.getTrackById(criteria);
                             try {
                                 t = JSONParser.fromJson(response.getResponseBody(), Track.class);
-                                PlayerController.playSong(t, true);
+                                //PlayerController.playSong(t, true);
                             } catch (IOException ex) {
                                 for (WebSocketListener listener : listeners) {
                                     listener.OnError(ex.getMessage());
@@ -118,7 +118,7 @@ public class TCPController {
                             response = TrackController.getTrackById(criteria);
                             try {
                                 t = JSONParser.fromJson(response.getResponseBody(), Track.class);
-                                PlayerController.dequeueSong(t);
+                                //PlayerController.dequeueSong(t);
                             } catch (IOException ex) {
                                 for (WebSocketListener listener : listeners) {
                                     listener.OnError(ex.getMessage());
@@ -136,7 +136,7 @@ public class TCPController {
                             response = TrackController.getTrackById(criteria);
                             try {
                                 t = JSONParser.fromJson(response.getResponseBody(), Track.class);
-                                PlayerController.enqueueSong(t);
+                                //PlayerController.enqueueSong(t);
                             } catch (IOException ex) {
                                 for (WebSocketListener listener : listeners) {
                                     listener.OnError(ex.getMessage());
@@ -148,21 +148,21 @@ public class TCPController {
                             }
                             break;
                         case OperationType.VOLUME_DOWN:
-                            PlayerController.volumeDown();
+                            //PlayerController.volumeDown();
                             break;
 
                         case OperationType.VOLUME_UP:
-                            PlayerController.volumeUp();
+                            //PlayerController.volumeUp();
                             break;
 
                         case OperationType.SET_VOLUME:
-                            PlayerController.setVolumeFromValue(request.getValue(), false);
+                            //PlayerController.setVolumeFromValue(request.getValue(), false);
 
                         case OperationType.SYNC:
                             request = new Operation();
                             request.setOperationType(OperationType.SYNC);
                             request.setUserId(SessionConstants.USER_ID);
-                            request.setSync(PlayerController.getSync());
+                            //request.setSync(PlayerController.getSync());
                             TCPController.sendRequest(request);
                     }
                 }
