@@ -5,15 +5,15 @@ div#wrapper
 
 		div(class="actions-container-right" align="right")
 			img(id="folder-selector" src="assets/images/ic_folder.png")
-			img(src="assets/images/ic_unknown.png")
 
 		div.tab-wrapper
-			div.library-tab.active-tab Library
+			div.library-tab Library
 			div.playlist-tab Playlist
 
 
 	div.tab-content
-		div#library-list.list-group																																										
+		div#library-list.list-group
+		div#playlist-list.list-group									
 
 
 	div.bottom-container
@@ -41,16 +41,16 @@ div#wrapper
 
 		div(class="player-song-bar" align="right")
 			div.song-name
-				p#song-name-text EL AGUA - EL MAGO
+				p#song-name-text
 
 			div.elapsed-time
-				p#elapsed-time-text 3:10
+				p#elapsed-time-text
 
 			div.song-slider
 				input(id="slider" type="range" value="0" min="0" max="100")
 
 			div.remaining-time
-				p#remaining-time-text 4:01
+				p#remaining-time-text
 
 script(src="assets/js/home_page.js")
 script(type="text/javascript" src="assets/js/listeners/FolderListener.js")

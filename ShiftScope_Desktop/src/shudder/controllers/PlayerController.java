@@ -167,8 +167,8 @@ public class PlayerController {
         listeners.remove(listener);
     }
 
-    public ArrayList<Track> getQueue() {
-        return queuePaths;
+    public void getQueue() {
+        invokeOnPlaylistFetched();
     }
 
     public int getCount() {
@@ -180,6 +180,12 @@ public class PlayerController {
             listener.OnOpened(totalTime, totalSeconds);
         }
     }
+    
+    private void invokeOnPlaylistFetched() {
+        for (PlayerListener listener : listeners) {
+            listener.OnPlaylistFetched(queuePaths);
+        }
+    }    
     
     public boolean isPaused() {
         return paused;
@@ -373,7 +379,8 @@ public class PlayerController {
         return false;
     }
 
-    public void enqueueSong(Track q) {
+    public void enqueueSong(String song) {
+        Track q = new Gson().fromJson(song, Track.class);
         queuePaths.add(q);
 
         invokeOnQueueChanged();
@@ -385,8 +392,9 @@ public class PlayerController {
         TCPController.sendRequest(request);
     }
 
-    public void dequeueSong(Track t) {
-        if (t.equals(currentSong)) {
+    public void dequeueSong(String song) {
+        Track t = new Gson().fromJson(song, Track.class);        
+        if (currentSong != null && t.equals(currentSong)) {
             next();
         }
 
@@ -396,7 +404,9 @@ public class PlayerController {
                 break;
             }
         }
-        getPosition(currentSong);
+        if (currentSong != null) {
+            getPosition(currentSong);
+        }
         invokeOnQueueChanged();
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
