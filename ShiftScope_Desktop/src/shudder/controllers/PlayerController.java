@@ -55,7 +55,7 @@ public class PlayerController {
             request.setOperationType(OperationType.SYNC);
             request.setUserId(SessionConstants.USER_ID);
             request.setSync(sync);
-            TCPController.sendRequest(request);
+            TCPController.sendJSRequest(request);
             sync.setNewFolders(false);
         }
         
@@ -119,7 +119,7 @@ public class PlayerController {
                     sync.setIsPlaying(true);
                     sync.setIsPaused(false);
                     request.setSync(sync);
-                    TCPController.sendRequest(request);
+                    TCPController.sendJSRequest(request);
                     paused = false;
                     break;
 
@@ -127,7 +127,7 @@ public class PlayerController {
                     sync.setIsPlaying(false);
                     sync.setIsPaused(true);
                     request.setSync(sync);
-                    TCPController.sendRequest(request);
+                    TCPController.sendJSRequest(request);
                     paused = true;
                     break;
 
@@ -135,7 +135,7 @@ public class PlayerController {
                     sync.setIsPlaying(true);
                     sync.setIsPaused(false);
                     request.setSync(sync);
-                    TCPController.sendRequest(request);
+                    TCPController.sendJSRequest(request);
                     paused = false;
                     break;
 
@@ -198,7 +198,7 @@ public class PlayerController {
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
         request.setSync(sync);
-        TCPController.sendRequest(request);
+        TCPController.sendJSRequest(request);
     }
 
     private void invokeOnProgress(String elapsedTime, int currentSecond) {
@@ -219,9 +219,9 @@ public class PlayerController {
         }
     }
 
-    private void invokeOnQueueChanged() {
+    private void invokeOnQueueChanged(Track addedTrack, Track deletedTrack) {
         for (PlayerListener listener : listeners) {
-            listener.OnQueueChanged();
+            listener.OnQueueChanged(addedTrack, deletedTrack);
         }
     }
 
@@ -242,6 +242,9 @@ public class PlayerController {
 
     public void playSong(Track t, boolean playedFromPlaylist) {
         try {
+            if (control == null) {
+                System.out.println("control es nulo");
+            }
             control.open(new File(t.getPath()));
             control.play();
             currentSong = t;
@@ -383,13 +386,13 @@ public class PlayerController {
         Track q = new Gson().fromJson(song, Track.class);
         queuePaths.add(q);
 
-        invokeOnQueueChanged();
+        invokeOnQueueChanged(q, null);
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
         sync.setCurrentPlaylist(queuePaths);
         request.setSync(sync);
-        TCPController.sendRequest(request);
+        TCPController.sendJSRequest(request);
     }
 
     public void dequeueSong(String song) {
@@ -407,13 +410,13 @@ public class PlayerController {
         if (currentSong != null) {
             getPosition(currentSong);
         }
-        invokeOnQueueChanged();
+        invokeOnQueueChanged(null, t);
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
         sync.setCurrentPlaylist(queuePaths);
         request.setSync(sync);
-        TCPController.sendRequest(request);
+        TCPController.sendJSRequest(request);
     }
 
     public Sync getSync() {

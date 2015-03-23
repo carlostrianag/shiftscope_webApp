@@ -58,25 +58,28 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 case RequestTypes.SYNC:
                     Gson JSONParser = new Gson();
                     Sync syncObject = o.getSync();
-                    sharedPreferences = getSharedPreferences("ShudderSharedPreferences", Context.MODE_PRIVATE);
-                    String JSONPlaylist = JSONParser.toJson(syncObject.getCurrentPlaylist());
-                    if(JSONPlaylist != null) {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("currentPlaylist", JSONPlaylist);
-                        editor.apply();
-                    } else {
-                        sharedPreferences.getAll().remove("currentPlaylist");
+                    if (syncObject != null) {
+                        sharedPreferences = getSharedPreferences("ShudderSharedPreferences", Context.MODE_PRIVATE);
+                        String JSONPlaylist = (syncObject.getCurrentPlaylist() != null)?JSONParser.toJson(syncObject.getCurrentPlaylist()):null;
+                        if(JSONPlaylist != null) {
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("currentPlaylist", JSONPlaylist);
+                            editor.apply();
+                        } else {
+                            sharedPreferences.getAll().remove("currentPlaylist");
+                        }
+
+                        if(syncObject.getCurrentSongName() != null && syncObject.getCurrentSongArtist() != null) {
+                            currentSongText.setText(syncObject.getCurrentSongName() + " - " + syncObject.getCurrentSongArtist());
+                        } else {
+                            currentSongText.setText("");
+                        }
+                        SessionConstants.PLAYER_VOLUME = syncObject.getCurrentVolume();
+                        if(volumeDialog != null) {
+                            volumeDialog.updateVolume();
+                        }
                     }
 
-                    if(syncObject.getCurrentSongName() != null && syncObject.getCurrentSongArtist() != null) {
-                        currentSongText.setText(syncObject.getCurrentSongName() + " - " + syncObject.getCurrentSongArtist());
-                    } else {
-                        currentSongText.setText("");
-                    }
-                    SessionConstants.PLAYER_VOLUME = syncObject.getCurrentVolume();
-                    if(volumeDialog != null) {
-                        volumeDialog.updateVolume();
-                    }
                     break;
             }
         }

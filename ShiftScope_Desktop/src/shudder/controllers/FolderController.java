@@ -164,7 +164,7 @@ public class FolderController {
         new FolderWorker(Events.ON_ORDER_TRACKS).execute();
     }
     
-    public void search(String text) {     
+    public void search(String text) {
         new FolderWorker(Events.ON_SEARCH, text).execute();
     }
     

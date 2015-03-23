@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import shudder.criteria.TrackCriteria;
@@ -20,6 +23,7 @@ import shudder.util.Constants;
 import shudder.util.Operation;
 import shudder.util.OperationType;
 import shudder.util.SessionConstants;
+import shudder.views.MainView;
 
 /**
  *
@@ -27,11 +31,11 @@ import shudder.util.SessionConstants;
  */
 public class TCPController {
 
-    private static Gson JSONParser;
-    private static ArrayList<WebSocketListener> listeners = new ArrayList<>();
-    private static WebSocketClient webSocketService;
+    private Gson JSONParser;
+    private ArrayList<WebSocketListener> listeners = new ArrayList<>();
+    private WebSocketClient webSocketService;
 
-    public static void init() {
+    public void init() {
         try {
             webSocketService = new WebSocketClient(new URI(Constants.SOCKET_SERVER)) {
                 @Override
@@ -56,7 +60,13 @@ public class TCPController {
                     Operation request = JSONParser.fromJson(message, Operation.class);
                     switch (request.getOperationType()) {
                         case OperationType.PAUSE:
-                            //PlayerController.pause();
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MainView.mainBrowser.execute("PlayerController.pause();");
+                                }
+                            });
+
                             break;
 
                         case OperationType.RESUME:
@@ -64,88 +74,106 @@ public class TCPController {
                             break;
 
                         case OperationType.STOP:
-                            //PlayerController.stop();
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MainView.mainBrowser.execute("PlayerController.stop();");
+                                }
+                            });
                             break;
 
                         case OperationType.NEXT:
-                            //PlayerController.next();
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MainView.mainBrowser.execute("PlayerController.next();");
+                                }
+                            });
                             break;
 
                         case OperationType.BACK:
-                            //PlayerController.back();
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MainView.mainBrowser.execute("PlayerController.back();");
+                                }
+                            });
                             break;
 
                         case OperationType.PLAY:
-
                             criteria = new TrackCriteria();
                             criteria.setId(request.getId());
                             response = TrackController.getTrackById(criteria);
-                            try {
-                                t = JSONParser.fromJson(response.getResponseBody(), Track.class);
-                                //PlayerController.playSong(t, false);
-                            } catch (IllegalStateException ex) {
-                                for (WebSocketListener listener : listeners) {
-                                    listener.OnError(ex.getMessage());
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        String JSON = response.getResponseBody();
+                                        MainView.mainBrowser.execute("PlayerController.playSong(JSON.stringify(" + JSON + "), false);");
+                                    } catch (IOException ex) {
+                                        for (WebSocketListener listener : listeners) {
+                                            listener.OnError(ex.getMessage());
+                                        }
+                                    }
                                 }
-                            } catch (IOException ex) {
-                                for (WebSocketListener listener : listeners) {
-                                    listener.OnError(ex.getMessage());
-                                }
-                            }
+                            });
                             break;
 
                         case OperationType.PLAY_FROM_PLAYLIST:
                             criteria = new TrackCriteria();
                             criteria.setId(request.getId());
                             response = TrackController.getTrackById(criteria);
-                            try {
-                                t = JSONParser.fromJson(response.getResponseBody(), Track.class);
-                                //PlayerController.playSong(t, true);
-                            } catch (IOException ex) {
-                                for (WebSocketListener listener : listeners) {
-                                    listener.OnError(ex.getMessage());
-                                }
-                            } catch (IllegalStateException ex) {
-                                for (WebSocketListener listener : listeners) {
-                                    listener.OnError(ex.getMessage());
-                                }
-                            }
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            String JSON = response.getResponseBody();
+                                            MainView.mainBrowser.execute("PlayerController.playSong(JSON.stringify(" + JSON + "), true);");
+                                        } catch (IOException ex) {
+                                            for (WebSocketListener listener : listeners) {
+                                                listener.OnError(ex.getMessage());
+                                            }
+                                        }
+                                    }
+                                });
                             break;
                         case OperationType.REMOVE_FROM_PLAYLIST:
                             criteria = new TrackCriteria();
                             criteria.setId(request.getId());
                             //int order = (int) request.getValue();
                             response = TrackController.getTrackById(criteria);
-                            try {
-                                t = JSONParser.fromJson(response.getResponseBody(), Track.class);
-                                //PlayerController.dequeueSong(t);
-                            } catch (IOException ex) {
-                                for (WebSocketListener listener : listeners) {
-                                    listener.OnError(ex.getMessage());
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        String JSON = response.getResponseBody();
+                                        MainView.mainBrowser.execute("PlayerController.dequeueSong(JSON.stringify(" + JSON + "));");
+                                    } catch (IOException ex) {
+                                        for (WebSocketListener listener : listeners) {
+                                            listener.OnError(ex.getMessage());
+                                        }
+                                    }
                                 }
-                            } catch (IllegalStateException ex) {
-                                for (WebSocketListener listener : listeners) {
-                                    listener.OnError(ex.getMessage());
-                                }
-                            }
+                            });
                             break;
 
                         case OperationType.ENQUEUE:
                             criteria = new TrackCriteria();
                             criteria.setId(request.getId());
                             response = TrackController.getTrackById(criteria);
-                            try {
-                                t = JSONParser.fromJson(response.getResponseBody(), Track.class);
-                                //PlayerController.enqueueSong(t);
-                            } catch (IOException ex) {
-                                for (WebSocketListener listener : listeners) {
-                                    listener.OnError(ex.getMessage());
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        String JSON = response.getResponseBody();
+                                        MainView.mainBrowser.execute("PlayerController.enqueueSong(JSON.stringify(" + JSON + "));");
+                                    } catch (IOException ex) {
+                                        for (WebSocketListener listener : listeners) {
+                                            listener.OnError(ex.getMessage());
+                                        }
+                                    }
                                 }
-                            } catch (IllegalStateException ex) {
-                                for (WebSocketListener listener : listeners) {
-                                    listener.OnError(ex.getMessage());
-                                }
-                            }
+                            });
                             break;
                         case OperationType.VOLUME_DOWN:
                             //PlayerController.volumeDown();
@@ -156,14 +184,14 @@ public class TCPController {
                             break;
 
                         case OperationType.SET_VOLUME:
-                            //PlayerController.setVolumeFromValue(request.getValue(), false);
+                        //PlayerController.setVolumeFromValue(request.getValue(), false);
 
                         case OperationType.SYNC:
                             request = new Operation();
                             request.setOperationType(OperationType.SYNC);
                             request.setUserId(SessionConstants.USER_ID);
                             //request.setSync(PlayerController.getSync());
-                            TCPController.sendRequest(request);
+                            sendRequest(request);
                     }
                 }
 
@@ -187,27 +215,52 @@ public class TCPController {
         webSocketService.connect();
     }
 
-    public static void addListener(WebSocketListener listener) {
+    public void addListener(WebSocketListener listener) {
         listeners.add(listener);
     }
 
-    public static void removeListener(WebSocketListener listener) {
+    public void removeListener(WebSocketListener listener) {
         listeners.remove(listener);
     }
-    
-    public static void sendRequest(Operation request) {
+
+    public void sendRequest(Operation request) {
         try {
             JSONParser = new Gson();
             webSocketService.send(JSONParser.toJson(request, Operation.class));
         } catch (Exception ex) {
-            
+
         }
     }
-    
-    public static void closeConnection() {
+
+    public void sendRequest(String operation) {
+        System.out.println(operation);
+        try {
+            webSocketService.send(operation);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    public static void sendJSRequest(Operation request) {
+        try {
+            Gson JSONParser = new Gson();
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    Gson JSONParser = new Gson();
+                    String JSONObject = JSONParser.toJson(request);
+                    MainView.mainBrowser.execute("TCPController.sendRequest(JSON.stringify(" + JSONObject + "));");
+                }
+            });
+        } catch (Exception ex) {
+
+        }
+    }
+
+    public void closeConnection() {
         if (webSocketService != null) {
             webSocketService.closeConnection(5, "APPLICATION CLOSED");
         }
     }
-    
+
 }

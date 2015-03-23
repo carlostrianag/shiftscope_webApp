@@ -24,11 +24,11 @@ import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 import shudder.controllers.FolderController;
 import shudder.controllers.PlayerController;
+import shudder.controllers.TCPController;
 import shudder.controllers.UserController;
 import shudder.listeners.FolderListener;
 import shudder.listeners.LoginListener;
 import shudder.listeners.PlayerListener;
-import shudder.player.Music;
 import shudder.util.Debugger;
 
 /**
@@ -77,9 +77,12 @@ public class Browser extends Region {
         PlayerListener playerListener = new PlayerListener() {};
         playerController.addListener(playerListener);
         userController.addListener(loginListener);
+        TCPController tcpController = new TCPController();
+        
         javaScriptObject.setMember("UserController", userController);
         javaScriptObject.setMember("FolderController", folderController);
         javaScriptObject.setMember("PlayerController", playerController);
+        javaScriptObject.setMember("TCPController", tcpController);
         javaScriptObject.setMember("Debugger", mainDebugger);
     }
     

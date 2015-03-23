@@ -53,5 +53,19 @@ public abstract class PlayerListener {
             }
         });
     };
-    public void OnQueueChanged() {};
+    public void OnQueueChanged(Track addedTrack, Track deletedTrack) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Gson JSONParser = new Gson();
+                if (addedTrack != null) {
+                    MainView.mainBrowser.execute("OnQueueChanged("+JSONParser.toJson(addedTrack)+", null);");
+                } else {
+                    MainView.mainBrowser.execute("OnQueueChanged(null,"+JSONParser.toJson(deletedTrack)+");");
+                }
+                
+                
+            }
+        });
+    };
 }

@@ -7,6 +7,7 @@ $(document).ready(function() {
     return false;
   };
   PlayerController.initPlayer();
+  TCPController.init();
   $('.library-tab').click(function(e) {
     $('.library-tab').addClass('active-tab');
     $('.playlist-tab').removeClass('active-tab');
@@ -21,9 +22,26 @@ $(document).ready(function() {
     $('#library-list').removeClass('active-content');
     $('#playlist-list').addClass('active-content');
     $('.search-bar').removeClass('active-content');
-    $('#playlist-list').empty();
     $('.bottom-container').addClass('no-search');
-    PlayerController.getQueue();
+  });
+  $('#artist-checkbox').click(function(e) {
+    FolderController.orderTracksByArtistName();
+  });
+  $('#title-checkbox').click(function(e) {
+    FolderController.orderTracksBySongName();
+  });
+  $('input[name=query]').keyup(function(e) {
+    FolderController.search($(this).val());
+  });
+  $('#back-btn').click(function(e) {
+    PlayerController.back();
+  });
+  $('#stop-btn').click(function(e) {
+    PlayerController.stop();
+  });
+  $('#play-btn').click(function(e) {});
+  $('#next-btn').click(function(e) {
+    PlayerController.next();
   });
   $('.library-tab').click();
   $('#library-list').height($(window).height() - MAX_Y);

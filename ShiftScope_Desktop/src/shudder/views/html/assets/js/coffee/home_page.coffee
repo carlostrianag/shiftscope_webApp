@@ -5,6 +5,8 @@ $(document).ready ->
 		return false
 	
 	PlayerController.initPlayer()
+	TCPController.init()
+
 	$('.library-tab').click((e) ->
 		$('.library-tab').addClass('active-tab')
 		$('.playlist-tab').removeClass('active-tab')
@@ -20,10 +22,31 @@ $(document).ready ->
 		$('#library-list').removeClass('active-content')
 		$('#playlist-list').addClass('active-content')
 		$('.search-bar').removeClass('active-content')
-		$('#playlist-list').empty()
 		$('.bottom-container').addClass('no-search')
-		PlayerController.getQueue()
+		return)
+
+	$('#artist-checkbox').click((e)->
+		FolderController.orderTracksByArtistName()
+		return)
+	$('#title-checkbox').click((e)->
+		FolderController.orderTracksBySongName()
+		return)
+
+	$('input[name=query]').keyup((e)->
+		FolderController.search($(this).val())
+		return)
+
+	$('#back-btn').click((e)->
+		PlayerController.back()
+		return)
+	$('#stop-btn').click((e)->
+		PlayerController.stop()
 		return)	
+	$('#play-btn').click((e)->
+		return)
+	$('#next-btn').click((e)->
+		PlayerController.next()
+		return)		
 
 	$('.library-tab').click()
 	$('#library-list').height($(window).height() - MAX_Y)

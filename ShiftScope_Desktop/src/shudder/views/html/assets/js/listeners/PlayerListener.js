@@ -1,4 +1,4 @@
-var OnOpened, OnPlaying, OnPlaylistFetched, OnProgress;
+var OnOpened, OnPlaying, OnPlaylistFetched, OnProgress, OnQueueChanged;
 
 OnOpened = function(totalTime, totalSeconds) {
   $('#elapsed-time-text').text('0:00');
@@ -8,6 +8,7 @@ OnOpened = function(totalTime, totalSeconds) {
 };
 
 OnPlaylistFetched = function(playlist) {
+  $('#playlist-list').empty();
   $.each(playlist, function(i, item) {
     var divElement, listElement;
     divElement = $("<div class='check-box'><img src='assets/images/ic_check.png'></div>");
@@ -21,6 +22,21 @@ OnPlaylistFetched = function(playlist) {
     listElement.bind('contextmenu', function(e) {});
     listElement.appendTo('#playlist-list');
   });
+};
+
+OnQueueChanged = function(addedTrack, deletedTrack) {
+  if (addedTrack) {
+    QUEUE_SONGS[addedTrack.id] = addedTrack;
+    $("#song-" + addedTrack.id).addClass('move-right');
+    $("#check-song-" + addedTrack.id).addClass('move-right');
+  } else {
+    QUEUE_SONGS[deletedTrack.id] = null;
+    $("#song-" + deletedTrack.id).removeClass('added-to-playlist');
+    $("#check-song-" + deletedTrack.id).removeClass('added-to-playlist');
+    $("#song-" + deletedTrack.id).addClass('move-left');
+    $("#check-song-" + deletedTrack.id).addClass('move-left');
+  }
+  PlayerController.getQueue();
 };
 
 OnPlaying = function(songName, artistName) {

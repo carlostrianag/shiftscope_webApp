@@ -7,6 +7,7 @@ OnOpened = (totalTime, totalSeconds) ->
 
 
 OnPlaylistFetched = (playlist) ->
+	$('#playlist-list').empty()
 	$.each(playlist, (i, item) ->
 		divElement = $("<div class='check-box'><img src='assets/images/ic_check.png'></div>")
 		divElement.appendTo('#library-list')
@@ -19,6 +20,20 @@ OnPlaylistFetched = (playlist) ->
 		listElement.appendTo('#playlist-list')
 		return
 	)
+	return
+
+OnQueueChanged = (addedTrack, deletedTrack) ->
+	if addedTrack
+		QUEUE_SONGS[addedTrack.id] = addedTrack
+		$("#song-"+addedTrack.id).addClass('move-right')
+		$("#check-song-"+addedTrack.id).addClass('move-right')
+	else
+		QUEUE_SONGS[deletedTrack.id] = null
+		$("#song-"+deletedTrack.id).removeClass('added-to-playlist')
+		$("#check-song-"+deletedTrack.id).removeClass('added-to-playlist')				
+		$("#song-"+deletedTrack.id).addClass('move-left')
+		$("#check-song-"+deletedTrack.id).addClass('move-left')
+	PlayerController.getQueue()
 	return
 
 OnPlaying = (songName, artistName) ->

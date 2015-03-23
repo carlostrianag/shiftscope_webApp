@@ -43,6 +43,13 @@ public abstract class FolderListener {
     }
 
     public void drawSearchResults(ArrayList<Track> tracks) {
-        
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Gson JSONParser = new Gson();
+                String JSONObject = JSONParser.toJson(tracks);
+                MainView.mainBrowser.execute("drawSearchResults("+JSONObject+");");
+            }
+        });        
     }
 }
