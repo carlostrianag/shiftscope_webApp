@@ -391,6 +391,8 @@ public class PlayerController {
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
         sync.setCurrentPlaylist(queuePaths);
+        sync.setAddedTrack(q);
+        sync.setDeletedTrack(null);
         request.setSync(sync);
         TCPController.sendJSRequest(request);
     }
@@ -415,6 +417,8 @@ public class PlayerController {
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
         sync.setCurrentPlaylist(queuePaths);
+        sync.setAddedTrack(null);
+        sync.setDeletedTrack(t);
         request.setSync(sync);
         TCPController.sendJSRequest(request);
     }

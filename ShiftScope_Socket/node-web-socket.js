@@ -51,7 +51,7 @@ function WebSocket() {
 							devicesPool[request.userId.toString()][request.to.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
 		        			conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
-		        			deleteFromPool(conn);
+		        			//deleteFromPool(conn);
 		        		}
 		        	} else {
 		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
@@ -67,7 +67,7 @@ function WebSocket() {
 		        			mobilesPool[request.userId.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
 		        			conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
-		        			deleteFromPool(conn);
+		        			//deleteFromPool(conn);
 		        		}
 		        	} else {
 		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));

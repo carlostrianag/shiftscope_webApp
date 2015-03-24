@@ -38,6 +38,7 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
     private ListView libraryListView;
     private ProgressDialog progressDialog;
     private SwipeDetector swipeDetector;
+    private LibraryAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,12 +121,25 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
     }
 
     @Override
+    public void onQueueChanged(TrackDTO addedTrack, TrackDTO deletedTrack) {
+        Log.v("HAY ENTREEE ", "DE UNA");
+        if (addedTrack != null) {
+            Log.v("HAY ENTREEE ", "DE DOS");
+            View trackView = adapter.getAdapterViewById(addedTrack.getId());
+            if (trackView != null) {
+                swipeDetector.moveView(trackView);
+            }
+        }
+    }
+
+    @Override
     public void onFailedLibraryFetch() {
 
     }
 
     @Override
     public void onSuccessfulFolderFetch(LibraryAdapter adapter, Parcelable restoredState) {
+        this.adapter = adapter;
         libraryListView.setAdapter(adapter);
 
         if(restoredState != null) {

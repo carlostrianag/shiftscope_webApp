@@ -14,6 +14,7 @@ import shudder.model.Track;
  * @author carlos
  */
 public class Sync {
+    //DEBERIA MANDAR UN CURRENT SONG TIPO TRACK Y YA
     private String currentSongName;
     private String currentSongArtist;
     private String currentSongDuration;
@@ -24,6 +25,8 @@ public class Sync {
     private boolean isPaused;
     private boolean newFolders;
     private ArrayList<Track> currentPlaylist;
+    private Track addedTrack;
+    private Track deletedTrack;
 
     /**
      * @return the currentSongName
@@ -39,6 +42,61 @@ public class Sync {
         this.currentSongName = currentSongName;
     }
 
+    /**
+     * @return the currentSongArtist
+     */
+    public String getCurrentSongArtist() {
+        return currentSongArtist;
+    }
+
+    /**
+     * @param currentSongArtist the currentSongArtist to set
+     */
+    public void setCurrentSongArtist(String currentSongArtist) {
+        this.currentSongArtist = currentSongArtist;
+    }
+
+    /**
+     * @return the currentSongDuration
+     */
+    public String getCurrentSongDuration() {
+        return currentSongDuration;
+    }
+
+    /**
+     * @param currentSongDuration the currentSongDuration to set
+     */
+    public void setCurrentSongDuration(String currentSongDuration) {
+        this.currentSongDuration = currentSongDuration;
+    }
+
+    /**
+     * @return the currentSongId
+     */
+    public int getCurrentSongId() {
+        return currentSongId;
+    }
+
+    /**
+     * @param currentSongId the currentSongId to set
+     */
+    public void setCurrentSongId(int currentSongId) {
+        this.currentSongId = currentSongId;
+    }
+
+    /**
+     * @return the currentVolume
+     */
+    public int getCurrentVolume() {
+        return currentVolume;
+    }
+
+    /**
+     * @param currentVolume the currentVolume to set
+     */
+    public void setCurrentVolume(int currentVolume) {
+        this.currentVolume = currentVolume;
+    }
 
     /**
      * @return the isPlayingPlaylist
@@ -83,48 +141,6 @@ public class Sync {
     }
 
     /**
-     * @return the currentSongId
-     */
-    public int getCurrentSongId() {
-        return currentSongId;
-    }
-
-    /**
-     * @param currentSongId the currentSongId to set
-     */
-    public void setCurrentSongId(int currentSongId) {
-        this.currentSongId = currentSongId;
-    }
-
-    /**
-     * @return the currentSongArtist
-     */
-    public String getCurrentSongArtist() {
-        return currentSongArtist;
-    }
-
-    /**
-     * @param currentSongArtist the currentSongArtist to set
-     */
-    public void setCurrentSongArtist(String currentSongArtist) {
-        this.currentSongArtist = currentSongArtist;
-    }
-
-    /**
-     * @return the currentSongDuration
-     */
-    public String getCurrentSongDuration() {
-        return currentSongDuration;
-    }
-
-    /**
-     * @param currentSongDuration the currentSongDuration to set
-     */
-    public void setCurrentSongDuration(String currentSongDuration) {
-        this.currentSongDuration = currentSongDuration;
-    }
-
-    /**
      * @return the newFolders
      */
     public boolean isNewFolders() {
@@ -153,17 +169,32 @@ public class Sync {
     }
 
     /**
-     * @return the currentVolume
+     * @return the addedTrack
      */
-    public int getCurrentVolume() {
-        return currentVolume;
+    public Track getAddedTrack() {
+        return addedTrack;
     }
 
     /**
-     * @param currentVolume the currentVolume to set
+     * @param addedTrack the addedTrack to set
      */
-    public void setCurrentVolume(int currentVolume) {
-        this.currentVolume = currentVolume;
+    public void setAddedTrack(Track addedTrack) {
+        this.addedTrack = addedTrack;
     }
+
+    /**
+     * @return the deletedTrack
+     */
+    public Track getDeletedTrack() {
+        return deletedTrack;
+    }
+
+    /**
+     * @param deletedTrack the deletedTrack to set
+     */
+    public void setDeletedTrack(Track deletedTrack) {
+        this.deletedTrack = deletedTrack;
+    }
+
     
 }

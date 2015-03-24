@@ -155,6 +155,7 @@ public class SwipeDetector implements View.OnTouchListener {
             case MotionEvent.ACTION_UP:
                 if (selectedView != null) {
                     if(mSwipeDetected == Action.LR && newX != Constants.MAX_X_POSITION) {
+                        Log.v("VIEW", "ID" + selectedView.getId());
                         selectedView.animate().x(Constants.MAX_X_POSITION).setDuration(150).start();
                     } else if(mSwipeDetected == Action.RL && newX != 0) {
                         selectedView.animate().x(0).setDuration(150).start();
@@ -168,5 +169,10 @@ public class SwipeDetector implements View.OnTouchListener {
     private int convertToPx(int dp) {
         final float scale = Resources.getSystem().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
+    }
+
+    public void moveView(View trackView) {
+        Log.v("VIEW", ""+ trackView.getId());
+        trackView.findViewById(R.id.contentLayout).animate().x(80).start();
     }
 }

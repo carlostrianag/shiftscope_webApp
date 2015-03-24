@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.shiftscope.dto.LibraryDTO;
+import com.shiftscope.dto.TrackDTO;
 import com.shiftscope.netservices.HTTPService;
 import com.shiftscope.utils.constants.ControllerEvent;
 import com.shiftscope.utils.constants.SessionConstants;
@@ -35,6 +36,10 @@ public class LibraryController {
         Integer idNumber = new Integer(id);
         addedToPlaylistIds.remove(idNumber);
         Log.v("LOG", "  REMOVIDO");
+    }
+
+    public static void queueChanged(TrackDTO addedTrack, TrackDTO deletedTrack) {
+        communicator.onQueueChanged(addedTrack, deletedTrack);
     }
 
     public static boolean isAdded(int id) {
@@ -99,6 +104,7 @@ public class LibraryController {
 
     public interface LibraryCommunicator {
         public void onSuccessfulLibraryFetch();
+        public void onQueueChanged(TrackDTO addedTrack, TrackDTO deletedTrack);
         public void onFailedLibraryFetch();
     }
 }

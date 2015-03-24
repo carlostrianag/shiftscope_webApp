@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.shiftscope.controllers.FolderController;
+import com.shiftscope.controllers.LibraryController;
 import com.shiftscope.dto.TrackDTO;
 import com.shiftscope.listeners.WebSocketListener;
 import com.shiftscope.netservices.TCPService;
@@ -65,6 +66,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("currentPlaylist", JSONPlaylist);
                             editor.apply();
+                            LibraryController.queueChanged(syncObject.getAddedTrack(), syncObject.getDeletedTrack());
                         } else {
                             sharedPreferences.getAll().remove("currentPlaylist");
                         }

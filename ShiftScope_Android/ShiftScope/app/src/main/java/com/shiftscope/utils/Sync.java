@@ -17,6 +17,8 @@ public class Sync {
     private boolean isPlaying;
     private boolean isPaused;
     private boolean newFolders;
+    private TrackDTO addedTrack;
+    private TrackDTO deletedTrack;
     private ArrayList<TrackDTO> currentPlaylist;
 
     public String getCurrentSongName() {
@@ -89,6 +91,22 @@ public class Sync {
 
     public void setNewFolders(boolean newFolders) {
         this.newFolders = newFolders;
+    }
+
+    public TrackDTO getAddedTrack() {
+        return addedTrack;
+    }
+
+    public void setAddedTrack(TrackDTO addedTrack) {
+        this.addedTrack = addedTrack;
+    }
+
+    public TrackDTO getDeletedTrack() {
+        return deletedTrack;
+    }
+
+    public void setDeletedTrack(TrackDTO deletedTrack) {
+        this.deletedTrack = deletedTrack;
     }
 
     public ArrayList<TrackDTO> getCurrentPlaylist() {

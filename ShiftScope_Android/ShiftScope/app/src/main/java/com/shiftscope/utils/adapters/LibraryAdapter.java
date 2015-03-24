@@ -44,6 +44,7 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
     private LibraryFilter filter;
     private FolderDTO folder;
     private TrackDTO track;
+    private ViewGroup parent;
 
 
     public LibraryAdapter(Context context, int resource, ArrayList<Object> objects) {
@@ -141,6 +142,7 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
 
     private View getCustomView(int position, View convertView, ViewGroup parent) {
         int layoutType = getItemViewType(position);
+        this.parent = parent;
         LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v;
         switch (layoutType) {
@@ -162,6 +164,17 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
                 artistName.setText(track.getArtist());
                 return v;
         }
+        return null;
+    }
+
+    public View getAdapterViewById(long id) {
+        for (int position = 0; position < this.getCount(); position++)
+            if(getItem(position) instanceof TrackDTO) {
+                TrackDTO t = (TrackDTO)getItem(position);
+                if (t.getId() == id) {
+                    return getView(position, null, parent);
+                }
+            }
         return null;
     }
 
