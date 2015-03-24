@@ -155,6 +155,7 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
             case 1:
                 track = (TrackDTO)folderContent.get(position);
                 v  = layoutInflater.inflate(R.layout.item_library_track, parent, false);
+                v.setId(track.getId());
                 if (LibraryController.isAdded(track.getId())) {
                     v.findViewById(R.id.contentLayout).setX(Constants.MAX_X_POSITION);
                 }
@@ -164,17 +165,6 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
                 artistName.setText(track.getArtist());
                 return v;
         }
-        return null;
-    }
-
-    public View getAdapterViewById(long id) {
-        for (int position = 0; position < this.getCount(); position++)
-            if(getItem(position) instanceof TrackDTO) {
-                TrackDTO t = (TrackDTO)getItem(position);
-                if (t.getId() == id) {
-                    return getView(position, null, parent);
-                }
-            }
         return null;
     }
 

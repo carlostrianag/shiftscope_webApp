@@ -122,14 +122,7 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
 
     @Override
     public void onQueueChanged(TrackDTO addedTrack, TrackDTO deletedTrack) {
-        Log.v("HAY ENTREEE ", "DE UNA");
-        if (addedTrack != null) {
-            Log.v("HAY ENTREEE ", "DE DOS");
-            View trackView = adapter.getAdapterViewById(addedTrack.getId());
-            if (trackView != null) {
-                swipeDetector.moveView(trackView);
-            }
-        }
+        swipeDetector.offsetView(addedTrack, deletedTrack);
     }
 
     @Override
