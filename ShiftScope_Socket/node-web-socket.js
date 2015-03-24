@@ -26,6 +26,7 @@ function WebSocket() {
 			for(var idDevice in devicesPool[idUser]) {
 				if (devicesPool[idUser][idDevice] === conn) {
 					disconnectDevice(idDevice);
+					console.log("eliminado pc " +idDevice)
 					delete devicesPool[idUser][idDevice]
 				}
 			}
@@ -33,6 +34,7 @@ function WebSocket() {
 
 		for(var i = 0; i < mobilesPool.length; i++){
 			if(mobilesPool[i] === conn) {
+				console.log("eliminado mobile " +idDevice)
 				delete mobilesPool[i];
 			}
 		}		
@@ -44,32 +46,42 @@ function WebSocket() {
 		        console.log("Received " + str)
 		        request = JSON.parse(str);
 		        if(request.deviceIdentifier === 1) {
+		        	console.log('TIPO 1')
 		        	if(request.operationType == 2) {
+		        		console.log('conectar')
 		        		mobilesPool[request.userId.toString()] = conn;
 		        	} else if (devicesPool[request.userId.toString()] !== undefined && devicesPool[request.userId.toString()][request.to.toString()] !== undefined){
+		        		console.log('enviar a otro')
 		        		try{
 							devicesPool[request.userId.toString()][request.to.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
+		        			console.log('no se pudo enviar')
 		        			conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
-		        			//deleteFromPool(conn);
+		        			deleteFromPool(conn);
 		        		}
 		        	} else {
+		        		console.log('no existe otro')
 		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
 		        	}
 		        } else if(request.deviceIdentifier === 2){
+		        	console.log('TIPO 2')
 		        	if(request.operationType === 2){
+		        		console.log('conectar')
 		        		if(devicesPool[request.userId.toString()] === undefined){
 		        			devicesPool[request.userId.toString()] = {};
 		        		}
 		        		devicesPool[request.userId.toString()][request.deviceId.toString()] = conn;
 		        	} else if(mobilesPool[request.userId.toString()] !== undefined){
+		        		console.log('enviar a otro')
 		        		try {
 		        			mobilesPool[request.userId.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
+		        			console.log('no se pudo enviar')
 		        			conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
-		        			//deleteFromPool(conn);
+		        			deleteFromPool(conn);
 		        		}
 		        	} else {
+		        		console.log('no existe otro')
 		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
 		        	}
 		        }

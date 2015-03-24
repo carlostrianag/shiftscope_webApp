@@ -201,6 +201,7 @@ public class SwipeDetector implements View.OnTouchListener {
     private void moveRight(View trackView) {
         trackView.findViewById(R.id.contentLayout).animate().x(Constants.MAX_X_POSITION).setDuration(150).start();
     }
+
     private void moveLeft(View trackView) {
         Log.v("LEFT", "entro al left");
         trackView.findViewById(R.id.contentLayout).animate().x(0).setDuration(150).start();
