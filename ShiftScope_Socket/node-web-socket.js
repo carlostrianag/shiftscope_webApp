@@ -26,7 +26,7 @@ function WebSocket() {
 			for(var idDevice in devicesPool[idUser]) {
 				if (devicesPool[idUser][idDevice] === conn) {
 					disconnectDevice(idDevice);
-					console.log("eliminado pc " +idDevice)
+					console.log("PC Deleted: " +idDevice)
 					delete devicesPool[idUser][idDevice]
 				}
 			}
@@ -34,7 +34,7 @@ function WebSocket() {
 
 		for(var i = 0; i < mobilesPool.length; i++){
 			if(mobilesPool[i] === conn) {
-				console.log("eliminado mobile " +idDevice)
+				console.log("Mobile deleted: " +idDevice)
 				delete mobilesPool[i];
 			}
 		}		
@@ -46,42 +46,42 @@ function WebSocket() {
 		        console.log("Received " + str)
 		        request = JSON.parse(str);
 		        if(request.deviceIdentifier === 1) {
-		        	console.log('TIPO 1')
+		        	console.log('Type: Mobile')
 		        	if(request.operationType == 2) {
-		        		console.log('conectar')
+		        		console.log('Connect')
 		        		mobilesPool[request.userId.toString()] = conn;
 		        	} else if (devicesPool[request.userId.toString()] !== undefined && devicesPool[request.userId.toString()][request.to.toString()] !== undefined){
-		        		console.log('enviar a otro')
+		        		console.log('Send to another')
 		        		try{
 							devicesPool[request.userId.toString()][request.to.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
-		        			console.log('no se pudo enviar')
+		        			console.log("Couldn't send :(")
 		        			conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
 		        			deleteFromPool(conn);
 		        		}
 		        	} else {
-		        		console.log('no existe otro')
+		        		console.log("Doesn't exists a pair :(")
 		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
 		        	}
 		        } else if(request.deviceIdentifier === 2){
-		        	console.log('TIPO 2')
+		        	console.log('Type: PC')
 		        	if(request.operationType === 2){
-		        		console.log('conectar')
+		        		console.log('Connect')
 		        		if(devicesPool[request.userId.toString()] === undefined){
 		        			devicesPool[request.userId.toString()] = {};
 		        		}
 		        		devicesPool[request.userId.toString()][request.deviceId.toString()] = conn;
 		        	} else if(mobilesPool[request.userId.toString()] !== undefined){
-		        		console.log('enviar a otro')
+		        		console.log('Send to another')
 		        		try {
 		        			mobilesPool[request.userId.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
-		        			console.log('no se pudo enviar')
+		        			console.log("Couldn't send :(")
 		        			conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
 		        			deleteFromPool(conn);
 		        		}
 		        	} else {
-		        		console.log('no existe otro')
+		        		console.log("Doesn't exists a pair :(")
 		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
 		        	}
 		        }
@@ -89,6 +89,9 @@ function WebSocket() {
 		    conn.on("close", function (code, reason) {
 		        console.log("Connection closed")
 		        deleteFromPool(conn);
+		    }),
+		    conn.on("error", function(errObj) {
+		    	console.log("An error has ocurred ... aborting connection")
 		    })
 		}).listen(8001)
 	}

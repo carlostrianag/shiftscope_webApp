@@ -42,6 +42,7 @@ public class MainView extends Application {
             @Override
             public void handle(WindowEvent event) {
                 try {
+                    
                     System.exit(0);
                 } catch (Exception ex) {
                     Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);

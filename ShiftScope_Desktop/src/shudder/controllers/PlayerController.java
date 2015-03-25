@@ -243,7 +243,7 @@ public class PlayerController {
     public void playSong(Track t, boolean playedFromPlaylist) {
         try {
             if (control == null) {
-                System.out.println("control es nulo");
+                System.out.println(t.getPath());
             }
             control.open(new File(t.getPath()));
             control.play();
@@ -252,8 +252,8 @@ public class PlayerController {
                 getPosition(t);
             }
             playlistPlaying = playedFromPlaylist;
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            System.err.print(ex.getMessage());
         }
     }
     public void merge() {
