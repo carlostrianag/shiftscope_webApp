@@ -2,11 +2,7 @@ QUEUE_SONGS = {}
 
 OnContentFetched = (folderDTO)->
 	$('#library-list').empty()
-	$("<a class='list-group-item'><img src='assets/images/ic_unknown.png'>..</a>")
-		.click((e) ->
-			FolderController.getFolderContentById(JSON.stringify({id: folderDTO.parentFolder}))
-			return)
-		.appendTo('#library-list')	
+	PARENT_FOLDER = folderDTO.parentFolder;
 	$.each(folderDTO.folders, (i, item) ->
 		$("<a class='list-group-item'><img src='assets/images/ic_folder.png'>"+item.title.toUpperCase()+"</a>")
 			.click((e) ->
@@ -24,7 +20,8 @@ OnContentFetched = (folderDTO)->
 		else
 			divElement = $("<div id='check-song-"+item.id+"' class='check-box'><img src='assets/images/ic_check.png'></div>")
 			divElement.appendTo('#library-list')
-			listElement = $("<a id='song-"+item.id+"' class='list-group-item'><img src='assets/images/ic_headphones.png'>"+item.title.toUpperCase()+" "+item.artist.toUpperCase()+"</a>")
+			tableString = ""
+		listElement = $("<a id='song-"+item.id+"' class='list-group-item'><div class='song-wrapper'><div><img src='assets/images/ic_headphones.png'></div><div>"+item.title.toUpperCase()+"</div><div> "+item.artist.toUpperCase()+"</div><div>"+item.duration+"</div></div></a>")
 		listElement.click((e) ->
 			PlayerController.playSong(JSON.stringify(item), false) if e.which is 1
 			return)

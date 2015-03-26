@@ -1,6 +1,8 @@
-var MAX_Y;
+var MAX_Y, PARENT_FOLDER;
 
 MAX_Y = 217;
+
+PARENT_FOLDER = -1;
 
 $(document).ready(function() {
   document.oncontextmenu = function() {
@@ -21,8 +23,13 @@ $(document).ready(function() {
     $('.library-tab').removeClass('active-tab');
     $('#library-list').removeClass('active-content');
     $('#playlist-list').addClass('active-content');
-    $('.search-bar').removeClass('active-content');
+    $('.search-bar').addClass('active-content');
     $('.bottom-container').addClass('no-search');
+  });
+  $('#back-folder').click(function(e) {
+    FolderController.getFolderContentById(JSON.stringify({
+      id: PARENT_FOLDER
+    }));
   });
   $('#artist-checkbox').click(function(e) {
     FolderController.orderTracksByArtistName();

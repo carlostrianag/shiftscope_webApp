@@ -10,22 +10,26 @@ div#wrapper
 			div.library-tab Library
 			div.playlist-tab Playlist
 
+		div.search-bar
+
+			div.checkboxes
+				div#back-folder
+					img(id="back-folder" src="assets/images/ic_unknown.png")				
+				div#artist-checkbox
+					p Artist
+				div#title-checkbox
+					p Title
+				div(class="search-bar-container")
+					div.search-input-bar
+						input(type="text" name="query" class="search-textbox" placeholder="Search ..." autofocus)				
+
 
 	div.tab-content
 		div#library-list.list-group
 		div#playlist-list.list-group									
 
 
-	div.bottom-container
-		div.search-bar
-			div.checkboxes
-				div#artist-checkbox
-					p Artist
-				div#title-checkbox
-					p Title
-				div.search-bar-container
-					div.search-input-bar
-						input(type="text" name="query" class="search-textbox" placeholder="Search ..." autofocus)								
+	div.bottom-container							
 
 		div(class="player-actions" align="left")
 			img(id="back-btn" src="assets/images/ic_back.png")

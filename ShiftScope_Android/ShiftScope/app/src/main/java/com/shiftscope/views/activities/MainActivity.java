@@ -23,12 +23,15 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.shiftscope.controllers.FolderController;
 import com.shiftscope.controllers.LibraryController;
+import com.shiftscope.controllers.PlaylistController;
+import com.shiftscope.controllers.TrackController;
 import com.shiftscope.dto.TrackDTO;
 import com.shiftscope.listeners.WebSocketListener;
 import com.shiftscope.netservices.TCPService;
 import com.shiftscope.utils.Operation;
 import com.shiftscope.utils.Sync;
 import com.shiftscope.utils.adapters.DrawerAdapter;
+import com.shiftscope.utils.adapters.LibraryAdapter;
 import com.shiftscope.utils.constants.Constants;
 import com.shiftscope.utils.constants.RequestTypes;
 import com.shiftscope.utils.constants.SessionConstants;
@@ -57,19 +60,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         public void OnSync(Operation o) {
             switch (o.getOperationType()) {
                 case RequestTypes.SYNC:
-                    Gson JSONParser = new Gson();
                     Sync syncObject = o.getSync();
                     if (syncObject != null) {
                         sharedPreferences = getSharedPreferences("ShudderSharedPreferences", Context.MODE_PRIVATE);
-                        String JSONPlaylist = (syncObject.getCurrentPlaylist() != null)?JSONParser.toJson(syncObject.getCurrentPlaylist()):null;
-                        if(JSONPlaylist != null) {
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("currentPlaylist", JSONPlaylist);
-                            editor.apply();
-                            LibraryController.queueChanged(syncObject.getAddedTrack(), syncObject.getDeletedTrack());
-                        } else {
-                            sharedPreferences.getAll().remove("currentPlaylist");
-                        }
+
+                        PlaylistController.setPlaylist(syncObject.getCurrentPlaylist());
+                        LibraryController.queueChanged(syncObject.getAddedTrack(), syncObject.getDeletedTrack());
 
                         if(syncObject.getCurrentSongName() != null && syncObject.getCurrentSongArtist() != null) {
                             currentSongText.setText(syncObject.getCurrentSongName() + " - " + syncObject.getCurrentSongArtist());
