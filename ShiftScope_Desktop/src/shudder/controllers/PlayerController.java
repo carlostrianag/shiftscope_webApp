@@ -147,11 +147,12 @@ public class PlayerController {
                     break;
 
                 case BasicPlayerEvent.GAIN:
+                    System.out.println(event.getValue());
                     if (volumeAdjustedByUser) {
-                        System.out.println("enviar por sockett");
+                        //System.out.println("enviar por sockett");
                     } else {
-                        System.out.println("AJUSTADO DE SOCKET");
-                        invokeOnVolumeChanged((int) (player.getGainValue() * 100));
+                        //System.out.println("AJUSTADO DE SOCKET");
+                        //invokeOnVolumeChanged((int) (player.getGainValue() * 100));
                     }
                     break;
             }
@@ -266,9 +267,6 @@ public class PlayerController {
 
     public void playSong(Track t, boolean playedFromPlaylist) {
         try {
-            if (control == null) {
-                System.out.println(t.getPath());
-            }
             control.open(new File(t.getPath()));
             control.play();
             currentSong = t;
@@ -389,6 +387,7 @@ public class PlayerController {
     }
 
     public void setVolumeFromValue(double value, boolean fromUser) {
+        System.out.println(value);
         try {
             volumeAdjustedByUser = fromUser;
             player.setGain(value);

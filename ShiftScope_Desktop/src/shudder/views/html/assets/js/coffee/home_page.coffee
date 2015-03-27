@@ -68,6 +68,10 @@ $(document).ready ->
 		Debugger.display 'de una el pause'
 		return)	
 
+	$('#volume-slider').on("change", (->
+		PlayerController.setVolumeFromValue($(this).val()/100, true)
+		return))
+
 	$('.library-tab').click()
 	$('#library-list').height($(window).height() - MAX_Y)
 	$('#playlist-list').height($(window).height() - MAX_Y)

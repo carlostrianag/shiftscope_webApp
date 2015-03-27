@@ -64,6 +64,9 @@ $(document).ready(function() {
     PlayerController.pause();
     Debugger.display('de una el pause');
   });
+  $('#volume-slider').on("change", (function() {
+    PlayerController.setVolumeFromValue($(this).val() / 100, true);
+  }));
   $('.library-tab').click();
   $('#library-list').height($(window).height() - MAX_Y);
   $('#playlist-list').height($(window).height() - MAX_Y);
