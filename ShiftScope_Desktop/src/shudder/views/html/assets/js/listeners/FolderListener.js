@@ -27,7 +27,7 @@ OnContentFetched = function(folderDTO) {
     listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div><img src='assets/images/ic_headphones.png'></div><div>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
     listElement.click(function(e) {
       if (e.which === 1) {
-        PlayerController.playSong(JSON.stringify(item), false);
+        PlayerController.play(JSON.stringify(item), false);
       }
     });
     divElement.on("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function() {

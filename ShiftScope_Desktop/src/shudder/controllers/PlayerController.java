@@ -44,6 +44,7 @@ public class PlayerController {
     private Track currentSong;
     private Sync sync;
     private BasicPlayer player;
+    private float volume;
     private BasicController control;
     private ArrayList<PlayerListener> listeners = new ArrayList<>();
     private FolderListener folderListener = new FolderListener() {
@@ -147,7 +148,6 @@ public class PlayerController {
                     break;
 
                 case BasicPlayerEvent.GAIN:
-                    System.out.println(event.getValue());
                     if (volumeAdjustedByUser) {
                         //System.out.println("enviar por sockett");
                     } else {
@@ -249,8 +249,7 @@ public class PlayerController {
     }
     
 
-    public void playSong(String track, boolean playedFromPlaylist) {
-        System.out.println(track);
+    public void play(String track, boolean playedFromPlaylist) {
         try {
             Track t = new Gson().fromJson(track, Track.class);
             control.open(new File(t.getPath()));
@@ -261,7 +260,7 @@ public class PlayerController {
             }
             playlistPlaying = playedFromPlaylist;
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }        
     }
 
