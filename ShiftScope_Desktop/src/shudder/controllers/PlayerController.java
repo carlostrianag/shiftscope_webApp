@@ -149,7 +149,7 @@ public class PlayerController {
 
                 case BasicPlayerEvent.GAIN:
                     if (volumeAdjustedByUser) {
-                        //System.out.println("enviar por sockett");
+                        System.out.println("enviar por sockett");
                     } else {
                         //System.out.println("AJUSTADO DE SOCKET");
                         //invokeOnVolumeChanged((int) (player.getGainValue() * 100));
@@ -373,18 +373,6 @@ public class PlayerController {
         }
     }
 
-    public void mute() {
-//        player.mute();
-    }
-
-    public void volumeDown() {
-//        player.volumeDown();
-    }
-
-    public void volumeUp() {
-//        player.volumeUp();
-    }
-
     public void setVolumeFromValue(double value, boolean fromUser) {
         System.out.println(value);
         try {
@@ -393,16 +381,6 @@ public class PlayerController {
         } catch (BasicPlayerException ex) {
             Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void setVolume(float value) {
-//        player.setVolumeFromValue(value);
-//        volumeSlider.setValue((int) value);
-    }
-
-    public boolean isPlaying() {
-//        return player.isPlaying();
-        return false;
     }
 
     public void enqueueSong(String song) {

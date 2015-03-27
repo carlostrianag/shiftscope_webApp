@@ -76,7 +76,7 @@ drawSearchResults = (tracks) ->
 			divElement.appendTo('#library-list')
 			listElement = $("<a class='list-group-item'><img src='assets/images/ic_headphones.png'>"+item.title.toUpperCase()+" "+item.artist.toUpperCase()+"</a>")
 		listElement.click((e) ->
-			PlayerController.playSong(JSON.stringify(item), false) if e.which is 1
+			PlayerController.play(JSON.stringify(item), false) if e.which is 1
 			return)
 
 		divElement.on("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", ->
