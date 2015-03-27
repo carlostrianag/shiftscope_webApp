@@ -44,3 +44,19 @@ OnProgress = (elapsedTime, currentSecond) ->
 	$('#elapsed-time-text').text elapsedTime
 	$('#slider').val(currentSecond)
 	return
+
+
+OnPlayed = ->
+	$('#play-btn').removeClass('active-btn')
+	$('#pause-btn').addClass('active-btn')
+	return
+
+OnPaused = ->
+	$('#pause-btn').removeClass('active-btn')
+	$('#play-btn').addClass('active-btn')
+	return	
+
+OnStopped = ->
+	$('#pause-btn').removeClass('active-btn')
+	$('#play-btn').addClass('active-btn')
+	return	

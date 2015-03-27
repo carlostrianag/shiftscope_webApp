@@ -1,5 +1,6 @@
 MAX_Y = 217
-PARENT_FOLDER = -1;
+PARENT_FOLDER = -1
+PLAYING = true
 
 $(document).ready ->
 	document.oncontextmenu = ->
@@ -31,9 +32,13 @@ $(document).ready ->
 		return)
 
 	$('#artist-checkbox').click((e)->
+		$(this).addClass('checkbox-selected')
+		$('#title-checkbox').removeClass('checkbox-selected')
 		FolderController.orderTracksByArtistName()
 		return)
 	$('#title-checkbox').click((e)->
+		$(this).addClass('checkbox-selected')
+		$('#artist-checkbox').removeClass('checkbox-selected')		
 		FolderController.orderTracksBySongName()
 		return)
 
@@ -51,7 +56,17 @@ $(document).ready ->
 		return)
 	$('#next-btn').click((e)->
 		PlayerController.next()
-		return)		
+		return)
+
+	$('#play-btn').click((e)->
+		Debugger.display 'de una el resume'
+		PlayerController.resume()
+		return)	
+
+	$('#pause-btn').click((e)->
+		PlayerController.pause() 
+		Debugger.display 'de una el pause'
+		return)	
 
 	$('.library-tab').click()
 	$('#library-list').height($(window).height() - MAX_Y)

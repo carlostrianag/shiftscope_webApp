@@ -323,6 +323,11 @@ public class FolderController {
 
             switch(event) {
                 case ON_CONTENT_FETCHED:
+                    if (orderBySongName) {
+                        Collections.sort(folderContent.getTracks(), new TitleComparator());
+                    } else {
+                        Collections.sort(folderContent.getTracks(), new ArtistComparator());
+                    }                    
                     for (FolderListener listener : listeners) {
                         listener.OnContentFetched(folderContent);
                     }

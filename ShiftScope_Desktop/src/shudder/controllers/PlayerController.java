@@ -121,6 +121,7 @@ public class PlayerController {
                     request.setSync(sync);
                     TCPController.sendJSRequest(request);
                     paused = false;
+                    invokeOnPlayed();
                     break;
 
                 case BasicPlayerEvent.PAUSED:
@@ -129,6 +130,7 @@ public class PlayerController {
                     request.setSync(sync);
                     TCPController.sendJSRequest(request);
                     paused = true;
+                    invokeOnPaused();
                     break;
 
                 case BasicPlayerEvent.RESUMED:
@@ -137,6 +139,7 @@ public class PlayerController {
                     request.setSync(sync);
                     TCPController.sendJSRequest(request);
                     paused = false;
+                    invokeOnPlayed();
                     break;
 
                 case BasicPlayerEvent.EOM:
@@ -224,8 +227,29 @@ public class PlayerController {
             listener.OnQueueChanged(addedTrack, deletedTrack);
         }
     }
+    
+    private void invokeOnPlayed() {
+        for(PlayerListener listener : listeners) {
+            listener.OnPlayed();
+        }
+    }
+    
+    private void invokeOnPaused() {
+        for(PlayerListener listener : listeners) {
+            listener.OnPaused();
+        }
+    }
+    
+        
+    private void invokeOnStopped() {
+        for(PlayerListener listener : listeners) {
+            listener.OnStopped();
+        }
+    }
+    
 
     public void playSong(String track, boolean playedFromPlaylist) {
+        System.out.println(track);
         try {
             Track t = new Gson().fromJson(track, Track.class);
             control.open(new File(t.getPath()));
@@ -235,9 +259,9 @@ public class PlayerController {
                 getPosition(t);
             }
             playlistPlaying = playedFromPlaylist;
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }        
     }
 
     public void playSong(Track t, boolean playedFromPlaylist) {
@@ -326,6 +350,7 @@ public class PlayerController {
     public void stop() {
         try {
             control.stop();
+            invokeOnStopped();
         } catch (BasicPlayerException ex) {
             Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }

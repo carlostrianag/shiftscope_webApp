@@ -68,4 +68,31 @@ public abstract class PlayerListener {
             }
         });
     };
+    
+    public void OnPlayed() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnPlayed();");
+            }
+        });
+    }
+    
+    public void OnPaused() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnPaused();");
+            }
+        });
+    }   
+    
+    public void OnStopped() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnStopped();");
+            }
+        });
+    }       
 }

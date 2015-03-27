@@ -202,7 +202,15 @@ body {
 	margin-right: 7px;
 }
 
-#back-btn, #next-btn, #stop-btn, #play-btn {
+#play-btn {
+	display: none;
+}
+
+#pause-btn {
+	display: none;
+}
+
+#back-btn, #next-btn, #stop-btn, #play-btn, #pause-btn {
 	height: 23px;
 	margin-right: 7px;
 	cursor: pointer;
@@ -378,6 +386,10 @@ input[type=range] {
 	height: 11px;
 	background: rgb(57, 6 , 57);
 	float: left;
+}
+
+.checkbox-selected {
+	background: rgb(204, 0 , 51) !important;
 }
 
 #artist-checkbox p {
@@ -584,9 +596,12 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 .active-content {
-	display: block;
+	display: block !important;
 }
 
+.active-btn {
+	display: inline !important;
+}
 #back-folder {
 	cursor: pointer;
 }

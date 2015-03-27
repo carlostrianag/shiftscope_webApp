@@ -1,8 +1,10 @@
-var MAX_Y, PARENT_FOLDER;
+var MAX_Y, PARENT_FOLDER, PLAYING;
 
 MAX_Y = 217;
 
 PARENT_FOLDER = -1;
+
+PLAYING = true;
 
 $(document).ready(function() {
   document.oncontextmenu = function() {
@@ -32,9 +34,13 @@ $(document).ready(function() {
     }));
   });
   $('#artist-checkbox').click(function(e) {
+    $(this).addClass('checkbox-selected');
+    $('#title-checkbox').removeClass('checkbox-selected');
     FolderController.orderTracksByArtistName();
   });
   $('#title-checkbox').click(function(e) {
+    $(this).addClass('checkbox-selected');
+    $('#artist-checkbox').removeClass('checkbox-selected');
     FolderController.orderTracksBySongName();
   });
   $('input[name=query]').keyup(function(e) {
@@ -49,6 +55,14 @@ $(document).ready(function() {
   $('#play-btn').click(function(e) {});
   $('#next-btn').click(function(e) {
     PlayerController.next();
+  });
+  $('#play-btn').click(function(e) {
+    Debugger.display('de una el resume');
+    PlayerController.resume();
+  });
+  $('#pause-btn').click(function(e) {
+    PlayerController.pause();
+    Debugger.display('de una el pause');
   });
   $('.library-tab').click();
   $('#library-list').height($(window).height() - MAX_Y);

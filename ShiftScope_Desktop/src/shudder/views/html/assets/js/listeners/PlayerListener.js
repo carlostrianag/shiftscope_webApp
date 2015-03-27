@@ -1,4 +1,4 @@
-var OnOpened, OnPlaying, OnPlaylistFetched, OnProgress, OnQueueChanged;
+var OnOpened, OnPaused, OnPlayed, OnPlaying, OnPlaylistFetched, OnProgress, OnQueueChanged, OnStopped;
 
 OnOpened = function(totalTime, totalSeconds) {
   $('#elapsed-time-text').text('0:00');
@@ -46,4 +46,19 @@ OnPlaying = function(songName, artistName) {
 OnProgress = function(elapsedTime, currentSecond) {
   $('#elapsed-time-text').text(elapsedTime);
   $('#slider').val(currentSecond);
+};
+
+OnPlayed = function() {
+  $('#play-btn').removeClass('active-btn');
+  $('#pause-btn').addClass('active-btn');
+};
+
+OnPaused = function() {
+  $('#pause-btn').removeClass('active-btn');
+  $('#play-btn').addClass('active-btn');
+};
+
+OnStopped = function() {
+  $('#pause-btn').removeClass('active-btn');
+  $('#play-btn').addClass('active-btn');
 };
