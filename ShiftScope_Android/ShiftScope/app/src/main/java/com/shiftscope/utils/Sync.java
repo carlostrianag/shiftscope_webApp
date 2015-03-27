@@ -21,6 +21,7 @@ public class Sync {
     private TrackDTO deletedTrack;
     private ArrayList<TrackDTO> currentPlaylist;
 
+
     public String getCurrentSongName() {
         return currentSongName;
     }

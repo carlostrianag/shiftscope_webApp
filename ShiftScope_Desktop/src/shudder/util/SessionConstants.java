@@ -15,4 +15,5 @@ public class SessionConstants {
     public static int DEVICE_ID;
     public static int LIBRARY_ID;   
     public static int PARENT_FOLDER_ID;
+    public static boolean VOLUME_FROM_USER = true;
 }

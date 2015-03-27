@@ -173,21 +173,12 @@ public class SwipeDetector implements View.OnTouchListener {
 
     public void offsetView(TrackDTO addedTrack, TrackDTO deletedTrack) {
         View v;
-        boolean swipeRight;
         if(addedTrack != null){
             v = getAdapterViewById(addedTrack.getId());
-            swipeRight = true;
-        } else {
+            moveRight(v);
+        } else if (deletedTrack != null) {
             v = getAdapterViewById(deletedTrack.getId());
-            swipeRight = false;
-        }
-
-        if (v != null) {
-            if(swipeRight) {
-                moveRight(v);
-            } else {
-                moveLeft(v);
-            }
+            moveLeft(v);
         }
     }
     private View getAdapterViewById(long id) {
@@ -199,11 +190,14 @@ public class SwipeDetector implements View.OnTouchListener {
         return null;
     }
     private void moveRight(View trackView) {
-        trackView.findViewById(R.id.contentLayout).animate().x(Constants.MAX_X_POSITION).setDuration(150).start();
+        if(trackView != null) {
+            trackView.findViewById(R.id.contentLayout).animate().x(Constants.MAX_X_POSITION).setDuration(150).start();
+        }
     }
 
     private void moveLeft(View trackView) {
-        Log.v("LEFT", "entro al left");
-        trackView.findViewById(R.id.contentLayout).animate().x(0).setDuration(150).start();
+        if(trackView != null) {
+            trackView.findViewById(R.id.contentLayout).animate().x(0).setDuration(150).start();
+        }
     }
 }

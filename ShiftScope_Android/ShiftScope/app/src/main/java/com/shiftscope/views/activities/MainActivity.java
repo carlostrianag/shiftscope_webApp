@@ -72,12 +72,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         } else {
                             currentSongText.setText("");
                         }
-                        SessionConstants.PLAYER_VOLUME = syncObject.getCurrentVolume();
-                        if(volumeDialog != null) {
-                            volumeDialog.updateVolume();
-                        }
-                    }
 
+                    }
+                    break;
+                case RequestTypes.SET_VOLUME:
+                    SessionConstants.PLAYER_VOLUME = (int)(o.getValue()*100);
+                    SessionConstants.VOLUME_FROM_USER = false;
+                    if(volumeDialog != null) {
+                        volumeDialog.updateVolume();
+                    }
+                    SessionConstants.VOLUME_FROM_USER = true;
                     break;
             }
         }

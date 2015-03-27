@@ -109,7 +109,7 @@ public class TCPController {
                                 public void run() {
                                     try {
                                         String JSON = response.getResponseBody();
-                                        MainView.mainBrowser.execute("PlayerController.playSong(JSON.stringify(" + JSON + "), false);");
+                                        MainView.mainBrowser.execute("PlayerController.play(JSON.stringify(" + JSON + "), false);");
                                     } catch (IOException ex) {
                                         for (WebSocketListener listener : listeners) {
                                             listener.OnError(ex.getMessage());
@@ -184,14 +184,21 @@ public class TCPController {
                             break;
 
                         case OperationType.SET_VOLUME:
-                        //PlayerController.setVolumeFromValue(request.getValue(), false);
+                            SessionConstants.VOLUME_FROM_USER = false;
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MainView.mainBrowser.execute("PlayerController.setVolumeFromValue("+request.getValue()+");");        
+                                }
+                            });
+                            SessionConstants.VOLUME_FROM_USER = true;
 
                         case OperationType.SYNC:
-                            request = new Operation();
+                            Operation syncRequest = new Operation();
                             request.setOperationType(OperationType.SYNC);
                             request.setUserId(SessionConstants.USER_ID);
                             //request.setSync(PlayerController.getSync());
-                            sendRequest(request);
+                            sendRequest(syncRequest);
                     }
                 }
 

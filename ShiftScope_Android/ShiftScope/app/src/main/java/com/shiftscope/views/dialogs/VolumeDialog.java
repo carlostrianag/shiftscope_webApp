@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +47,7 @@ public class VolumeDialog extends DialogFragment implements SeekBar.OnSeekBarCha
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if(fromUser) {
+        if (SessionConstants.VOLUME_FROM_USER) {
             float progressF = new Float(progress);
             float volValue = progressF/100f;
             Operation operation = new Operation();
@@ -69,6 +70,7 @@ public class VolumeDialog extends DialogFragment implements SeekBar.OnSeekBarCha
     }
 
     public void updateVolume() {
-        volumeSeekBar.setProgress(SessionConstants.PLAYER_VOLUME+70);
+        Log.v("VOLUME", "ENTROOO");
+        volumeSeekBar.setProgress(SessionConstants.PLAYER_VOLUME);
     }
 }

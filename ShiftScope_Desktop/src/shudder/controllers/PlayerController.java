@@ -36,7 +36,6 @@ public class PlayerController {
     private int frameLength;
     private boolean playlistPlaying;
     private boolean paused;
-    private boolean volumeAdjustedByUser;
     private Float frameRate;
     private String totalTimeString;
     private String elapsedTimeString;
@@ -148,9 +147,16 @@ public class PlayerController {
                     break;
 
                 case BasicPlayerEvent.GAIN:
-                    if (volumeAdjustedByUser) {
-                        System.out.println("enviar por sockett");
+                    if (SessionConstants.VOLUME_FROM_USER) {
+                        System.out.println("setteado por usuario");
+                        Operation volumeRequest = new Operation();
+                        volumeRequest.setOperationType(OperationType.SET_VOLUME);
+                        volumeRequest.setUserId(SessionConstants.USER_ID);
+                        volumeRequest.setSync(sync);
+                        volumeRequest.setValue(volume);
+                        TCPController.sendJSRequest(volumeRequest);                        
                     } else {
+                        System.out.println("setteado por socket");
                         //System.out.println("AJUSTADO DE SOCKET");
                         //invokeOnVolumeChanged((int) (player.getGainValue() * 100));
                     }
@@ -376,10 +382,9 @@ public class PlayerController {
     }
 
     public void setVolumeFromValue(double value, boolean fromUser) {
-        System.out.println(value);
         try {
-            volumeAdjustedByUser = fromUser;
             player.setGain(value);
+            volume = (float)value;
         } catch (BasicPlayerException ex) {
             Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
