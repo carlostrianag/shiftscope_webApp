@@ -69,6 +69,7 @@ $(document).ready ->
 		return)	
 
 	$('#volume-slider').on("change", (->
+		Debugger.display 'entro change'
 		PlayerController.setVolumeFromValue($(this).val()/100, true)
 		return))
 

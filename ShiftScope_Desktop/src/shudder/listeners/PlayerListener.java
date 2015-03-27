@@ -44,7 +44,14 @@ public abstract class PlayerListener {
         });
     };
     
-    public void OnVolumeChanged(int value) {};
+    public void OnVolumeChanged(float value) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnVolumeChanged("+value+");");
+            }
+        });        
+    };
     public void OnPlaying(String songName, String artistName) {
         Platform.runLater(new Runnable() {
             @Override

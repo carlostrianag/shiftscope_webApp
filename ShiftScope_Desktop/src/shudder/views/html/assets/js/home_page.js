@@ -65,6 +65,7 @@ $(document).ready(function() {
     Debugger.display('de una el pause');
   });
   $('#volume-slider').on("change", (function() {
+    Debugger.display('entro change');
     PlayerController.setVolumeFromValue($(this).val() / 100, true);
   }));
   $('.library-tab').click();

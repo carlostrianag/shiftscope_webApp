@@ -60,3 +60,7 @@ OnStopped = ->
 	$('#pause-btn').removeClass('active-btn')
 	$('#play-btn').addClass('active-btn')
 	return	
+
+OnVolumeChanged = (value)->
+	$('#volume-slider').val(value)
+	return

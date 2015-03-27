@@ -1,4 +1,4 @@
-var OnOpened, OnPaused, OnPlayed, OnPlaying, OnPlaylistFetched, OnProgress, OnQueueChanged, OnStopped;
+var OnOpened, OnPaused, OnPlayed, OnPlaying, OnPlaylistFetched, OnProgress, OnQueueChanged, OnStopped, OnVolumeChanged;
 
 OnOpened = function(totalTime, totalSeconds) {
   $('#elapsed-time-text').text('0:00');
@@ -61,4 +61,8 @@ OnPaused = function() {
 OnStopped = function() {
   $('#pause-btn').removeClass('active-btn');
   $('#play-btn').addClass('active-btn');
+};
+
+OnVolumeChanged = function(value) {
+  $('#volume-slider').val(value);
 };
