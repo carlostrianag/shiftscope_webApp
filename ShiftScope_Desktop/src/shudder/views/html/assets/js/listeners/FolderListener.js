@@ -80,7 +80,7 @@ drawSearchResults = function(tracks) {
     }
     listElement.click(function(e) {
       if (e.which === 1) {
-        PlayerController.playSong(JSON.stringify(item), false);
+        PlayerController.play(JSON.stringify(item), false);
       }
     });
     divElement.on("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function() {

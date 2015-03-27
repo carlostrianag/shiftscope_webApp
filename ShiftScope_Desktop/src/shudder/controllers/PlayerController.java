@@ -255,7 +255,9 @@ public class PlayerController {
             control.open(new File(t.getPath()));
             control.play();
             currentSong = t;
+            System.out.println("llego" + playedFromPlaylist);
             if (playedFromPlaylist) {
+                System.out.println("fue una cacion desde la playsit");
                 getPosition(t);
             }
             playlistPlaying = playedFromPlaylist;
@@ -315,7 +317,7 @@ public class PlayerController {
 
     public void getPosition(Track t) {
         for (int i = 0; i < queuePaths.size(); i++) {
-            if (t.equals(queuePaths.get(i))) {
+            if (t.getId() == (queuePaths.get(i).getId())) {
                 currentSongPosition = i;
                 break;
             }
