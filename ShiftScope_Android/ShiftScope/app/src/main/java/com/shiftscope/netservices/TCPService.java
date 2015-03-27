@@ -82,6 +82,7 @@ public class TCPService{
     }
 
     public static void send(Operation operation){
+        Log.v("SEND", ""+operation.getTo());
         Gson JSONParser = new Gson();
         if (webSocket != null) {
             webSocket.sendTextMessage(JSONParser.toJson(operation));

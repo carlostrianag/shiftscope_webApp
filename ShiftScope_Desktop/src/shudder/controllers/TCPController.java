@@ -188,10 +188,10 @@ public class TCPController {
                             Platform.runLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    MainView.mainBrowser.execute("PlayerController.setVolumeFromValue("+request.getValue()+");");        
+                                    MainView.mainBrowser.execute("PlayerController.setVolumeFromValue("+request.getValue()+", false);");        
                                 }
                             });
-                            SessionConstants.VOLUME_FROM_USER = true;
+                            
 
                         case OperationType.SYNC:
                             Operation syncRequest = new Operation();

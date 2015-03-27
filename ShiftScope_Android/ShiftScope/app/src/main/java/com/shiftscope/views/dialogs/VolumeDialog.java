@@ -48,8 +48,7 @@ public class VolumeDialog extends DialogFragment implements SeekBar.OnSeekBarCha
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (SessionConstants.VOLUME_FROM_USER) {
-            float progressF = new Float(progress);
-            float volValue = progressF/100f;
+            float volValue = progress/100f;
             Operation operation = new Operation();
             operation.setUserId(SessionConstants.USER_ID);
             operation.setTo(SessionConstants.DEVICE_ID);
@@ -70,7 +69,6 @@ public class VolumeDialog extends DialogFragment implements SeekBar.OnSeekBarCha
     }
 
     public void updateVolume() {
-        Log.v("VOLUME", "ENTROOO");
         volumeSeekBar.setProgress(SessionConstants.PLAYER_VOLUME);
     }
 }

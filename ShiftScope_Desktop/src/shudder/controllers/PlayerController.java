@@ -157,6 +157,7 @@ public class PlayerController {
                         TCPController.sendJSRequest(volumeRequest);                        
                     } else {
                         System.out.println("setteado por socket");
+                        SessionConstants.VOLUME_FROM_USER = true;
                         //System.out.println("AJUSTADO DE SOCKET");
                         //invokeOnVolumeChanged((int) (player.getGainValue() * 100));
                     }
@@ -385,6 +386,7 @@ public class PlayerController {
         try {
             player.setGain(value);
             volume = (float)value;
+            
         } catch (BasicPlayerException ex) {
             Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
