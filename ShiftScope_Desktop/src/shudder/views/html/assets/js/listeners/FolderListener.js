@@ -1,6 +1,8 @@
-var OnBuildFolderFinished, OnContentFetched, QUEUE_SONGS, drawSearchResults;
+var OnBuildFolderFinished, OnContentFetched, OnFilesScanned, OnProgressUpdated, QUEUE_SONGS, TOTAL_FILES, drawSearchResults;
 
 QUEUE_SONGS = {};
+
+TOTAL_FILES = 0;
 
 OnContentFetched = function(folderDTO) {
   var PARENT_FOLDER;
@@ -117,8 +119,19 @@ drawSearchResults = function(tracks) {
   });
 };
 
+OnProgressUpdated = function(progress) {
+  $('#loading-bar').css('width', (progress / TOTAL_FILES) * 100 + '%');
+};
+
+OnFilesScanned = function(files) {
+  TOTAL_FILES = files;
+  $('#loading-bar').css('display', 'block');
+};
+
 OnBuildFolderFinished = function() {
   FolderController.getFolderContentById(JSON.stringify({
     id: -1
   }));
+  TOTAL_FILES = 0;
+  $('#loading-bar').css('width', '0%');
 };

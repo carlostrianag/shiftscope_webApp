@@ -1,4 +1,4 @@
-MAX_Y = 217
+MAX_Y = 225
 PARENT_FOLDER = -1
 PLAYING = true
 
@@ -64,7 +64,7 @@ $(document).ready ->
 
 	$('#pause-btn').click((e)->
 		PlayerController.pause() 
-		return)	
+		return)
 
 	$('#volume-slider').on("change", (->
 		Debugger.display 'ahi'

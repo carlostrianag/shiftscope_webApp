@@ -605,3 +605,11 @@ input[type=range]:focus::-ms-fill-upper {
 #back-folder {
 	cursor: pointer;
 }
+
+#loading-bar {
+	margin-top: 4px;
+	height: 4px;
+	border-radius: 50px;
+	background-color: rgb(204, 0, 51);
+	width: 0px;
+}

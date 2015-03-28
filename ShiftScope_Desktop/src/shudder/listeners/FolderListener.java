@@ -17,8 +17,22 @@ import shudder.views.MainView;
  * @author Carlos
  */
 public abstract class FolderListener {
-    public void OnProgressUpdated(int progress){};
-    public void OnFilesScanned(int filesCount){};
+    public void OnProgressUpdated(int progress){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnProgressUpdated("+progress+");");
+            }
+        });
+    };
+    public void OnFilesScanned(int filesCount){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnFilesScanned("+filesCount+");");
+            }
+        });    
+    };
     public void fetchingContent(){};
     public void OnContentFetched(FolderDTO folderContent){
         Platform.runLater(new Runnable() {

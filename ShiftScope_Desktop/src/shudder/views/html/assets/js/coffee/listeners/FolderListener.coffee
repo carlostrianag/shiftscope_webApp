@@ -1,4 +1,5 @@
 QUEUE_SONGS = {}
+TOTAL_FILES = 0
 
 OnContentFetched = (folderDTO)->
 	$('#library-list').empty()
@@ -114,6 +115,18 @@ drawSearchResults = (tracks) ->
 	)	
 	return
 
+
+OnProgressUpdated = (progress) ->
+	$('#loading-bar').css('width', (progress/TOTAL_FILES)*100+'%')
+	return
+
+OnFilesScanned = (files)->
+	TOTAL_FILES = files
+	$('#loading-bar').css('display', 'block')
+	return
+
 OnBuildFolderFinished = ->
 	FolderController.getFolderContentById(JSON.stringify({id: -1}))
+	TOTAL_FILES = 0
+	$('#loading-bar').css('width', '0%')
 	return
