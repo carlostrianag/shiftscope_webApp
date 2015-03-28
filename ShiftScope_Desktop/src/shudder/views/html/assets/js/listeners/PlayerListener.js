@@ -29,7 +29,7 @@ OnQueueChanged = function(addedTrack, deletedTrack) {
     QUEUE_SONGS[addedTrack.id] = addedTrack;
     $("#song-" + addedTrack.id).addClass('move-right');
     $("#check-song-" + addedTrack.id).addClass('move-right');
-  } else {
+  } else if (deletedTrack) {
     QUEUE_SONGS[deletedTrack.id] = null;
     $("#song-" + deletedTrack.id).removeClass('added-to-playlist');
     $("#check-song-" + deletedTrack.id).removeClass('added-to-playlist');

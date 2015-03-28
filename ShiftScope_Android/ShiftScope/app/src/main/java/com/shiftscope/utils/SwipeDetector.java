@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.shiftscope.controllers.LibraryController;
+import com.shiftscope.controllers.PlaylistController;
 import com.shiftscope.dto.FolderDTO;
 import com.shiftscope.dto.TrackDTO;
 import com.shiftscope.utils.constants.Constants;
@@ -88,7 +89,7 @@ public class SwipeDetector implements View.OnTouchListener {
                             selectedView = null;
                         } else {
                             selectedView = child.findViewById(R.id.contentLayout);
-                            isAdded = LibraryController.isAdded(((TrackDTO) item).getId());
+                            isAdded = PlaylistController.contains(((TrackDTO) item).getId());
                             deltaWidth = absDownX - selectedView.getX();
                         }
                     }

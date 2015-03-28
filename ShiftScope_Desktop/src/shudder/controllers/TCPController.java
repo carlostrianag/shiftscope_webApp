@@ -187,8 +187,7 @@ public class TCPController {
                             Platform.runLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    MainView.mainBrowser.execute("OnVolumeChanged("+request.getValue()*100+"); PlayerController.setVolumeFromValue("+request.getValue()+", false);");        
-                                    //MainView.mainBrowser.execute("OnVolumeChanged("+request.getValue()*100+");");        
+                                    MainView.mainBrowser.execute("OnVolumeChanged("+request.getValue()*100+"); PlayerController.setVolumeFromValue("+request.getValue()+", false);");      
                                 }
                             });
                             

@@ -254,7 +254,6 @@ public class PlayerController {
         try {
             Track t = new Gson().fromJson(track, Track.class);
             control.open(new File(t.getPath()));
-            System.out.println("el volume " + volume);
             control.play();
             control.setGain(volume);
             currentSong = t;
@@ -391,7 +390,7 @@ public class PlayerController {
     public void enqueueSong(String song) {
         Track q = new Gson().fromJson(song, Track.class);
         queuePaths.add(q);
-
+        
         invokeOnQueueChanged(q, null);
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
