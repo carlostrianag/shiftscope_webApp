@@ -41,9 +41,8 @@ public class PlayerController {
     private String elapsedTimeString;
     private ArrayList<Track> queuePaths;
     private Track currentSong;
-    
     private BasicPlayer player;
-    private float volume;
+    private float volume = 1;
     private BasicController control;
     private ArrayList<PlayerListener> listeners = new ArrayList<>();
     private FolderListener folderListener = new FolderListener() {
@@ -154,9 +153,7 @@ public class PlayerController {
                         volumeRequest.setUserId(SessionConstants.USER_ID);
                         volumeRequest.setSync(SessionConstants.sync);
                         volumeRequest.setValue(volume);
-                        TCPController.sendJSRequest(volumeRequest);                        
-                    } else {
-                        SessionConstants.VOLUME_FROM_USER = true;
+                        TCPController.sendJSRequest(volumeRequest); 
                     }
                     break;
             }
@@ -259,9 +256,7 @@ public class PlayerController {
             control.open(new File(t.getPath()));
             control.play();
             currentSong = t;
-            System.out.println("llego" + playedFromPlaylist);
             if (playedFromPlaylist) {
-                System.out.println("fue una cacion desde la playsit");
                 getPosition(t);
             }
             playlistPlaying = playedFromPlaylist;
@@ -273,6 +268,7 @@ public class PlayerController {
     public void playSong(Track t, boolean playedFromPlaylist) {
         try {
             control.open(new File(t.getPath()));
+            
             control.play();
             currentSong = t;
             if (playedFromPlaylist) {
@@ -381,9 +377,9 @@ public class PlayerController {
 
     public void setVolumeFromValue(double value, boolean fromUser) {
         try {
-            player.setGain(value);
+            SessionConstants.VOLUME_FROM_USER = fromUser;
+            control.setGain(value);
             volume = (float)value;
-            
         } catch (BasicPlayerException ex) {
             Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -433,8 +429,6 @@ public class PlayerController {
     public void initPlayer() {
         player = new BasicPlayer();
         player.addBasicPlayerListener(basicPlayerListener);
-        System.out.println("MAX_VOLUME " + player.getMaximumGain());
-        System.out.println("MIN_VOLUME " + player.getMinimumGain());
         control = (BasicController) player;
         try {
             control.setGain(1.0);
@@ -446,7 +440,7 @@ public class PlayerController {
         currentSongPosition = 0;
         playlistPlaying = false;
         SessionConstants.sync = new Sync();
-        SessionConstants.sync.setCurrentVolume(player.getGainValue());
+        SessionConstants.sync.setCurrentVolume(volume);
     }
 
 }

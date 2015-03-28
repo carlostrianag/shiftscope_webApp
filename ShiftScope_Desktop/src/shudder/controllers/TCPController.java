@@ -184,11 +184,11 @@ public class TCPController {
                             break;
 
                         case OperationType.SET_VOLUME:
-                            SessionConstants.VOLUME_FROM_USER = false;
                             Platform.runLater(new Runnable() {
                                 @Override
                                 public void run() {
                                     MainView.mainBrowser.execute("OnVolumeChanged("+request.getValue()*100+"); PlayerController.setVolumeFromValue("+request.getValue()+", false);");        
+                                    //MainView.mainBrowser.execute("OnVolumeChanged("+request.getValue()*100+");");        
                                 }
                             });
                             

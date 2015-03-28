@@ -59,17 +59,15 @@ $(document).ready ->
 		return)
 
 	$('#play-btn').click((e)->
-		Debugger.display 'de una el resume'
 		PlayerController.resume()
 		return)	
 
 	$('#pause-btn').click((e)->
 		PlayerController.pause() 
-		Debugger.display 'de una el pause'
 		return)	
 
 	$('#volume-slider').on("change", (->
-		Debugger.display 'entro change'
+		Debugger.display 'ahi'
 		PlayerController.setVolumeFromValue($(this).val()/100, true)
 		return))
 

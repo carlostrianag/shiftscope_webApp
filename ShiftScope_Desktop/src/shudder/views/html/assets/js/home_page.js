@@ -57,15 +57,13 @@ $(document).ready(function() {
     PlayerController.next();
   });
   $('#play-btn').click(function(e) {
-    Debugger.display('de una el resume');
     PlayerController.resume();
   });
   $('#pause-btn').click(function(e) {
     PlayerController.pause();
-    Debugger.display('de una el pause');
   });
   $('#volume-slider').on("change", (function() {
-    Debugger.display('entro change');
+    Debugger.display('ahi');
     PlayerController.setVolumeFromValue($(this).val() / 100, true);
   }));
   $('.library-tab').click();

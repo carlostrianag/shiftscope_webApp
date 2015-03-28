@@ -70,6 +70,7 @@ public class VolumeDialog extends DialogFragment implements SeekBar.OnSeekBarCha
     }
 
     public void updateVolume() {
-        volumeSeekBar.setProgress((int)(SessionConstants.PLAYER_VOLUME*100));
+        Log.v("UPDATE VOLUME PAPI", ""+SessionConstants.PLAYER_VOLUME*100f);
+        volumeSeekBar.setProgress((int)(SessionConstants.PLAYER_VOLUME*100f));
     }
 }
