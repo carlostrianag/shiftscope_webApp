@@ -42,7 +42,7 @@ public class PlayerController {
     private ArrayList<Track> queuePaths;
     private Track currentSong;
     private BasicPlayer player;
-    private float volume = 1;
+    private float volume;
     private BasicController control;
     private ArrayList<PlayerListener> listeners = new ArrayList<>();
     private FolderListener folderListener = new FolderListener() {
@@ -254,7 +254,9 @@ public class PlayerController {
         try {
             Track t = new Gson().fromJson(track, Track.class);
             control.open(new File(t.getPath()));
+            System.out.println("el volume " + volume);
             control.play();
+            control.setGain(volume);
             currentSong = t;
             if (playedFromPlaylist) {
                 getPosition(t);
@@ -270,6 +272,7 @@ public class PlayerController {
             control.open(new File(t.getPath()));
             
             control.play();
+            control.setGain(volume);            
             currentSong = t;
             if (playedFromPlaylist) {
                 getPosition(t);
@@ -440,6 +443,7 @@ public class PlayerController {
         currentSongPosition = 0;
         playlistPlaying = false;
         SessionConstants.sync = new Sync();
+        volume = 1.0f;
         SessionConstants.sync.setCurrentVolume(volume);
     }
 

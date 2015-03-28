@@ -37,11 +37,11 @@ public class VolumeDialog extends DialogFragment implements SeekBar.OnSeekBarCha
         Window window = dialog.getWindow();
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         layoutParams.gravity = Gravity.TOP;
-        layoutParams.y = 120;
+        layoutParams.y = 180;
         layoutParams.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(layoutParams);
         volumeSeekBar = (SeekBar) v.findViewById(R.id.volumeSeekBar);
-        volumeSeekBar.setProgress((int)(SessionConstants.PLAYER_VOLUME*100));
+        volumeSeekBar.setProgress((int)(SessionConstants.PLAYER_VOLUME*100f));
         volumeSeekBar.setOnSeekBarChangeListener(this);
         return dialog;
     }
@@ -70,7 +70,6 @@ public class VolumeDialog extends DialogFragment implements SeekBar.OnSeekBarCha
     }
 
     public void updateVolume() {
-        Log.v("UPDATE VOLUME PAPI", ""+SessionConstants.PLAYER_VOLUME*100f);
         volumeSeekBar.setProgress((int)(SessionConstants.PLAYER_VOLUME*100f));
     }
 }
