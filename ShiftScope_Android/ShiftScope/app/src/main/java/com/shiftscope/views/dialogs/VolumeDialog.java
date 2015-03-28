@@ -41,6 +41,7 @@ public class VolumeDialog extends DialogFragment implements SeekBar.OnSeekBarCha
         layoutParams.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(layoutParams);
         volumeSeekBar = (SeekBar) v.findViewById(R.id.volumeSeekBar);
+        volumeSeekBar.setProgress((int)(SessionConstants.PLAYER_VOLUME*100));
         volumeSeekBar.setOnSeekBarChangeListener(this);
         return dialog;
     }
@@ -69,6 +70,6 @@ public class VolumeDialog extends DialogFragment implements SeekBar.OnSeekBarCha
     }
 
     public void updateVolume() {
-        volumeSeekBar.setProgress(SessionConstants.PLAYER_VOLUME);
+        volumeSeekBar.setProgress((int)(SessionConstants.PLAYER_VOLUME*100));
     }
 }

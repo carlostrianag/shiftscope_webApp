@@ -195,9 +195,9 @@ public class TCPController {
 
                         case OperationType.SYNC:
                             Operation syncRequest = new Operation();
-                            request.setOperationType(OperationType.SYNC);
-                            request.setUserId(SessionConstants.USER_ID);
-                            //request.setSync(PlayerController.getSync());
+                            syncRequest.setOperationType(OperationType.SYNC);
+                            syncRequest.setUserId(SessionConstants.USER_ID);
+                            syncRequest.setSync(SessionConstants.sync);
                             sendRequest(syncRequest);
                     }
                 }

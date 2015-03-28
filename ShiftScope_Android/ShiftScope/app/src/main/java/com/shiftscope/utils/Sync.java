@@ -12,7 +12,7 @@ public class Sync {
     private String currentSongArtist;
     private String currentSongDuration;
     private int currentSongId;
-    private int currentVolume;
+    private float currentVolume;
     private boolean isPlayingPlaylist;
     private boolean isPlaying;
     private boolean isPaused;
@@ -20,7 +20,6 @@ public class Sync {
     private TrackDTO addedTrack;
     private TrackDTO deletedTrack;
     private ArrayList<TrackDTO> currentPlaylist;
-
 
     public String getCurrentSongName() {
         return currentSongName;
@@ -54,11 +53,11 @@ public class Sync {
         this.currentSongId = currentSongId;
     }
 
-    public int getCurrentVolume() {
+    public float getCurrentVolume() {
         return currentVolume;
     }
 
-    public void setCurrentVolume(int currentVolume) {
+    public void setCurrentVolume(float currentVolume) {
         this.currentVolume = currentVolume;
     }
 

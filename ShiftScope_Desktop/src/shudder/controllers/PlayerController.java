@@ -41,7 +41,7 @@ public class PlayerController {
     private String elapsedTimeString;
     private ArrayList<Track> queuePaths;
     private Track currentSong;
-    private Sync sync;
+    
     private BasicPlayer player;
     private float volume;
     private BasicController control;
@@ -50,13 +50,13 @@ public class PlayerController {
         
         @Override
         public void OnBuildFolderFinished() {
-            sync.setNewFolders(true);
+            SessionConstants.sync.setNewFolders(true);
             Operation request = new Operation();
             request.setOperationType(OperationType.SYNC);
             request.setUserId(SessionConstants.USER_ID);
-            request.setSync(sync);
+            request.setSync(SessionConstants.sync);
             TCPController.sendJSRequest(request);
-            sync.setNewFolders(false);
+            SessionConstants.sync.setNewFolders(false);
         }
         
         
@@ -111,32 +111,32 @@ public class PlayerController {
 
                 case BasicPlayerEvent.PLAYING:
                     invokeOnPlaying(currentSong.getTitle(), currentSong.getArtist());
-                    sync.setCurrentSongId(currentSong.getId());
-                    sync.setCurrentSongName(currentSong.getTitle());
-                    sync.setCurrentSongArtist(currentSong.getArtist());
-                    sync.setCurrentSongDuration(currentSong.getDuration());
-                    sync.setCurrentVolume((int) player.getGainValue());
-                    sync.setIsPlaying(true);
-                    sync.setIsPaused(false);
-                    request.setSync(sync);
+                    SessionConstants.sync.setCurrentSongId(currentSong.getId());
+                    SessionConstants.sync.setCurrentSongName(currentSong.getTitle());
+                    SessionConstants.sync.setCurrentSongArtist(currentSong.getArtist());
+                    SessionConstants.sync.setCurrentSongDuration(currentSong.getDuration());
+                    SessionConstants.sync.setCurrentVolume((int) player.getGainValue());
+                    SessionConstants.sync.setIsPlaying(true);
+                    SessionConstants.sync.setIsPaused(false);
+                    request.setSync(SessionConstants.sync);
                     TCPController.sendJSRequest(request);
                     paused = false;
                     invokeOnPlayed();
                     break;
 
                 case BasicPlayerEvent.PAUSED:
-                    sync.setIsPlaying(false);
-                    sync.setIsPaused(true);
-                    request.setSync(sync);
+                    SessionConstants.sync.setIsPlaying(false);
+                    SessionConstants.sync.setIsPaused(true);
+                    request.setSync(SessionConstants.sync);
                     TCPController.sendJSRequest(request);
                     paused = true;
                     invokeOnPaused();
                     break;
 
                 case BasicPlayerEvent.RESUMED:
-                    sync.setIsPlaying(true);
-                    sync.setIsPaused(false);
-                    request.setSync(sync);
+                    SessionConstants.sync.setIsPlaying(true);
+                    SessionConstants.sync.setIsPaused(false);
+                    request.setSync(SessionConstants.sync);
                     TCPController.sendJSRequest(request);
                     paused = false;
                     invokeOnPlayed();
@@ -147,19 +147,16 @@ public class PlayerController {
                     break;
 
                 case BasicPlayerEvent.GAIN:
+                    SessionConstants.sync.setCurrentVolume(volume);
                     if (SessionConstants.VOLUME_FROM_USER) {
-                        System.out.println("setteado por usuario");
                         Operation volumeRequest = new Operation();
                         volumeRequest.setOperationType(OperationType.SET_VOLUME);
                         volumeRequest.setUserId(SessionConstants.USER_ID);
-                        volumeRequest.setSync(sync);
+                        volumeRequest.setSync(SessionConstants.sync);
                         volumeRequest.setValue(volume);
                         TCPController.sendJSRequest(volumeRequest);                        
                     } else {
-                        System.out.println("setteado por socket");
                         SessionConstants.VOLUME_FROM_USER = true;
-                        //System.out.println("AJUSTADO DE SOCKET");
-                        //invokeOnVolumeChanged((int) (player.getGainValue() * 100));
                     }
                     break;
             }
@@ -204,11 +201,11 @@ public class PlayerController {
     
     public void clearPlaylist() {
         queuePaths.clear();
-        sync.setCurrentPlaylist(queuePaths);
+        SessionConstants.sync.setCurrentPlaylist(queuePaths);
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
-        request.setSync(sync);
+        request.setSync(SessionConstants.sync);
         TCPController.sendJSRequest(request);
     }
 
@@ -294,12 +291,12 @@ public class PlayerController {
 //                currentSong = queuePaths.get(currentSongPosition);
 //                t = currentSong;
 //                player.loadSong(t.getPath());
-//                sync.setCurrentSongId(t.getId());
-//                sync.setCurrentSongName(t.getTitle());
-//                sync.setCurrentSongArtist(t.getArtist());
-//                sync.setCurrentSongDuration(t.getDuration());
-//                sync.setIsPlaying(true);
-//                sync.setIsPaused(false);
+//                SessionConstants.sync.setCurrentSongId(t.getId());
+//                SessionConstants.sync.setCurrentSongName(t.getTitle());
+//                SessionConstants.sync.setCurrentSongArtist(t.getArtist());
+//                SessionConstants.sync.setCurrentSongDuration(t.getDuration());
+//                SessionConstants.sync.setIsPlaying(true);
+//                SessionConstants.sync.setIsPaused(false);
 //
 //                currentSongLabel.setText(t.getTitle() + " - " + t.getArtist());
 //
@@ -400,10 +397,10 @@ public class PlayerController {
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
-        sync.setCurrentPlaylist(queuePaths);
-        sync.setAddedTrack(q);
-        sync.setDeletedTrack(null);
-        request.setSync(sync);
+        SessionConstants.sync.setCurrentPlaylist(queuePaths);
+        SessionConstants.sync.setAddedTrack(q);
+        SessionConstants.sync.setDeletedTrack(null);
+        request.setSync(SessionConstants.sync);
         TCPController.sendJSRequest(request);
     }
 
@@ -426,20 +423,18 @@ public class PlayerController {
         Operation request = new Operation();
         request.setOperationType(OperationType.SYNC);
         request.setUserId(SessionConstants.USER_ID);
-        sync.setCurrentPlaylist(queuePaths);
-        sync.setAddedTrack(null);
-        sync.setDeletedTrack(t);
-        request.setSync(sync);
+        SessionConstants.sync.setCurrentPlaylist(queuePaths);
+        SessionConstants.sync.setAddedTrack(null);
+        SessionConstants.sync.setDeletedTrack(t);
+        request.setSync(SessionConstants.sync);
         TCPController.sendJSRequest(request);
-    }
-
-    public Sync getSync() {
-        return sync;
     }
     
     public void initPlayer() {
         player = new BasicPlayer();
         player.addBasicPlayerListener(basicPlayerListener);
+        System.out.println("MAX_VOLUME " + player.getMaximumGain());
+        System.out.println("MIN_VOLUME " + player.getMinimumGain());
         control = (BasicController) player;
         try {
             control.setGain(1.0);
@@ -450,7 +445,8 @@ public class PlayerController {
         currentSong = null;
         currentSongPosition = 0;
         playlistPlaying = false;
-        sync = new Sync();
+        SessionConstants.sync = new Sync();
+        SessionConstants.sync.setCurrentVolume(player.getGainValue());
     }
 
 }

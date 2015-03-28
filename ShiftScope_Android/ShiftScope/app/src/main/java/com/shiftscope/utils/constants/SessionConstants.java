@@ -8,7 +8,7 @@ public class SessionConstants {
     public static int USER_ID;
     public static int DEVICE_ID;
     public static int LIBRARY_ID;
-    public static int PLAYER_VOLUME;
+    public static float PLAYER_VOLUME = 1;
     public static boolean VOLUME_FROM_USER = true;
     public static String SERVER_URL = "http://54.149.22.22/";
     //public static String WEB_SOCKET_SERVER = "ws://54.149.22.22:8001";

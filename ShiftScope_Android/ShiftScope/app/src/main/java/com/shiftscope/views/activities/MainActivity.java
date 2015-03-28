@@ -67,6 +67,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         PlaylistController.setPlaylist(syncObject.getCurrentPlaylist());
                         LibraryController.queueChanged(syncObject.getAddedTrack(), syncObject.getDeletedTrack());
 
+                        SessionConstants.PLAYER_VOLUME = syncObject.getCurrentVolume();
                         if(syncObject.getCurrentSongName() != null && syncObject.getCurrentSongArtist() != null) {
                             currentSongText.setText(syncObject.getCurrentSongName() + " - " + syncObject.getCurrentSongArtist());
                         } else {
@@ -76,7 +77,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     }
                     break;
                 case RequestTypes.SET_VOLUME:
-                    SessionConstants.PLAYER_VOLUME = (int)(o.getValue()*100);
+                    SessionConstants.PLAYER_VOLUME = o.getValue();
                     SessionConstants.VOLUME_FROM_USER = false;
                     if(volumeDialog != null) {
                         volumeDialog.updateVolume();
