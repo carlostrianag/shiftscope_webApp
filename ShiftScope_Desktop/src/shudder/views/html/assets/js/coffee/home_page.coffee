@@ -9,6 +9,10 @@ $(document).ready ->
 	PlayerController.initPlayer()
 	TCPController.init()
 
+	$('#elapsed-time-text').text '0:00'
+	$('#remaining-time-text').text '0:00'
+	$('#slider').val(0)
+
 	$('.library-tab').click((e) ->
 		$('.library-tab').addClass('active-tab')
 		$('.playlist-tab').removeClass('active-tab')

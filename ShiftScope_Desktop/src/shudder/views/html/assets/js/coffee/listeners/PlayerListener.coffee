@@ -2,7 +2,7 @@ OnOpened = (totalTime, totalSeconds) ->
 	$('#elapsed-time-text').text '0:00'
 	$('#remaining-time-text').text(totalTime)
 	$('#slider').attr('min', 0)
-	$('#slider').attr('max', totalSeconds)
+	$('#slider').attr('max', 50)
 	return
 
 
@@ -59,6 +59,7 @@ OnPaused = ->
 OnStopped = ->
 	$('#pause-btn').removeClass('active-btn')
 	$('#play-btn').addClass('active-btn')
+	$('#elapsed-time-text').text '0:00'
 	return	
 
 OnVolumeChanged = (value)->
