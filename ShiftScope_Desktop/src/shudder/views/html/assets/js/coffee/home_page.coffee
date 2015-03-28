@@ -84,6 +84,7 @@ $(document).ready ->
 		return)
 	FolderController.getFolderContentById(JSON.stringify({id: -1}))
 
+	window.location.href += "#error"
 	return
 
 $(window).resize ->

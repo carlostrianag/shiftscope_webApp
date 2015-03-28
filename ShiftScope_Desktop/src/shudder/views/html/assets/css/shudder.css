@@ -613,3 +613,24 @@ input[type=range]:focus::-ms-fill-upper {
 	background-color: rgb(204, 0, 51);
 	width: 0px;
 }
+
+
+#error {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(139, 137, 137, 0.4);
+	opacity: 0;
+	transition: opacity 0.3s ease-in;
+}
+
+#error:target {
+	opacity: 1;
+}
+
+.modal-dialog {
+	background-color: rgb(204, 0, 51);
+	opacity: 1;
+}
+

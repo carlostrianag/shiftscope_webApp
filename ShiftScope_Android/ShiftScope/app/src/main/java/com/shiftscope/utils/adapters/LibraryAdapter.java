@@ -1,9 +1,7 @@
 package com.shiftscope.utils.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -11,26 +9,13 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.daimajia.swipe.SimpleSwipeListener;
-import com.daimajia.swipe.SwipeLayout;
-import com.daimajia.swipe.adapters.BaseSwipeAdapter;
-import com.daimajia.swipe.implments.SwipeItemMangerImpl;
-import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
-import com.shiftscope.controllers.LibraryController;
 import com.shiftscope.controllers.PlaylistController;
 import com.shiftscope.dto.FolderDTO;
 import com.shiftscope.dto.TrackDTO;
-import com.shiftscope.netservices.TCPService;
-import com.shiftscope.utils.Operation;
 import com.shiftscope.utils.constants.Constants;
-import com.shiftscope.utils.constants.RequestTypes;
-import com.shiftscope.utils.constants.SessionConstants;
 import com.shiftscope.utils.filters.LibraryFilter;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Collections;
 
 import shiftscope.com.shiftscope.R;
 

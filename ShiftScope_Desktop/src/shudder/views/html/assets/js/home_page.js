@@ -79,6 +79,7 @@ $(document).ready(function() {
   FolderController.getFolderContentById(JSON.stringify({
     id: -1
   }));
+  window.location.href += "#error";
 });
 
 $(window).resize(function() {

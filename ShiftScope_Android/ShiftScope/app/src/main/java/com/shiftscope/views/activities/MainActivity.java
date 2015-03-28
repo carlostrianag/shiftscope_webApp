@@ -8,7 +8,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,31 +16,21 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.shiftscope.controllers.FolderController;
 import com.shiftscope.controllers.LibraryController;
 import com.shiftscope.controllers.PlaylistController;
-import com.shiftscope.controllers.TrackController;
-import com.shiftscope.dto.TrackDTO;
 import com.shiftscope.listeners.WebSocketListener;
 import com.shiftscope.netservices.TCPService;
 import com.shiftscope.utils.Operation;
 import com.shiftscope.utils.Sync;
 import com.shiftscope.utils.adapters.DrawerAdapter;
-import com.shiftscope.utils.adapters.LibraryAdapter;
 import com.shiftscope.utils.constants.Constants;
 import com.shiftscope.utils.constants.RequestTypes;
 import com.shiftscope.utils.constants.SessionConstants;
 import com.shiftscope.views.dialogs.VolumeDialog;
 import com.shiftscope.views.fragments.LibraryFragment;
 import com.shiftscope.views.fragments.PlayListFragment;
-
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import shiftscope.com.shiftscope.R;
 

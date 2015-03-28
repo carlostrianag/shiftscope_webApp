@@ -1,7 +1,6 @@
 package com.shiftscope.netservices;
 
 
-import android.app.Activity;
 import android.util.Log;
 
 import com.google.gson.Gson;

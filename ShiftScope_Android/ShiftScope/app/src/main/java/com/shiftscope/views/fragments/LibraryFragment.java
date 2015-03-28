@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.daimajia.swipe.implments.SwipeItemMangerImpl;
 import com.shiftscope.controllers.FolderController;
 import com.shiftscope.controllers.LibraryController;
 import com.shiftscope.dto.FolderDTO;
@@ -24,8 +23,6 @@ import com.shiftscope.utils.SwipeDetector;
 import com.shiftscope.utils.adapters.LibraryAdapter;
 import com.shiftscope.utils.constants.RequestTypes;
 import com.shiftscope.utils.constants.SessionConstants;
-
-import java.util.ArrayList;
 
 import shiftscope.com.shiftscope.R;
 

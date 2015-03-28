@@ -1,7 +1,5 @@
 package com.shiftscope.controllers;
 
-import android.util.Log;
-
 import com.shiftscope.dto.TrackDTO;
 
 import java.util.ArrayList;

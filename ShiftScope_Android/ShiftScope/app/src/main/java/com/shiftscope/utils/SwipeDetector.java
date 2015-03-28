@@ -2,14 +2,11 @@ package com.shiftscope.utils;
 
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.shiftscope.controllers.LibraryController;
 import com.shiftscope.controllers.PlaylistController;
 import com.shiftscope.dto.FolderDTO;
 import com.shiftscope.dto.TrackDTO;

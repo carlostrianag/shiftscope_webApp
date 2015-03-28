@@ -11,7 +11,7 @@ OnPlaylistFetched = (playlist) ->
 	$.each(playlist, (i, item) ->
 		divElement = $("<div class='check-box'><img src='assets/images/ic_check.png'></div>")
 		divElement.appendTo('#library-list')
-		listElement = $("<a class='list-group-item'><img src='assets/images/ic_headphones.png'>"+item.title.toUpperCase()+" "+item.artist.toUpperCase()+"</a>")
+		listElement = $("<a id='song-"+item.id+"' class='list-group-item'><div class='song-wrapper'><div><img src='assets/images/ic_headphones.png'></div><div>"+item.title.toUpperCase()+"</div><div> "+item.artist.toUpperCase()+"</div><div>"+item.duration+"</div></div></a>")
 		listElement.click((e) ->
 			PlayerController.play(JSON.stringify(item), true) if e.which is 1
 			return)
