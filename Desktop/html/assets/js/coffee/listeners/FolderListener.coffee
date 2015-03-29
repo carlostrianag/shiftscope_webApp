@@ -1,9 +1,12 @@
 QUEUE_SONGS = {}
 TOTAL_FILES = 0
+controllMarquee = ->
+	Debugger.display $(this).offsetWidth()
+	return
+
 OnContentFetched = (folderDTO)->
-	
+	$('#library-list').empty()
 	window.PARENT_FOLDER = folderDTO.parentFolder
-	Debugger.display 'new parent' + folderDTO.parentFolder
 	$.each(folderDTO.folders, (i, item) ->
 		$("<a class='list-group-item'><img class='folder-icon' src='assets/images/ic_folder.png'>"+item.title.toUpperCase()+"</a>")
 			.click((e) ->
@@ -14,7 +17,7 @@ OnContentFetched = (folderDTO)->
 				return)
 			.appendTo('#library-list')
 	)
-	$('#library-list').scrollTop(window.SCROLL_POS)
+	
 
 	$.each(folderDTO.tracks, (i, item) ->
 
@@ -26,7 +29,7 @@ OnContentFetched = (folderDTO)->
 			divElement = $("<div id='check-song-"+item.id+"' class='check-box'><img src='assets/images/ic_check.png'></div>")
 			divElement.appendTo('#library-list')
 			tableString = ""
-			listElement = $("<a id='song-"+item.id+"' class='list-group-item'><div class='song-wrapper'><div><img class='headphones-icon' src='assets/images/ic_headphones.png'></div><div>"+item.title.toUpperCase()+"</div><div> "+item.artist.toUpperCase()+"</div><div>"+item.duration+"</div></div></a>")
+			listElement = $("<a id='song-"+item.id+"' class='list-group-item'><div class='song-wrapper'><div><img class='headphones-icon' src='assets/images/ic_headphones.png'></div><div class='song-name-text' onmouseover='controllMarquee'>"+item.title.toUpperCase()+"</div><div> "+item.artist.toUpperCase()+"</div><div>"+item.duration+"</div></div></a>")
 
 		listElement.click((e) ->
 			PlayerController.play(JSON.stringify(item), false) if e.which is 1
@@ -66,6 +69,7 @@ OnContentFetched = (folderDTO)->
 		listElement.appendTo('#library-list')
 		return
 	)
+	$('#library-list').scrollTop(window.SCROLL_POS)
 
 	return
 
@@ -135,3 +139,5 @@ OnBuildFolderFinished = ->
 	TOTAL_FILES = 0
 	$('#loading-bar').css('width', '0%')
 	return
+
+

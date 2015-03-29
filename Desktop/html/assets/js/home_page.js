@@ -38,7 +38,6 @@ $(document).ready(function() {
   $('#back-folder').click(function(e) {
     $('#library-list').empty();
     window.SCROLL_POS = window.SCROLL_POSITION_FOLDER_ID[window.PARENT_FOLDER] ? window.SCROLL_POSITION_FOLDER_ID[window.PARENT_FOLDER] : 0;
-    Debugger.display("voy pa: " + window.PARENT_FOLDER + " " + window.SCROLL_POS);
     FolderController.getFolderContentById(JSON.stringify({
       id: window.PARENT_FOLDER
     }));

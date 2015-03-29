@@ -267,7 +267,13 @@ input[type=range] {
   
 }
 
+.song-name {
+	width: auto;
+}
+
 .song-name p {
+	overflow: hidden;
+	white-space: nowrap;
 	font-family: "ShudderFont";
 	font-size: 15px;
 	color: white;
@@ -352,6 +358,18 @@ input[type=range] {
 	display: none;
 }
 
+/*.song-name-text {
+	overflow: hidden;
+	white-space: nowrap;
+ 	overflow-x:-webkit-marquee;
+ 	-webkit-marquee-style: marquee-line;
+  	-webkit-marquee-direction: forwards;
+}*/
+
+.song-name-text {
+	overflow-x: hidden;
+	white-space: nowrap;
+}
 .search-bar-container {
 	margin-top: -7px;
 	float: left;

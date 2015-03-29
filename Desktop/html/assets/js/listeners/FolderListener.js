@@ -1,12 +1,15 @@
-var OnBuildFolderFinished, OnContentFetched, OnFilesScanned, OnProgressUpdated, QUEUE_SONGS, TOTAL_FILES, drawSearchResults;
+var OnBuildFolderFinished, OnContentFetched, OnFilesScanned, OnProgressUpdated, QUEUE_SONGS, TOTAL_FILES, controllMarquee, drawSearchResults;
 
 QUEUE_SONGS = {};
 
 TOTAL_FILES = 0;
 
+controllMarquee = function() {
+  Debugger.display($(this).offsetWidth());
+};
+
 OnContentFetched = function(folderDTO) {
   window.PARENT_FOLDER = folderDTO.parentFolder;
-  Debugger.display('new parent' + folderDTO.parentFolder);
   $.each(folderDTO.folders, function(i, item) {
     return $("<a class='list-group-item'><img class='folder-icon' src='assets/images/ic_folder.png'>" + item.title.toUpperCase() + "</a>").click(function(e) {
       window.SCROLL_POSITION_FOLDER_ID[item.parentFolder] = $('#library-list').scrollTop();
@@ -17,7 +20,6 @@ OnContentFetched = function(folderDTO) {
       }));
     }).appendTo('#library-list');
   });
-  $('#library-list').scrollTop(window.SCROLL_POS);
   $.each(folderDTO.tracks, function(i, item) {
     var divElement, listElement, tableString;
     if (QUEUE_SONGS[item.id]) {
@@ -28,7 +30,7 @@ OnContentFetched = function(folderDTO) {
       divElement = $("<div id='check-song-" + item.id + "' class='check-box'><img src='assets/images/ic_check.png'></div>");
       divElement.appendTo('#library-list');
       tableString = "";
-      listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div><img class='headphones-icon' src='assets/images/ic_headphones.png'></div><div>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
+      listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div><img class='headphones-icon' src='assets/images/ic_headphones.png'></div><div class='song-name-text' onmouseover='controllMarquee'>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
     }
     listElement.click(function(e) {
       if (e.which === 1) {
@@ -68,6 +70,7 @@ OnContentFetched = function(folderDTO) {
     });
     listElement.appendTo('#library-list');
   });
+  $('#library-list').scrollTop(window.SCROLL_POS);
 };
 
 drawSearchResults = function(tracks) {
