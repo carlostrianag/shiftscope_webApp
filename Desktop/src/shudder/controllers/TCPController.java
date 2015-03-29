@@ -11,11 +11,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
 import shudder.criteria.TrackCriteria;
 import shudder.listeners.WebSocketListener;
 import shudder.model.Track;
@@ -23,6 +19,8 @@ import shudder.util.Constants;
 import shudder.util.Operation;
 import shudder.util.OperationType;
 import shudder.util.SessionConstants;
+import shudder.util.java.org.java_websocket.client.WebSocketClient;
+import shudder.util.java.org.java_websocket.handshake.ServerHandshake;
 import shudder.views.MainView;
 
 /**
