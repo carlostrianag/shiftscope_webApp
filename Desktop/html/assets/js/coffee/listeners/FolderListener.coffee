@@ -29,7 +29,7 @@ OnContentFetched = (folderDTO)->
 			divElement = $("<div id='check-song-"+item.id+"' class='check-box'><img src='assets/images/ic_check.png'></div>")
 			divElement.appendTo('#library-list')
 			tableString = ""
-			listElement = $("<a id='song-"+item.id+"' class='list-group-item'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_stop.png'></div><div class='song-name-text'>"+item.title.toUpperCase()+"</div><div> "+item.artist.toUpperCase()+"</div><div>"+item.duration+"</div></div></a>")
+			listElement = $("<a id='song-"+item.id+"' class='list-group-item'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_plus.png'></div><div class='song-name-text'>"+item.title.toUpperCase()+"</div><div> "+item.artist.toUpperCase()+"</div><div>"+item.duration+"</div></div></a>")
 
 		listElement.click((e) ->
 			PlayerController.play(JSON.stringify(item), false) if e.which is 1
@@ -38,6 +38,7 @@ OnContentFetched = (folderDTO)->
 		divElement.on("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", ->
 			if listElement.hasClass 'move-right'
 				Debugger.display 'finish right'
+				listElement.find('.action-container').mouseout()
 				listElement.addClass('added-to-playlist')
 				listElement.removeClass('move-right')
 				$(this).addClass('added-to-playlist')

@@ -303,9 +303,13 @@ input[type=range] {
 
 
 
-.song-wrapper div:nth-child(2) {
+.song-wrapper div:nth-child(2), div:nth-child(3) {
 	/*width: 30px;*/
 	-webkit-flex: 1;
+}
+
+.song-wrapper div:nth-child(3) {
+	text-align: center;
 }
 
 .song-wrapper div:last-child {
@@ -504,6 +508,7 @@ label.css-label {
 .action-container {
 	position: relative;
 	width: 20px;
+	margin-right: 15px;
 }
 
 .action-container:hover > .headphones-icon {
@@ -516,8 +521,8 @@ label.css-label {
 
 .headphones-icon {
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 3px;
+	left: 3px;
 	height: 15px;
 	margin-right: 15px;
 	border-radius: none !important;
@@ -527,8 +532,8 @@ label.css-label {
 
 .add-icon {
 	position: absolute;
-	top: 0px;
-	left: 0px;	
+	top: 3px;
+	left: 3px;
 	height: 15px;
 	margin-right: 15px;
 	border-radius: none !important;
@@ -536,15 +541,6 @@ label.css-label {
 	-webkit-transition: opacity 0.5s;
 	pointer-events: none;
 }
-
-/*.folder-icon:hover {
-	opacity: 0;
-	visibility: hidden;
-}
-
-.folder-icon:hover + .headphones-icon {
-	opacity: 1;
-}*/
 
 a.list-group-item {
 	cursor: pointer;
