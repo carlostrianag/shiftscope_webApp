@@ -56,7 +56,7 @@ public abstract class PlayerListener {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                MainView.mainBrowser.execute("OnPlaying('"+songName+"','"+artistName+"');");
+                MainView.mainBrowser.execute("OnPlaying(\""+songName+"\",\""+artistName+"\");");
             }
         });
     };
