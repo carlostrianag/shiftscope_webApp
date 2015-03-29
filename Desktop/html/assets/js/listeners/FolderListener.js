@@ -9,6 +9,7 @@ controllMarquee = function() {
 };
 
 OnContentFetched = function(folderDTO) {
+  $('#library-list').empty();
   window.PARENT_FOLDER = folderDTO.parentFolder;
   $.each(folderDTO.folders, function(i, item) {
     return $("<a class='list-group-item'><img class='folder-icon' src='assets/images/ic_folder.png'>" + item.title.toUpperCase() + "</a>").click(function(e) {
@@ -25,12 +26,12 @@ OnContentFetched = function(folderDTO) {
     if (QUEUE_SONGS[item.id]) {
       divElement = $("<div id='check-song-" + item.id + "' class='check-box added-to-playlist'><img class='headphones-icon' src='assets/images/ic_check.png'></div>");
       divElement.appendTo('#library-list');
-      listElement = $("<a id='song-" + item.id + "' class='list-group-item added-to-playlist'><div class='song-wrapper'><div><img src='assets/images/ic_headphones.png'></div><div>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
+      listElement = $("<a id='song-" + item.id + "' class='list-group-item added-to-playlist'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_stop.png'></div><div>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
     } else {
       divElement = $("<div id='check-song-" + item.id + "' class='check-box'><img src='assets/images/ic_check.png'></div>");
       divElement.appendTo('#library-list');
       tableString = "";
-      listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div><img class='headphones-icon' src='assets/images/ic_headphones.png'></div><div class='song-name-text' onmouseover='controllMarquee'>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
+      listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_stop.png'></div><div class='song-name-text' onmouseover='controllMarquee'>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
     }
     listElement.click(function(e) {
       if (e.which === 1) {
@@ -53,7 +54,8 @@ OnContentFetched = function(folderDTO) {
         listElement.removeClass('added-to-playlist');
       }
     });
-    listElement.bind('contextmenu', function(e) {
+    listElement.find('.action-container').bind('click', function(e) {
+      e.stopPropagation();
       if (!QUEUE_SONGS[item.id]) {
         $(this).addClass('move-right');
         divElement.addClass('move-right');

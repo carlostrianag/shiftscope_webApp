@@ -497,12 +497,37 @@ label.css-label {
 	-webkit-transition: visibility 0.5s, opacity 0.5s;
 }
 
+.action-container:hover > .headphones-icon {
+	opacity: 0;
+}
+
+.action-container:hover > .add-icon {
+	opacity: 1;
+}
+
 .headphones-icon {
+	position: absolute;
+	top: 15px;
+	left: 20px;
 	height: 15px;
 	margin-right: 15px;
 	border-radius: none !important;
 	-webkit-transition: opacity 0.5s;
+	pointer-events: none;
 }
+
+.add-icon {
+	position: absolute;
+	top: 15px;
+	left: 20px;	
+	height: 15px;
+	margin-right: 15px;
+	border-radius: none !important;
+	opacity: 0;
+	-webkit-transition: opacity 0.5s;
+	pointer-events: none;
+}
+
 /*.folder-icon:hover {
 	opacity: 0;
 	visibility: hidden;

@@ -50,7 +50,7 @@ public abstract class PlayerListener {
             public void run() {
                 MainView.mainBrowser.execute("OnVolumeChanged("+value+");");
             }
-        });        
+        });
     };
     public void OnPlaying(String songName, String artistName) {
         Platform.runLater(new Runnable() {
