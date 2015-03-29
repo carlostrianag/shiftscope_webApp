@@ -29,6 +29,7 @@ import shudder.controllers.UserController;
 import shudder.listeners.FolderListener;
 import shudder.listeners.LoginListener;
 import shudder.listeners.PlayerListener;
+import shudder.util.Constants;
 import shudder.util.Debugger;
 
 /**
@@ -93,16 +94,13 @@ public class Browser extends Region {
     }
 
     public void openHTML(String file) {
-        String path = getClass().getResource("html/" + file).toExternalForm();
-        path = path.substring(6);
-        path = "file:///" + path;
-        //System.out.println(path);
+        String path = "file:/" + Constants.USER_DIR + "/html/" + file;
+        System.out.println(path);
         webEngine.load(path);
     }
     
     public String openFile(String file) {
-        String path = getClass().getResource("html/" + file).toExternalForm();
-        path = path.substring(6);
+        String path = Constants.USER_DIR + "/html/" + file;
         try {
             byte[] encoded = Files.readAllBytes(Paths.get(path));
             return new String(encoded, Charset.forName("UTF-8"));

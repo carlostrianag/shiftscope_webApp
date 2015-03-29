@@ -20,6 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.swing.ImageIcon;
+import shudder.util.Constants;
 
 public class MainView extends Application {
 
@@ -31,7 +32,7 @@ public class MainView extends Application {
         System.setProperty("prism.lcdtext", "false");
         stage.setTitle("Shudder Beta v1.0");
         
-        stage.getIcons().add(new Image("file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Desktop/src/shudder/views/html/assets/images/icon_144.png"));
+        stage.getIcons().add(new Image("file:/" + Constants.USER_DIR + "/html/assets/images/icon_144.png"));
         mainBrowser = new Browser(stage);
         scene = new Scene(mainBrowser, 700, 450, Color.web("#666970"));
         stage.setScene(scene);
