@@ -22,14 +22,14 @@ OnContentFetched = (folderDTO)->
 	$.each(folderDTO.tracks, (i, item) ->
 
 		if 	QUEUE_SONGS[item.id]
-			divElement = $("<div id='check-song-"+item.id+"' class='check-box added-to-playlist'><img class='headphones-icon' src='assets/images/ic_check.png'></div>")
+			divElement = $("<div id='check-song-"+item.id+"' class='check-box added-to-playlist'><img src='assets/images/ic_check.png'></div>")
 			divElement.appendTo('#library-list')			
 			listElement = $("<a id='song-"+item.id+"' class='list-group-item added-to-playlist'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_stop.png'></div><div>"+item.title.toUpperCase()+"</div><div> "+item.artist.toUpperCase()+"</div><div>"+item.duration+"</div></div></a>")
 		else
 			divElement = $("<div id='check-song-"+item.id+"' class='check-box'><img src='assets/images/ic_check.png'></div>")
 			divElement.appendTo('#library-list')
 			tableString = ""
-			listElement = $("<a id='song-"+item.id+"' class='list-group-item'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_stop.png'></div><div class='song-name-text' onmouseover='controllMarquee'>"+item.title.toUpperCase()+"</div><div> "+item.artist.toUpperCase()+"</div><div>"+item.duration+"</div></div></a>")
+			listElement = $("<a id='song-"+item.id+"' class='list-group-item'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_stop.png'></div><div class='song-name-text'>"+item.title.toUpperCase()+"</div><div> "+item.artist.toUpperCase()+"</div><div>"+item.duration+"</div></div></a>")
 
 		listElement.click((e) ->
 			PlayerController.play(JSON.stringify(item), false) if e.which is 1
@@ -54,14 +54,14 @@ OnContentFetched = (folderDTO)->
 		listElement.find('.action-container').bind('click', (e)->
 			e.stopPropagation()
 			if !QUEUE_SONGS[item.id]
-				$(this).addClass('move-right')
+				listElement.addClass('move-right')
 				divElement.addClass('move-right')
 				QUEUE_SONGS[item.id] = item
 				PlayerController.enqueueSong(JSON.stringify(item))
 			else
-				$(this).removeClass('added-to-playlist')
+				listElement.removeClass('added-to-playlist')
 				divElement.removeClass('added-to-playlist')			
-				$(this).addClass('move-left')
+				listElement.addClass('move-left')
 				divElement.addClass('move-left')
 				QUEUE_SONGS[item.id] = null
 				PlayerController.dequeueSong(JSON.stringify(item))
