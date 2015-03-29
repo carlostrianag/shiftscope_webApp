@@ -11,7 +11,7 @@ OnPlaylistFetched = function(playlist) {
   $('#playlist-list').empty();
   $.each(playlist, function(i, item) {
     var listElement;
-    listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div><img class='headphones-icon' src='assets/images/ic_headphones.png'></div><div class='song-name-text'>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
+    listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_plus.png'><img class='trash-icon' src='assets/images/ic_trash.png'></div><div class='song-name-text'>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
     listElement.click(function(e) {
       if (e.which === 1) {
         PlayerController.play(JSON.stringify(item), true);
