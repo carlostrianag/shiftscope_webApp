@@ -1,0 +1,13 @@
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\classes\debug
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-3f073c7f3f908f937a6f7109f02b22b88a8e09b3.jar
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\classes-b25cb2fe136cd44d2cfa5f035551d1f82c40a075.jar
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\AndroidSwipeLayout-v1.1.6-1677c3981fc62c8cab69bc99486eadf844374404.jar
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\autobahn-0.5.0-6c0d6c963bd7eb3b0a3f4b382b24e10dec4d70c5.jar
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\android-async-http-1.4.6-fa3b6b5fdc02b6821155aa1ee7d6c3236acee843.jar
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\library-2.4.0-a08ed1b635bddf7b5d4d031377333448059b9d72.jar
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\gson-2.2.4-1b4f269a1a7a0be708a217575e65303686cb8d3d.jar
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-f7bbdfc39444d5703dca6e32dc37a430e967dc07.jar
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\jackson-core-asl-1.9.7-ee5844f9b490b6d77e621f6d2e32085c5f482098.jar
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\classes-e6b17b783a1ff0762d6fa30605e77ce261232773.jar
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\jackson-mapper-asl-1.9.7-45099e45bece499de2d0ec6affee9236be2c277c.jar
+D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\classes-bdb7f8316a17a7f4930fcc180fc07b7193d2583d.jar

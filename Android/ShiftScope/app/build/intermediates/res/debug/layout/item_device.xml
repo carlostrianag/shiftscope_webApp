@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="50dp">
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_device"
+        android:id="@+id/deviceStatusImage"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:text="New Text"
+        android:id="@+id/deviceNameText"
+        android:gravity="center_vertical"
+        android:textColor="#FFF"
+        android:layout_alignTop="@+id/deviceStatusImage"
+        android:layout_toRightOf="@+id/deviceStatusImage"
+        android:layout_toEndOf="@+id/deviceStatusImage"
+        android:layout_marginLeft="15dp"
+        android:layout_centerVertical="true" />
+</RelativeLayout><!-- From: file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Android/ShiftScope/app/src/main/res/layout/item_device.xml -->

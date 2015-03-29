@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\libs\AndroidSwipeLayout-v1.1.6.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ebc31c290b523f79c57859c3fcc1b398ffcdf082">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\AndroidSwipeLayout-v1.1.6-1677c3981fc62c8cab69bc99486eadf844374404.jar" />
+    </item>
+    <item
+        jar="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\classes-e6b17b783a1ff0762d6fa30605e77ce261232773.jar" />
+    </item>
+    <item
+        jar="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\libs\internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-f7bbdfc39444d5703dca6e32dc37a430e967dc07.jar" />
+    </item>
+    <item
+        jar="C:\Users\Carlos\.gradle\caches\modules-2\files-2.1\com.nineoldandroids\library\2.4.0\e9b63380f3a242dbdbf103a2355ad7e43bad17cb\library-2.4.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\library-2.4.0-a08ed1b635bddf7b5d4d031377333448059b9d72.jar" />
+    </item>
+    <item
+        jar="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\libs\autobahn-0.5.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5f62bc6117f905fd37955f6e2ebd3aad68701b60">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\autobahn-0.5.0-6c0d6c963bd7eb3b0a3f4b382b24e10dec4d70c5.jar" />
+    </item>
+    <item
+        jar="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\libs\jackson-core-asl-1.9.7.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2dd41e7570f5c73e63a6a1311671a60c817e1989">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\jackson-core-asl-1.9.7-ee5844f9b490b6d77e621f6d2e32085c5f482098.jar" />
+    </item>
+    <item
+        jar="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\exploded-aar\com.fortysevendeg.swipelistview\swipelistview\1.0-SNAPSHOT\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e4c70565b4247864e4577107e53f604de0ae56d3">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\classes-b25cb2fe136cd44d2cfa5f035551d1f82c40a075.jar" />
+    </item>
+    <item
+        jar="C:\Users\Carlos\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.3\support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-3f073c7f3f908f937a6f7109f02b22b88a8e09b3.jar" />
+    </item>
+    <item
+        jar="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\classes-bdb7f8316a17a7f4930fcc180fc07b7193d2583d.jar" />
+    </item>
+    <item
+        jar="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\libs\android-async-http-1.4.6.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a845a88238be0b5be9d238652c1bc0605ef91f52">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\android-async-http-1.4.6-fa3b6b5fdc02b6821155aa1ee7d6c3236acee843.jar" />
+    </item>
+    <item
+        jar="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\libs\jackson-mapper-asl-1.9.7.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3bc2efad5ceb9e24e44f731d4282b5df3ea6d23f">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\jackson-mapper-asl-1.9.7-45099e45bece499de2d0ec6affee9236be2c277c.jar" />
+    </item>
+    <item
+        jar="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\libs\gson-2.2.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="973e832af433b44c3ed11c426f2f390b29f3f3f8">
+        <dex dex="D:\Repositories\ShiftScope_Repo\ShiftScope_Android\ShiftScope\app\build\intermediates\pre-dexed\debug\gson-2.2.4-1b4f269a1a7a0be708a217575e65303686cb8d3d.jar" />
+    </item>
+
+</items>
