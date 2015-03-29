@@ -32,7 +32,6 @@ $(document).ready(function() {
     $('.bottom-container').addClass('no-search');
   });
   $('#back-folder').click(function(e) {
-    Debugger.display('me devuelvo ' + window.PARENT_FOLDER);
     FolderController.getFolderContentById(JSON.stringify({
       id: window.PARENT_FOLDER
     }));

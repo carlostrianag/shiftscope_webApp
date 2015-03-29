@@ -622,7 +622,7 @@ input[type=range]:focus::-ms-fill-upper {
 	height: 100%;
 	background: rgba(139, 137, 137, 0.4);
 	opacity: 0;
-	transition: opacity 0.3s ease-in;
+	transition: opacity 0.4s linear;
 }
 
 #error:target {
@@ -630,7 +630,39 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 .modal-dialog {
-	background-color: rgb(204, 0, 51);
+	width: calc(100% - 20%);
+	/*height: calc(100% - 40%);*/
+	height: auto;
+	border-radius: 3px;
+	top: 10%;
+	left: 10%;
+	right: 10%;
+	position: absolute;
+	background-color: rgb(57, 6, 57);
 	opacity: 1;
+}
+
+.modal-title {
+	border: none;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: rgb(204, 0, 51);
+}
+
+.modal-title h2{
+	text-align: left;
+	margin-left: 25px;
+	font-family: "ShudderFont";
+	font-size: 25px;
+	color: rgb(204, 0, 51);
+}
+
+.modal-body p{
+	width: 100%;
+	margin-left: 35px;
+	text-align: left;
+	font-family: "ShudderFont";
+	font-size: 18px;
+	color: white;
 }
 
