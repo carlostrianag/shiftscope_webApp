@@ -22,6 +22,7 @@ module.exports = {
 			}
 		})
 	},
+	
 	searchTrack: function(req, res){
 		var word = req.param('word');
 		var library = req.param('library');
