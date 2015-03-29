@@ -5,9 +5,9 @@ QUEUE_SONGS = {};
 TOTAL_FILES = 0;
 
 OnContentFetched = function(folderDTO) {
-  var PARENT_FOLDER;
   $('#library-list').empty();
-  PARENT_FOLDER = folderDTO.parentFolder;
+  window.PARENT_FOLDER = folderDTO.parentFolder;
+  Debugger.display(folderDTO.parentFolder);
   $.each(folderDTO.folders, function(i, item) {
     return $("<a class='list-group-item'><img src='assets/images/ic_folder.png'>" + item.title.toUpperCase() + "</a>").click(function(e) {
       FolderController.getFolderContentById(JSON.stringify({

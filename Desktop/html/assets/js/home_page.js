@@ -1,8 +1,8 @@
-var MAX_Y, PARENT_FOLDER, PLAYING;
+var MAX_Y, PLAYING;
 
 MAX_Y = 225;
 
-PARENT_FOLDER = -1;
+window.PARENT_FOLDER = null;
 
 PLAYING = true;
 
@@ -32,8 +32,9 @@ $(document).ready(function() {
     $('.bottom-container').addClass('no-search');
   });
   $('#back-folder').click(function(e) {
+    Debugger.display('me devuelvo ' + window.PARENT_FOLDER);
     FolderController.getFolderContentById(JSON.stringify({
-      id: PARENT_FOLDER
+      id: window.PARENT_FOLDER
     }));
   });
   $('#artist-checkbox').click(function(e) {

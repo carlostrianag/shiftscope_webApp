@@ -3,7 +3,7 @@ TOTAL_FILES = 0
 
 OnContentFetched = (folderDTO)->
 	$('#library-list').empty()
-	PARENT_FOLDER = folderDTO.parentFolder;
+	window.PARENT_FOLDER = folderDTO.parentFolder
 	$.each(folderDTO.folders, (i, item) ->
 		$("<a class='list-group-item'><img src='assets/images/ic_folder.png'>"+item.title.toUpperCase()+"</a>")
 			.click((e) ->

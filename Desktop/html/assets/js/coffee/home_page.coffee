@@ -1,5 +1,5 @@
 MAX_Y = 225
-PARENT_FOLDER = -1
+window.PARENT_FOLDER = null
 PLAYING = true
 
 $(document).ready ->
@@ -32,7 +32,7 @@ $(document).ready ->
 		return)
 
 	$('#back-folder').click((e)->
-		FolderController.getFolderContentById(JSON.stringify({id: PARENT_FOLDER}))
+		FolderController.getFolderContentById(JSON.stringify({id: window.PARENT_FOLDER}))
 		return)
 
 	$('#artist-checkbox').click((e)->

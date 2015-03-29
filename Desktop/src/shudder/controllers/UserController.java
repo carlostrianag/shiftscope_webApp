@@ -18,8 +18,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import shudder.listeners.LoginListener;
 import shudder.criteria.DeviceCriteria;
 import shudder.criteria.LibraryCriteria;
@@ -29,7 +27,6 @@ import shudder.model.User;
 import shudder.netservices.HTTPService;
 import shudder.util.LoginCredentials;
 import shudder.util.SessionConstants;
-import shudder.views.dialogs.LoginDialog;
 
 /**
  *
@@ -60,9 +57,9 @@ public class UserController {
                             listener.OnSuccessfulLogin();
                         }
                     } catch (IOException ex) {
-                        Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        ex.printStackTrace();
                     } catch (IllegalStateException ex) {
-                        Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        ex.printStackTrace();
                     }
                     
                 } else {
@@ -127,7 +124,7 @@ public class UserController {
                 SessionConstants.LIBRARY_ID = returnedLibrary.getId();
 
             } catch (IOException ex) {
-                Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }
         } else {
             uuid = UUID.randomUUID().toString();
@@ -155,9 +152,9 @@ public class UserController {
                 createdLibrary = JSONParser.fromJson(response.getResponseBody(), Library.class);
                 SessionConstants.LIBRARY_ID = createdLibrary.getId();
             } catch (UnknownHostException ex) {
-                Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             } catch (IOException ex) {
-                Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }
         }
         for(LoginListener listener : listeners) {
