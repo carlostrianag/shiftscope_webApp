@@ -18,4 +18,4 @@
         android:id="@+id/deviceList"
         android:layout_below="@id/textView"
         android:layout_centerHorizontal="true" />
-</RelativeLayout><!-- From: file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Android/ShiftScope/app/src/main/res/layout/activity_select_device.xml -->
+</RelativeLayout><!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/layout/activity_select_device.xml -->

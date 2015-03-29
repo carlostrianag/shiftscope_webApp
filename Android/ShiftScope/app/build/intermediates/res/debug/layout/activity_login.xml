@@ -41,4 +41,4 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/shudder_icon"
         android:scaleType="fitCenter" />
-</RelativeLayout><!-- From: file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Android/ShiftScope/app/src/main/res/layout/activity_login.xml -->
+</RelativeLayout><!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/layout/activity_login.xml -->

@@ -24,4 +24,4 @@
         android:layout_toRightOf="@+id/entryImage"
         android:layout_toEndOf="@+id/entryImage"
         android:layout_marginLeft="15dp" />
-</RelativeLayout><!-- From: file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Android/ShiftScope/app/src/main/res/layout/menu_item_layout.xml -->
+</RelativeLayout><!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/layout/menu_item_layout.xml -->

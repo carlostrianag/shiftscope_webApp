@@ -33,4 +33,4 @@
         android:textColor="#C01515"
         android:visibility="gone"
         android:layout_margin="10dp" />
-</LinearLayout><!-- From: file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Android/ShiftScope/app/src/main/res/layout/dialog_login.xml -->
+</LinearLayout><!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/layout/dialog_login.xml -->

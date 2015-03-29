@@ -17,4 +17,4 @@
         android:layout_height="wrap_content"
         android:id="@+id/volumeSeekBar"
         android:max="100"/>
-</LinearLayout><!-- From: file:/D:/Repositories/ShiftScope_Repo/ShiftScope_Android/ShiftScope/app/src/main/res/layout/dialog_volume.xml -->
+</LinearLayout><!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/layout/dialog_volume.xml -->
