@@ -1,8 +1,9 @@
+
 OnOpened = (totalTime, totalSeconds) ->
 	$('#elapsed-time-text').text '0:00'
 	$('#remaining-time-text').text(totalTime)
 	$('#slider').attr('min', 0)
-	$('#slider').attr('max', 50)
+	$('#slider').attr('max', totalSeconds)
 	return
 
 

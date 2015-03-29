@@ -17,10 +17,6 @@ public class Debugger {
         System.err.println(message);
     }
     
-    public void open(String page) {
-        MainView.mainBrowser.openHTML(page);
-    }
-    
     public String openFile(String page) {
         return MainView.mainBrowser.openFile(page);
     }

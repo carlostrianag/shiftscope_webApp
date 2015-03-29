@@ -59,6 +59,7 @@ public class Browser extends Region {
         webEngine.getLoadWorker().stateProperty().addListener(changeListener);
         getChildren().add(browser);
         openHTML("index.html");
+        //openHTMLOnMac("index.html");
     }
 
     private Node createSpacer() {
@@ -97,6 +98,12 @@ public class Browser extends Region {
         String path = "file:/" + Constants.USER_DIR + "/html/" + file;
         System.out.println(path);
         webEngine.load(path);
+    }
+    
+    public void openHTMLOnMac(String file) {
+        String fileRead = openFile(file);
+        System.out.println(fileRead);
+        webEngine.loadContent(fileRead);
     }
     
     public String openFile(String file) {

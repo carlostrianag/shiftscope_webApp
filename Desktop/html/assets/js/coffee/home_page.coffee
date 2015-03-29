@@ -1,6 +1,8 @@
 MAX_Y = 225
 window.PARENT_FOLDER = null
 PLAYING = true
+window.SCROLL_POSITION_FOLDER_ID = {}
+window.SCROLL_POS = 0
 
 $(document).ready ->
 	document.oncontextmenu = ->
@@ -32,7 +34,11 @@ $(document).ready ->
 		return)
 
 	$('#back-folder').click((e)->
+		$('#library-list').empty()
+		window.SCROLL_POS = if window.SCROLL_POSITION_FOLDER_ID[window.PARENT_FOLDER] then window.SCROLL_POSITION_FOLDER_ID[window.PARENT_FOLDER] else 0
+		Debugger.display "voy pa: " + window.PARENT_FOLDER + " " + window.SCROLL_POS
 		FolderController.getFolderContentById(JSON.stringify({id: window.PARENT_FOLDER}))
+		delete window.SCROLL_POSITION_FOLDER_ID[window.PARENT_FOLDER]
 		return)
 
 	$('#artist-checkbox').click((e)->
@@ -71,7 +77,6 @@ $(document).ready ->
 		return)
 
 	$('#volume-slider').on("change", (->
-		Debugger.display 'ahi'
 		PlayerController.setVolumeFromValue($(this).val()/100, true)
 		return))
 

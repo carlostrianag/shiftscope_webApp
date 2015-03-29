@@ -5,15 +5,19 @@ QUEUE_SONGS = {};
 TOTAL_FILES = 0;
 
 OnContentFetched = function(folderDTO) {
-  $('#library-list').empty();
   window.PARENT_FOLDER = folderDTO.parentFolder;
+  Debugger.display('new parent' + folderDTO.parentFolder);
   $.each(folderDTO.folders, function(i, item) {
     return $("<a class='list-group-item'><img src='assets/images/ic_folder.png'>" + item.title.toUpperCase() + "</a>").click(function(e) {
+      window.SCROLL_POSITION_FOLDER_ID[item.parentFolder] = $('#library-list').scrollTop();
+      Debugger.display('SAVE: id ' + item.parentFolder + " ... " + window.SCROLL_POSITION_FOLDER_ID[item.parentFolder]);
+      $('#library-list').empty();
       FolderController.getFolderContentById(JSON.stringify({
         id: item.id
       }));
     }).appendTo('#library-list');
   });
+  $('#library-list').scrollTop(window.SCROLL_POS);
   $.each(folderDTO.tracks, function(i, item) {
     var divElement, listElement, tableString;
     if (QUEUE_SONGS[item.id]) {

@@ -6,6 +6,10 @@ window.PARENT_FOLDER = null;
 
 PLAYING = true;
 
+window.SCROLL_POSITION_FOLDER_ID = {};
+
+window.SCROLL_POS = 0;
+
 $(document).ready(function() {
   document.oncontextmenu = function() {
     return false;
@@ -32,9 +36,13 @@ $(document).ready(function() {
     $('.bottom-container').addClass('no-search');
   });
   $('#back-folder').click(function(e) {
+    $('#library-list').empty();
+    window.SCROLL_POS = window.SCROLL_POSITION_FOLDER_ID[window.PARENT_FOLDER] ? window.SCROLL_POSITION_FOLDER_ID[window.PARENT_FOLDER] : 0;
+    Debugger.display("voy pa: " + window.PARENT_FOLDER + " " + window.SCROLL_POS);
     FolderController.getFolderContentById(JSON.stringify({
       id: window.PARENT_FOLDER
     }));
+    delete window.SCROLL_POSITION_FOLDER_ID[window.PARENT_FOLDER];
   });
   $('#artist-checkbox').click(function(e) {
     $(this).addClass('checkbox-selected');
@@ -66,7 +74,6 @@ $(document).ready(function() {
     PlayerController.pause();
   });
   $('#volume-slider').on("change", (function() {
-    Debugger.display('ahi');
     PlayerController.setVolumeFromValue($(this).val() / 100, true);
   }));
   $('.library-tab').click();

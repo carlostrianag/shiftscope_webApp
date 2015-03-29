@@ -257,6 +257,7 @@ body {
 
 input[type=range] {
   -webkit-appearance: none;
+  display: inline-block;
   
 }
 

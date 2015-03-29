@@ -153,7 +153,7 @@ public class PlayerController {
                         volumeRequest.setUserId(SessionConstants.USER_ID);
                         volumeRequest.setSync(SessionConstants.sync);
                         volumeRequest.setValue(volume);
-                        TCPController.sendJSRequest(volumeRequest); 
+                        TCPController.sendJSRequest(volumeRequest);
                     }
                     break;
             }
@@ -253,10 +253,10 @@ public class PlayerController {
     public void play(String track, boolean playedFromPlaylist) {
         try {
             Track t = new Gson().fromJson(track, Track.class);
+            currentSong = t;
             control.open(new File(t.getPath()));
             control.play();
             control.setGain(volume);
-            currentSong = t;
             if (playedFromPlaylist) {
                 getPosition(t);
             }
@@ -268,11 +268,11 @@ public class PlayerController {
 
     public void playSong(Track t, boolean playedFromPlaylist) {
         try {
+            currentSong = t;
             control.open(new File(t.getPath()));
-            
             control.play();
             control.setGain(volume);            
-            currentSong = t;
+            
             if (playedFromPlaylist) {
                 getPosition(t);
             }
