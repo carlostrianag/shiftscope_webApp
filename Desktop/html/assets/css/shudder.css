@@ -185,6 +185,12 @@ body {
     display: table-row;	
 }
 
+.bottom-gap {
+	width: 100%;
+	height: 5px;
+	background-color: rgb(38, 0 ,38);
+}
+
 
 
 .player-actions {
@@ -309,7 +315,7 @@ input[type=range] {
 
 
 .active-tab {
-	background-color: rgb(57, 6, 57) !important;
+	background-color: rgb(38, 0, 38) !important;
 }
 
 .library-tab {
@@ -317,7 +323,7 @@ input[type=range] {
 	font-size: 15px;
 	padding-top: 5px;
     text-align: center;
-    background-color: rgb(38, 0, 38);
+    background-color: rgb(57, 6, 57);
     color: rgb(204, 0, 51);
 }
 
@@ -334,7 +340,7 @@ input[type=range] {
 .playlist-tab {
 	font-family: "ShudderFont";
 	font-size: 15px;
-	background-color: rgb(38, 0, 38);
+	background-color: rgb(57, 6, 57);
 	text-align: center;
 	color: rgb(204, 0, 51);
 }
@@ -466,11 +472,27 @@ label.css-label {
 	margin-bottom: 5px;
 }
 
-a.list-group-item img {
+.folder-icon {
 	height: 15px;
 	margin-right: 15px;
 	border-radius: none !important;
+	-webkit-transition: visibility 0.5s, opacity 0.5s;
 }
+
+.headphones-icon {
+	height: 15px;
+	margin-right: 15px;
+	border-radius: none !important;
+	-webkit-transition: opacity 0.5s;
+}
+/*.folder-icon:hover {
+	opacity: 0;
+	visibility: hidden;
+}
+
+.folder-icon:hover + .headphones-icon {
+	opacity: 1;
+}*/
 
 a.list-group-item {
 	cursor: pointer;

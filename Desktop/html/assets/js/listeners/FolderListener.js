@@ -8,7 +8,7 @@ OnContentFetched = function(folderDTO) {
   window.PARENT_FOLDER = folderDTO.parentFolder;
   Debugger.display('new parent' + folderDTO.parentFolder);
   $.each(folderDTO.folders, function(i, item) {
-    return $("<a class='list-group-item'><img src='assets/images/ic_folder.png'>" + item.title.toUpperCase() + "</a>").click(function(e) {
+    return $("<a class='list-group-item'><img class='folder-icon' src='assets/images/ic_folder.png'>" + item.title.toUpperCase() + "</a>").click(function(e) {
       window.SCROLL_POSITION_FOLDER_ID[item.parentFolder] = $('#library-list').scrollTop();
       Debugger.display('SAVE: id ' + item.parentFolder + " ... " + window.SCROLL_POSITION_FOLDER_ID[item.parentFolder]);
       $('#library-list').empty();
@@ -21,14 +21,14 @@ OnContentFetched = function(folderDTO) {
   $.each(folderDTO.tracks, function(i, item) {
     var divElement, listElement, tableString;
     if (QUEUE_SONGS[item.id]) {
-      divElement = $("<div id='check-song-" + item.id + "' class='check-box added-to-playlist'><img src='assets/images/ic_check.png'></div>");
+      divElement = $("<div id='check-song-" + item.id + "' class='check-box added-to-playlist'><img class='headphones-icon' src='assets/images/ic_check.png'></div>");
       divElement.appendTo('#library-list');
       listElement = $("<a id='song-" + item.id + "' class='list-group-item added-to-playlist'><div class='song-wrapper'><div><img src='assets/images/ic_headphones.png'></div><div>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
     } else {
       divElement = $("<div id='check-song-" + item.id + "' class='check-box'><img src='assets/images/ic_check.png'></div>");
       divElement.appendTo('#library-list');
       tableString = "";
-      listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div><img src='assets/images/ic_headphones.png'></div><div>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
+      listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div><img class='headphones-icon' src='assets/images/ic_headphones.png'></div><div>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
     }
     listElement.click(function(e) {
       if (e.which === 1) {
