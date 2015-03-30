@@ -36,7 +36,7 @@ public class PlayListFragment extends Fragment implements AdapterView.OnItemClic
         public void OnSync(Operation o) {
             Sync syncObject = o.getSync();
             ArrayList<TrackDTO> tracks = syncObject.getCurrentPlaylist();
-            if(!tracks.isEmpty()) {
+            if(tracks != null && !tracks.isEmpty()) {
                 ArrayList<Object> playList = new ArrayList<>();
                 playList.addAll(tracks);
                 LibraryAdapter adapter = new LibraryAdapter(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, playList);

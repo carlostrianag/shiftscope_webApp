@@ -93,6 +93,7 @@
     <orderEntry type="library" exported="" name="jackson-mapper-asl-1.9.7" level="project" />
     <orderEntry type="library" exported="" name="autobahn-0.5" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
+    <orderEntry type="library" exported="" name="pagerslidingtabstrip-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="jackson-core-asl-1.9.7" level="project" />
     <orderEntry type="library" exported="" name="jackson-core-asl-1.9" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />

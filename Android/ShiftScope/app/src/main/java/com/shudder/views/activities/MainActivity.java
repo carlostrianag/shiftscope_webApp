@@ -1,7 +1,9 @@
 package com.shudder.views.activities;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.shudder.controllers.FolderController;
 import com.shudder.controllers.LibraryController;
 import com.shudder.controllers.PlaylistController;
@@ -23,6 +26,7 @@ import com.shudder.netservices.TCPService;
 import com.shudder.utils.Operation;
 import com.shudder.utils.Sync;
 import com.shudder.utils.adapters.DrawerAdapter;
+import com.shudder.utils.adapters.ShudderPagerAdapter;
 import com.shudder.utils.constants.Constants;
 import com.shudder.utils.constants.RequestTypes;
 import com.shudder.utils.constants.SessionConstants;
@@ -97,6 +101,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private ImageView stopBtn;
     private ImageView volumeBtn;
     private SearchView searchView;
+    private ViewPager viewPager;
+    private PagerSlidingTabStrip tabs;
     private VolumeDialog volumeDialog;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerListener;
@@ -104,7 +110,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_tabbed);
         getSupportActionBar().setLogo(R.drawable.logo_shudder);
 
         TCPService.addListener(socketListener);
@@ -125,6 +131,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         stopBtn.setOnClickListener(this);
         volumeBtn.setOnClickListener(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         drawerListener = new ActionBarDrawerToggle(this, drawerLayout, R.string.openDrawer, R.string.closeDrawer) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -140,8 +147,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawerLayout.setDrawerListener(drawerListener);
-        libraryFragment = new LibraryFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.mainContent, libraryFragment).commit();
+        ShudderPagerAdapter shudderPagerAdapter = new ShudderPagerAdapter(getSupportFragmentManager());
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setAdapter(shudderPagerAdapter);
+        tabs.setViewPager(viewPager);
+        tabs.setIndicatorColor(getResources().getColor(R.color.fluor_pink));
+        tabs.setIndicatorHeight(2);
+        tabs.setTextColor(getResources().getColor(R.color.white));
+        tabs.setTextSize(15);
+        tabs.setBackgroundColor(getResources().getColor(R.color.darker_purple));
+        tabs.setDividerColor(getResources().getColor(R.color.lighter_purple));
+        tabs.setTypeface(Typeface.createFromAsset(getAssets(), "font/FuturaLTBook.ttf"), Typeface.NORMAL);
+//        libraryFragment = new LibraryFragment();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.mainContent, libraryFragment).commit();
     }
 
     @Override
