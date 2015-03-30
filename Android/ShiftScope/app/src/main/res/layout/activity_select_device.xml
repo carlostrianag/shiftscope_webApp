@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/darker_purple"
     android:padding="10dp">
 
-    <TextView
+    <com.shudder.custom.ShudderTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select a device from the list below."
-        android:id="@+id/textView"
+        android:text="@string/select_device"
         android:textColor="#fff" />
 
     <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/deviceList"
-        android:layout_below="@id/textView"
-        android:layout_centerHorizontal="true" />
-</RelativeLayout>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/deviceList"/>
+</LinearLayout>

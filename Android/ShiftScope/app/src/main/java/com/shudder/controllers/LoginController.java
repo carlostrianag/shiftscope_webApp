@@ -7,21 +7,40 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.shudder.dto.LoginCredentialsDTO;
 import com.shudder.dto.UserDTO;
+import com.shudder.listeners.LoginListener;
 import com.shudder.netservices.HTTPService;
 import com.shudder.utils.constants.SessionConstants;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by Carlos on 1/4/2015.
  */
 public class LoginController {
 
-    private static LoginCommunicator communicator;
+    private static ArrayList<LoginListener> listeners = new ArrayList<>();
 
-    public static void setCommunicator(DialogFragment fragment) {
-        communicator = (LoginCommunicator)fragment;
+    public static void addListener(LoginListener listener) {
+        listeners.add(listener);
+    }
+
+    public static void removeListener(LoginListener listener) {
+        listeners.remove(listener);
+    }
+
+    private static void invokeOnSuccess() {
+        for(LoginListener listener : listeners) {
+            listener.OnSuccess();
+        }
+    }
+
+    private static void invokeOnFailed() {
+        for(LoginListener listener : listeners) {
+            listener.OnFailed();
+        }
     }
 
     public static void login(LoginCredentialsDTO loginCredentials) {
@@ -32,25 +51,21 @@ public class LoginController {
                     Gson JSONParser = new Gson();
                     UserDTO user = JSONParser.fromJson(response.toString(), UserDTO.class);
                     SessionConstants.USER_ID = user.getId();
-                    communicator.onSuccessfulLogin();
+                    invokeOnSuccess();
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (statusCode == 404) {
-                    communicator.onFailedLogin();
+                    invokeOnFailed();
                 }
             }
         };
+
         RequestParams params = new RequestParams();
         params.add("email", loginCredentials.getEmail());
         params.add("password", loginCredentials.getPassword());
         HTTPService.post("user/login", params, responseHandler);
-    }
-
-    public interface LoginCommunicator{
-        public void onSuccessfulLogin();
-        public void onFailedLogin();
     }
 }

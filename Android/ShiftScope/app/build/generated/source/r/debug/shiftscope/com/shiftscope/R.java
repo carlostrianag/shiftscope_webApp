@@ -1465,9 +1465,9 @@ containing a value of this type.
         public static final int currentSongTextView=0x7f09004b;
         public static final int decor_content_parent=0x7f090035;
         public static final int default_activity_button=0x7f09002a;
-        public static final int deviceList=0x7f090058;
-        public static final int deviceNameText=0x7f090060;
-        public static final int deviceStatusImage=0x7f09005f;
+        public static final int deviceList=0x7f090057;
+        public static final int deviceNameText=0x7f09005f;
+        public static final int deviceStatusImage=0x7f09005e;
         public static final int dialog=0x7f09001b;
         public static final int disableHome=0x7f09000c;
         public static final int dismiss=0x7f090021;
@@ -1478,7 +1478,7 @@ containing a value of this type.
         public static final int emailText=0x7f090046;
         public static final int end=0x7f090014;
         public static final int entryImage=0x7f090068;
-        public static final int errorText=0x7f09005a;
+        public static final int errorText=0x7f090059;
         public static final int expand_activities_button=0x7f090028;
         public static final int expanded_menu=0x7f09002e;
         public static final int folderImage=0x7f090061;
@@ -1490,11 +1490,11 @@ containing a value of this type.
         public static final int ifRoom=0x7f090018;
         public static final int image=0x7f090029;
         public static final int imageView=0x7f090045;
-        public static final int imageView2=0x7f09005b;
+        public static final int imageView2=0x7f09005a;
         public static final int lastNameText=0x7f090056;
         public static final int left=0x7f09001e;
-        public static final int libraryListView=0x7f09005d;
-        public static final int linearLayout=0x7f090059;
+        public static final int libraryListView=0x7f09005c;
+        public static final int linearLayout=0x7f090058;
         public static final int listMode=0x7f090009;
         public static final int list_item=0x7f09002b;
         public static final int loginBtn=0x7f090053;
@@ -1508,7 +1508,7 @@ containing a value of this type.
         public static final int normal=0x7f09000a;
         public static final int passwordText=0x7f090047;
         public static final int pauseBtn=0x7f09004e;
-        public static final int playListListView=0x7f09005e;
+        public static final int playListListView=0x7f09005d;
         public static final int playerLayout=0x7f09004c;
         public static final int progress_circular=0x7f090005;
         public static final int progress_horizontal=0x7f090006;
@@ -1531,17 +1531,17 @@ containing a value of this type.
         public static final int showHome=0x7f090010;
         public static final int showTitle=0x7f090011;
         public static final int split_action_bar=0x7f090007;
+        public static final int statusBox=0x7f090060;
         public static final int stopBtn=0x7f09004f;
         public static final int submit_area=0x7f090042;
         public static final int tabMode=0x7f09000b;
-        public static final int textView=0x7f090057;
         public static final int title=0x7f09002d;
         public static final int trackImage=0x7f090065;
         public static final int trackTitle=0x7f090066;
         public static final int up=0x7f090008;
         public static final int useLogo=0x7f090012;
         public static final int volBtn=0x7f090051;
-        public static final int volumeSeekBar=0x7f09005c;
+        public static final int volumeSeekBar=0x7f09005b;
         public static final int withText=0x7f09001a;
         public static final int wrap_content=0x7f090023;
     }
@@ -1620,6 +1620,7 @@ containing a value of this type.
         public static final int openDrawer=0x7f0b0019;
         public static final int password_hint=0x7f0b001a;
         public static final int register=0x7f0b001b;
+        public static final int select_device=0x7f0b001c;
     }
     public static final class style {
         /**  Customize your theme here. 

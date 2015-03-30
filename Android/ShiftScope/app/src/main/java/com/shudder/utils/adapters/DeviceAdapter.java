@@ -35,13 +35,13 @@ public class DeviceAdapter extends ArrayAdapter<DeviceDTO> {
         View v = inflater.inflate(R.layout.item_device, parent, false);
         DeviceDTO device = objects.get(position);
         TextView deviceName = (TextView)v.findViewById(R.id.deviceNameText);
-        ImageView deviceStatus = (ImageView) v.findViewById(R.id.deviceStatusImage);
+        ImageView deviceStatus = (ImageView) v.findViewById(R.id.statusBox);
         deviceName.setText(device.getName());
-//        if(device.isOnline()) {
-//            deviceStatus.setImageResource(R.drawable.ic_action_computer); //CAMBIAR POR ICONO ONLINE
-//        } else {
-//            deviceStatus.setImageResource(R.drawable.ic_action_computer);
-//        }
+        if(device.isOnline()) {
+            deviceStatus.setBackground(getContext().getResources().getDrawable(R.drawable.radius_corners_fluor_pink));
+        } else {
+            deviceStatus.setBackground(getContext().getResources().getDrawable(R.drawable.radius_corners));
+        }
         return v;
     }
 }

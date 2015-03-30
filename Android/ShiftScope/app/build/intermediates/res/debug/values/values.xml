@@ -197,6 +197,7 @@
     <string name="openDrawer">Opening Drawer</string>
     <string name="password_hint">Password</string>
     <string name="register">Register Now</string>
+    <string name="select_device">"Select a device from the list below."</string>
     <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
