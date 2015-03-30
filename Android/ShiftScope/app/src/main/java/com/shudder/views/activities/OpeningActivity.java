@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.shudder.netservices.HTTPService;
-import com.shudder.utils.interfaces.Communicator;
-import com.shudder.views.dialogs.LoginDialog;
 
 import shiftscope.com.shiftscope.R;
 
