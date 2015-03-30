@@ -30,6 +30,8 @@
         android:layout_marginStart="15dp"
         android:layout_centerVertical="true"
         android:textColor="@color/fluor_pink"
-        android:textSize="15dp" />
+        android:textSize="15dp"
+        android:ellipsize="end"
+        android:singleLine="true" />
 </RelativeLayout>
 <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/layout/item_library_folder.xml -->

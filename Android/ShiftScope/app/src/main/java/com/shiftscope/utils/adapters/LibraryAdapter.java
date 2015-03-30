@@ -136,7 +136,7 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
                 folder = (FolderDTO)folderContent.get(position);
                 v  = layoutInflater.inflate(R.layout.item_library_folder, parent, false);
                 TextView folderTitle = (TextView) v.findViewById(R.id.folderTitle);
-                folderTitle.setText(folder.getTitle());
+                folderTitle.setText(folder.getTitle().toUpperCase());
                 return v;
             case 1:
                 track = (TrackDTO)folderContent.get(position);
@@ -146,9 +146,9 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
                     v.findViewById(R.id.contentLayout).setX(Constants.MAX_X_POSITION);
                 }
                 TextView trackTitle = (TextView) v.findViewById(R.id.trackTitle);
-                trackTitle.setText(track.getTitle());
+                trackTitle.setText(track.getTitle().toUpperCase());
                 TextView artistName = (TextView) v.findViewById(R.id.artistName);
-                artistName.setText(track.getArtist());
+                artistName.setText(track.getArtist().toUpperCase());
                 return v;
         }
         return null;
