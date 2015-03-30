@@ -152,12 +152,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         viewPager.setAdapter(shudderPagerAdapter);
         tabs.setViewPager(viewPager);
         tabs.setIndicatorColor(getResources().getColor(R.color.fluor_pink));
-        tabs.setIndicatorHeight(2);
+        tabs.setIndicatorHeight(4);
         tabs.setTextColor(getResources().getColor(R.color.white));
-        tabs.setTextSize(15);
+        tabs.setTextSize(22);
         tabs.setBackgroundColor(getResources().getColor(R.color.darker_purple));
         tabs.setDividerColor(getResources().getColor(R.color.lighter_purple));
-        tabs.setTypeface(Typeface.createFromAsset(getAssets(), "font/FuturaLTBook.ttf"), Typeface.NORMAL);
+        tabs.setTypeface(Typeface.createFromAsset(getAssets(), "font/FuturaLTBook.ttf"), Typeface.BOLD);
 //        libraryFragment = new LibraryFragment();
 //        getSupportFragmentManager().beginTransaction().replace(R.id.mainContent, libraryFragment).commit();
     }
