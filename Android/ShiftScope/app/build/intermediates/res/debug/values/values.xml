@@ -188,9 +188,15 @@
     <string name="action_settings">Settings</string>
     <string name="app_name">Shudder</string>
     <string name="closeDrawer">Closing Drawer</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email_hint">Email</string>
+    <string name="get_in">Get In</string>
     <string name="hello_world">Hello world!</string>
+    <string name="last_name_hint">Last name</string>
+    <string name="login">Log In</string>
+    <string name="name_hint">Name</string>
     <string name="openDrawer">Opening Drawer</string>
+    <string name="password_hint">Password</string>
+    <string name="register">Register Now</string>
     <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -1135,6 +1141,33 @@
     <style name="RtlOverlay.Widget.AppCompat.SearchView.MagIcon" parent="android:Widget">
         <item name="android:layout_marginLeft">@dimen/abc_dropdownitem_text_padding_left</item>
     </style>
+    <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="ShudderButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:bottomRightRadius">10dp</item>
+        <item name="android:bottomLeftRadius">10dp</item>
+        <item name="android:background">@drawable/radius_corners</item>
+        <item name="android:textColor">@color/fluor_pink</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
+    </style>
+    <style name="ShudderEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:bottomRightRadius">10dp</item>
+        <item name="android:bottomLeftRadius">10dp</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:textColorHint">#FFF</item>
+        <item name="android:background">@drawable/radius_corners_fluor_pink</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
+    </style>
+    <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <eat-comment/>
     <style name="TextAppearance.AppCompat" parent="Base.TextAppearance.AppCompat"/>
     <style name="TextAppearance.AppCompat.Body1" parent="Base.TextAppearance.AppCompat.Body1"/>
     <style name="TextAppearance.AppCompat.Body2" parent="Base.TextAppearance.AppCompat.Body2"/>

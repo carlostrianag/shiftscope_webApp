@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darker_purple">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/logo_shudder"
+            android:scaleType="fitCenter" />
+
+        <com.shudder.custom.ShudderTextView
+            style="@style/ShudderEditText"
+            android:inputType="textPersonName"
+            android:id="@+id/nameText"
+            android:layout_below="@id/imageView"
+            android:hint="@string/name_hint"/>
+
+        <com.shudder.custom.ShudderEditText
+            style="@style/ShudderEditText"
+            android:inputType="textPersonName"
+            android:id="@+id/lastNameText"
+            android:layout_below="@id/nameText"
+            android:hint="@string/last_name_hint"/>
+        <com.shudder.custom.ShudderEditText
+            style="@style/ShudderEditText"
+            android:inputType="textEmailAddress"
+            android:id="@+id/emailText"
+            android:layout_below="@id/lastNameText"
+            android:hint="@string/email_hint"/>
+        <com.shudder.custom.ShudderTextView
+            style="@style/ShudderEditText"
+            android:id="@+id/passwordText"
+            android:layout_below="@id/emailText"
+            android:inputType="textPassword"
+            android:hint="@string/password_hint"/>
+
+        <com.shudder.custom.ShudderButton
+            style="@style/ShudderButton"
+            android:layout_below="@id/passwordText"
+            android:layout_centerVertical="true"
+            android:id="@+id/getInBtn"
+            android:text="@string/register"/>
+    </RelativeLayout>
+
+</RelativeLayout>

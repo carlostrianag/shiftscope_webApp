@@ -13,6 +13,13 @@
         <item>Devices</item>
     </string-array>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Log In</string>
+    <string name="get_in">Get In</string>
+    <string name="register">Register Now</string>
+    <string name="email_hint">Email</string>
+    <string name="name_hint">Name</string>
+    <string name="last_name_hint">Last name</string>
+    <string name="password_hint">Password</string>
+
 
 </resources>
