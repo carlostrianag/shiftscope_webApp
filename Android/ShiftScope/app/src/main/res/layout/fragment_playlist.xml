@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="shiftscope.com.shiftscope.views.fragments.PlayListFragment"
+    tools:context="shiftscope.com.shudder.views.fragments.PlayListFragment"
     android:orientation="vertical"
     android:background="@color/darker_purple">
 

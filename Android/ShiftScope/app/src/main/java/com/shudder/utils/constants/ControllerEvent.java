@@ -1,0 +1,18 @@
+package com.shudder.utils.constants;
+
+/**
+ * Created by Carlos on 1/10/2015.
+ */
+public enum ControllerEvent {
+    ON_SUCCESSFUL_LOGIN,
+    ON_FAILED_LOGIN,
+    ON_SUCCESSFUL_DEVICE_FETCH,
+    ON_FAILED_DEVICE_FETCH,
+    ON_SUCCESSFUL_LIBRARY_FETCH,
+    ON_FAILED_LIBRARY_FETCH,
+    ON_SUCCESSFUL_FOLDER_FETCH,
+    ON_FAILED_FOLDER_FETCH,
+    ON_FILTER_QUERY,
+    ON_ORDER_BY_ARTIST,
+    ON_ORDER_BY_SONG_TITLE;
+}

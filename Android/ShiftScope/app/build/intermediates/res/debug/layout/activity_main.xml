@@ -18,15 +18,18 @@
             android:layout_height="100dp"
             android:orientation="vertical"
             android:background="@color/lighter_purple">
-            <TextView
+            <com.shudder.custom.ShudderTextView
                 android:id="@+id/currentSongTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="#fff"
-                android:gravity="center_vertical|center_horizontal"
                 android:textSize="15dp"
-                android:autoText="false"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:fadingEdge="horizontal"
+                android:scrollHorizontally="true"
+                android:marqueeRepeatLimit="marquee_forever"
                 android:layout_weight="0.3" />
             <LinearLayout
                 android:orientation="horizontal"
