@@ -13,8 +13,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignBottom="@+id/contentLayout">
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@drawable/ic_check"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
@@ -28,8 +28,8 @@
         android:background="@color/lighter_purple"
         android:visibility="visible">
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:id="@+id/trackImage"
             android:layout_alignParentTop="false"
             android:layout_alignParentLeft="true"
