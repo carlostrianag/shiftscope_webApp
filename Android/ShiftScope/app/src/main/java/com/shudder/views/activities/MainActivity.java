@@ -150,7 +150,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         ShudderPagerAdapter shudderPagerAdapter = new ShudderPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(shudderPagerAdapter);
-        tabs.setViewPager(viewPager);
+
         tabs.setIndicatorColor(getResources().getColor(R.color.fluor_pink));
         tabs.setIndicatorHeight(4);
         tabs.setTextColor(getResources().getColor(R.color.white));
@@ -158,6 +158,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         tabs.setBackgroundColor(getResources().getColor(R.color.darker_purple));
         tabs.setDividerColor(getResources().getColor(R.color.lighter_purple));
         tabs.setTypeface(Typeface.createFromAsset(getAssets(), "font/FuturaLTBook.ttf"), Typeface.BOLD);
+        tabs.setShouldExpand(true);
+        tabs.setViewPager(viewPager);
 //        libraryFragment = new LibraryFragment();
 //        getSupportFragmentManager().beginTransaction().replace(R.id.mainContent, libraryFragment).commit();
     }

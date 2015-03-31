@@ -1,13 +1,17 @@
 package com.shudder.utils.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shudder.controllers.PlaylistController;
 import com.shudder.dto.FolderDTO;
@@ -25,18 +29,16 @@ import shiftscope.com.shiftscope.R;
 public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
 
     private Context context;
-    private LayoutInflater inflater;
     private ArrayList<Object> folderContent;
     private LibraryFilter filter;
     private FolderDTO folder;
-    private TrackDTO track;
-    private ViewGroup parent;
 
 
     public LibraryAdapter(Context context, int resource, ArrayList<Object> objects) {
         super(context, resource, objects);
         this.context = context;
         this.folderContent = objects;
+        Constants.MAX_X_POSITION = convertToPx(75);
     }
 
 
@@ -128,9 +130,8 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
 
     private View getCustomView(int position, View convertView, ViewGroup parent) {
         int layoutType = getItemViewType(position);
-        this.parent = parent;
         LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v;
+        final View v;
         switch (layoutType) {
             case 0:
                 folder = (FolderDTO)folderContent.get(position);
@@ -139,13 +140,29 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
                 folderTitle.setText(folder.getTitle().toUpperCase());
                 return v;
             case 1:
-                track = (TrackDTO)folderContent.get(position);
                 v  = layoutInflater.inflate(R.layout.item_library_track, parent, false);
-                v.setId(track.getId());
-                if (PlaylistController.contains(track.getId())) {
-                    v.findViewById(R.id.contentLayout).setX(Constants.MAX_X_POSITION);
-                }
-                TextView trackTitle = (TextView) v.findViewById(R.id.trackTitle);
+
+                final TrackDTO track = (TrackDTO)folderContent.get(position);
+                final LinearLayout contentLayout = (LinearLayout) v.findViewById(R.id.contentLayout);
+                final LinearLayout checkLayout = (LinearLayout) v.findViewById(R.id.checkLayout);
+//                if (PlaylistController.contains(track.getId())) {
+//                    v.findViewById(R.id.contentLayout).setX(Constants.MAX_X_POSITION);
+//                }
+                final TextView trackTitle = (TextView) v.findViewById(R.id.trackTitle);
+                LinearLayout addBtn = (LinearLayout) v.findViewById(R.id.addToPlaylistLayout);
+                addBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        animateToRight(contentLayout);
+                    }
+                });
+
+                checkLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        animateToLeft(contentLayout);
+                    }
+                });
                 trackTitle.setText(track.getTitle().toUpperCase());
                 TextView artistName = (TextView) v.findViewById(R.id.artistName);
                 artistName.setText(track.getArtist().toUpperCase());
@@ -164,5 +181,18 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
 
     public ArrayList<Object> getFolderContent() {
         return folderContent;
+    }
+
+    private int convertToPx(int dp) {
+        final float scale = Resources.getSystem().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+
+    private void animateToRight(View v) {
+        v.animate().x(Constants.MAX_X_POSITION).setDuration(150).start();
+    }
+
+    private void animateToLeft(View v) {
+        v.animate().x(0).setDuration(150).start();
     }
 }

@@ -34,7 +34,6 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
 
     private ListView libraryListView;
     private ProgressDialog progressDialog;
-    private SwipeDetector swipeDetector;
     private LibraryAdapter adapter;
 
     @Override
@@ -54,8 +53,8 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
     public void onStart() {
         super.onStart();
         libraryListView = (ListView)getView().findViewById(R.id.libraryListView);
-        swipeDetector = new SwipeDetector(libraryListView);
-        libraryListView.setOnTouchListener(swipeDetector);
+//        swipeDetector = new SwipeDetector(libraryListView);
+//        libraryListView.setOnTouchListener(swipeDetector);
         libraryListView.setOnItemClickListener(this);
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
@@ -77,40 +76,40 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
         FolderController.getFolderContentById(id, state);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Object object = parent.getAdapter().getItem(position);
-        if(swipeDetector.swipeDetected()) {
-            if(object.getClass() == TrackDTO.class) {
-                TrackDTO track = (TrackDTO) object;
-                Operation operation = new Operation();
-                operation.setId(track.getId());
-                operation.setUserId(SessionConstants.USER_ID);
-                operation.setTo(SessionConstants.DEVICE_ID);
-                if(swipeDetector.getAction() == SwipeDetector.Action.LR) {
-                    operation.setOperationType(RequestTypes.ENQUEUE);
-                    LibraryController.addId(track.getId());
-                } else if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
-                    operation.setOperationType(RequestTypes.REMOVE_FROM_PLAYLIST);
-                    LibraryController.removeId(track.getId());
-                }
-                TCPService.send(operation);
-            }
-        } else {
-            if(object.getClass() == FolderDTO.class) {
-                FolderDTO selectedFolder = (FolderDTO) object;
-                getFolderContent(selectedFolder.getId(), libraryListView.onSaveInstanceState());
-            } else {
-                TrackDTO track = (TrackDTO) object;
-                Operation operation = new Operation();
-                operation.setId(track.getId());
-                operation.setUserId(SessionConstants.USER_ID);
-                operation.setOperationType(RequestTypes.PLAY);
-                operation.setTo(SessionConstants.DEVICE_ID);
-                TCPService.send(operation);
-            }
-        }
-    }
+//    @Override
+//    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//        Object object = parent.getAdapter().getItem(position);
+//        if(swipeDetector.swipeDetected()) {
+//            if(object.getClass() == TrackDTO.class) {
+//                TrackDTO track = (TrackDTO) object;
+//                Operation operation = new Operation();
+//                operation.setId(track.getId());
+//                operation.setUserId(SessionConstants.USER_ID);
+//                operation.setTo(SessionConstants.DEVICE_ID);
+//                if(swipeDetector.getAction() == SwipeDetector.Action.LR) {
+//                    operation.setOperationType(RequestTypes.ENQUEUE);
+//                    LibraryController.addId(track.getId());
+//                } else if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
+//                    operation.setOperationType(RequestTypes.REMOVE_FROM_PLAYLIST);
+//                    LibraryController.removeId(track.getId());
+//                }
+//                TCPService.send(operation);
+//            }
+//        } else {
+//            if(object.getClass() == FolderDTO.class) {
+//                FolderDTO selectedFolder = (FolderDTO) object;
+//                getFolderContent(selectedFolder.getId(), libraryListView.onSaveInstanceState());
+//            } else {
+//                TrackDTO track = (TrackDTO) object;
+//                Operation operation = new Operation();
+//                operation.setId(track.getId());
+//                operation.setUserId(SessionConstants.USER_ID);
+//                operation.setOperationType(RequestTypes.PLAY);
+//                operation.setTo(SessionConstants.DEVICE_ID);
+//                TCPService.send(operation);
+//            }
+//        }
+//    }
 
     @Override
     public void onSuccessfulLibraryFetch() {
@@ -119,7 +118,7 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
 
     @Override
     public void onQueueChanged(TrackDTO addedTrack, TrackDTO deletedTrack) {
-        swipeDetector.offsetView(addedTrack, deletedTrack);
+
     }
 
     @Override
@@ -162,4 +161,37 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
             progressDialog.dismiss();
         }
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Object object = parent.getAdapter().getItem(position);
+            if(object.getClass() == TrackDTO.class) {
+                TrackDTO track = (TrackDTO) object;
+                Operation operation = new Operation();
+                operation.setId(track.getId());
+                operation.setUserId(SessionConstants.USER_ID);
+                operation.setTo(SessionConstants.DEVICE_ID);
+//                if(swipeDetector.getAction() == SwipeDetector.Action.LR) {
+//                    operation.setOperationType(RequestTypes.ENQUEUE);
+//                    LibraryController.addId(track.getId());
+//                } else if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
+//                    operation.setOperationType(RequestTypes.REMOVE_FROM_PLAYLIST);
+//                    LibraryController.removeId(track.getId());
+//                }
+                TCPService.send(operation);
+            }
+
+            if(object.getClass() == FolderDTO.class) {
+                FolderDTO selectedFolder = (FolderDTO) object;
+                getFolderContent(selectedFolder.getId(), libraryListView.onSaveInstanceState());
+            } else {
+                TrackDTO track = (TrackDTO) object;
+                Operation operation = new Operation();
+                operation.setId(track.getId());
+                operation.setUserId(SessionConstants.USER_ID);
+                operation.setOperationType(RequestTypes.PLAY);
+                operation.setTo(SessionConstants.DEVICE_ID);
+                TCPService.send(operation);
+            }
+        }
 }

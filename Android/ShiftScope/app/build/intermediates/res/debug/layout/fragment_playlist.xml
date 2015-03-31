@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     tools:context="shiftscope.com.shudder.views.fragments.PlayListFragment"
     android:orientation="vertical"
-    android:background="@color/darker_purple">
+    android:background="@color/darker_purple"
+    android:layout_marginTop="5dp">
 
     <ListView
         android:layout_width="wrap_content"
