@@ -8,5 +8,6 @@ Windows 32 Bits Installer: https://s3-us-west-2.amazonaws.com/shudder/v1.0/shudd
 
 Windows 64 Bits Installer: https://s3-us-west-2.amazonaws.com/shudder/v1.0/shudder-setup64.exe
 
+Android Beta Version: https://s3-us-west-2.amazonaws.com/shudder/v1.0/Shudder-Beta.apk
 
 
