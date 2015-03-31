@@ -140,20 +140,11 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
                 operation.setId(track.getId());
                 operation.setUserId(SessionConstants.USER_ID);
                 operation.setTo(SessionConstants.DEVICE_ID);
+                operation.setOperationType(RequestTypes.PLAY);
                 TCPService.send(operation);
-            }
-
-            if(object.getClass() == FolderDTO.class) {
+            } else if(object.getClass() == FolderDTO.class) {
                 FolderDTO selectedFolder = (FolderDTO) object;
                 getFolderContent(selectedFolder.getId(), libraryListView.onSaveInstanceState());
-            } else {
-                TrackDTO track = (TrackDTO) object;
-                Operation operation = new Operation();
-                operation.setId(track.getId());
-                operation.setUserId(SessionConstants.USER_ID);
-                operation.setOperationType(RequestTypes.PLAY);
-                operation.setTo(SessionConstants.DEVICE_ID);
-                TCPService.send(operation);
             }
         }
 }

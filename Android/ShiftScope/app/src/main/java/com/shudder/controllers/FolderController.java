@@ -72,9 +72,10 @@ public class FolderController {
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.v("MIO", responseString);
+
             }
         };
+
         RequestParams params = new RequestParams();
         params.add("id", String.valueOf(id));
         params.add("library", String.valueOf(SessionConstants.LIBRARY_ID));

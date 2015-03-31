@@ -242,7 +242,6 @@ public class PlayerController {
         }
     }
     
-        
     private void invokeOnStopped() {
         for(PlayerListener listener : listeners) {
             listener.OnStopped();
