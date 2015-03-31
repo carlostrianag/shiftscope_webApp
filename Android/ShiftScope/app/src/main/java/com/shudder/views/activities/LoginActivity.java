@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.shudder.controllers.LoginController;
 import com.shudder.dto.LoginCredentialsDTO;
 import com.shudder.listeners.LoginListener;
+import com.shudder.views.dialogs.ErrorDialog;
 
 import shiftscope.com.shiftscope.R;
 
@@ -47,14 +48,30 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
             @Override
             public void OnSuccess() {
-                dismissProgressDialog();
                 Intent selectDeviceIntent = new Intent(getApplicationContext(), SelectDeviceActivity.class);
                 startActivity(selectDeviceIntent);
             }
 
             @Override
             public void OnFailed() {
+                super.OnFailed();
+            }
 
+            @Override
+            public void OnLoading() {
+                showProgressDialog();
+            }
+
+            @Override
+            public void OnLoaded() {
+                dismissProgressDialog();
+            }
+
+            @Override
+            public void OnError(String message) {
+                super.OnError(message);
+                ErrorDialog errorDialog = ErrorDialog.newInstance(message);
+                errorDialog.show(getFragmentManager(), "ERROR");
             }
         };
         LoginController.addListener(loginListener);
@@ -79,7 +96,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                 LoginCredentialsDTO loginCredentials = new LoginCredentialsDTO();
                 loginCredentials.setEmail(emailText.getText().toString());
                 loginCredentials.setPassword(passwordText.getText().toString());
-                showProgressDialog();
                 LoginController.login(loginCredentials);
                 break;
         }

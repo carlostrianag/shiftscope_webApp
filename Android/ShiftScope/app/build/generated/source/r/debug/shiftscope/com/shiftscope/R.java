@@ -1696,16 +1696,17 @@ containing a value of this type.
         public static final int activity_register=0x7f03001c;
         public static final int activity_select_device=0x7f03001d;
         public static final int dialog_login=0x7f03001e;
-        public static final int dialog_two_buttons=0x7f03001f;
-        public static final int dialog_volume=0x7f030020;
-        public static final int fragment_library=0x7f030021;
-        public static final int fragment_playlist=0x7f030022;
-        public static final int item_device=0x7f030023;
-        public static final int item_library_folder=0x7f030024;
-        public static final int item_library_track=0x7f030025;
-        public static final int item_playlist_track=0x7f030026;
-        public static final int menu_item_layout=0x7f030027;
-        public static final int support_simple_spinner_dropdown_item=0x7f030028;
+        public static final int dialog_one_button=0x7f03001f;
+        public static final int dialog_two_buttons=0x7f030020;
+        public static final int dialog_volume=0x7f030021;
+        public static final int fragment_library=0x7f030022;
+        public static final int fragment_playlist=0x7f030023;
+        public static final int item_device=0x7f030024;
+        public static final int item_library_folder=0x7f030025;
+        public static final int item_library_track=0x7f030026;
+        public static final int item_playlist_track=0x7f030027;
+        public static final int menu_item_layout=0x7f030028;
+        public static final int support_simple_spinner_dropdown_item=0x7f030029;
     }
     public static final class menu {
         public static final int menu_main=0x7f0d0000;

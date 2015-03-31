@@ -1,6 +1,7 @@
 package com.shudder.controllers;
 
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -43,6 +44,12 @@ public class LoginController {
         }
     }
 
+    private static void invokeOnError(String message) {
+        for(LoginListener listener : listeners) {
+            listener.OnError(message);
+        }
+    }
+
     public static void login(LoginCredentialsDTO loginCredentials) {
         JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
             @Override
@@ -56,16 +63,26 @@ public class LoginController {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (statusCode == 404) {
-                    invokeOnFailed();
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                if (statusCode == 0) {
+                    invokeOnError("No internet connection detected, please check and try again.");
                 }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                invokeOnFailed();
             }
         };
 
         RequestParams params = new RequestParams();
         params.add("email", loginCredentials.getEmail());
         params.add("password", loginCredentials.getPassword());
+        for (LoginListener listener : listeners) {
+            listener.OnLoading();
+        }
         HTTPService.post("user/login", params, responseHandler);
     }
 }
