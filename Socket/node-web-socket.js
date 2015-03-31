@@ -56,12 +56,12 @@ function WebSocket() {
 							devicesPool[request.userId.toString()][request.to.toString()].sendText(JSON.stringify(request));
 		        		}catch(ex){
 		        			console.log("Couldn't send :(")
-		        			conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
+		        			conn.sendText(JSON.stringify({operationType: 5, message: "CONNECTION_LOST"}));
 		        			deleteFromPool(conn);
 		        		}
 		        	} else {
 		        		console.log("Doesn't exists a pair :(")
-		        		conn.sendText(JSON.stringify({message: "CONNECTION_LOST"}));
+		        		conn.sendText(JSON.stringify({operationType: 5, message: "CONNECTION_LOST"}));
 		        	}
 		        } else if(request.deviceIdentifier === 2){
 		        	console.log('Type: PC')

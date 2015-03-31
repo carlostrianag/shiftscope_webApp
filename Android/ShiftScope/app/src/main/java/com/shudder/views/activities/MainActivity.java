@@ -49,6 +49,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         @Override
         public void OnSync(Operation o) {
             switch (o.getOperationType()) {
+                case RequestTypes.CONNECTION_LOST:
+                    break;
                 case RequestTypes.SYNC:
                     Sync syncObject = o.getSync();
                     if (syncObject != null) {
