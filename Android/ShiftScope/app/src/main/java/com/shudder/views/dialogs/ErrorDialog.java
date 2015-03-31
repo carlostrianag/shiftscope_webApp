@@ -18,8 +18,6 @@ import shiftscope.com.shiftscope.R;
  */
 public class ErrorDialog extends DialogFragment {
 
-
-    private String messageText;
     public static ErrorDialog newInstance(String messageText) {
         ErrorDialog dialog = new ErrorDialog();
         Bundle args = new Bundle();
@@ -37,5 +35,4 @@ public class ErrorDialog extends DialogFragment {
         builder.setView(v);
         return builder.create();
     }
-
 }

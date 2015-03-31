@@ -165,8 +165,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         tabs.setTypeface(Typeface.createFromAsset(getAssets(), "font/FuturaLTBook.ttf"), Typeface.BOLD);
         tabs.setShouldExpand(true);
         tabs.setViewPager(viewPager);
-//        libraryFragment = new LibraryFragment();
-//        getSupportFragmentManager().beginTransaction().replace(R.id.mainContent, libraryFragment).commit();
     }
 
     @Override
@@ -180,6 +178,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TCPService.removeListener(socketListener);
     }
 
     @Override

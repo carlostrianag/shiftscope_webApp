@@ -44,7 +44,6 @@
             android:layout_weight="1"
             android:id="@+id/negativeBtnText"
             android:text="@string/close"/>
-
     </LinearLayout>
 
 </RelativeLayout>
