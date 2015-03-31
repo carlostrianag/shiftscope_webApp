@@ -12,11 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.shudder.controllers.FolderController;
 import com.shudder.controllers.LibraryController;
 import com.shudder.dto.FolderDTO;
 import com.shudder.dto.TrackDTO;
+import com.shudder.listeners.FolderListener;
 import com.shudder.listeners.LibraryListener;
 import com.shudder.netservices.TCPService;
 import com.shudder.utils.Operation;
@@ -31,17 +34,15 @@ import shiftscope.com.shiftscope.R;
  * Created by Carlos on 1/3/2015.
  */
 
-public class LibraryFragment extends Fragment implements AdapterView.OnItemClickListener, FolderController.FolderCommunicator{
+public class LibraryFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private ListView libraryListView;
-    private ProgressDialog progressDialog;
-    private LibraryAdapter adapter;
     private LibraryListener libraryListener;
+    private FolderListener folderListener;
+    private RelativeLayout progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        FolderController.setCommunicator(this);
 
         super.onCreate(savedInstanceState);
     }
@@ -55,9 +56,8 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
     public void onStart() {
         super.onStart();
         libraryListView = (ListView)getView().findViewById(R.id.libraryListView);
-//        swipeDetector = new SwipeDetector(libraryListView);
-//        libraryListView.setOnTouchListener(swipeDetector);
         libraryListView.setOnItemClickListener(this);
+        progressBar = (RelativeLayout) getView().findViewById(R.id.progressBarLayout);
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
         getView().setOnKeyListener(new View.OnKeyListener() {
@@ -88,83 +88,47 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
             }
         };
 
+        folderListener = new FolderListener() {
+            @Override
+            public void OnSuccessfulFolderFetch(LibraryAdapter adapter, Parcelable restoredState) {
+                super.OnSuccessfulFolderFetch(adapter, restoredState);
+                libraryListView.setAdapter(adapter);
+
+                if(restoredState != null) {
+                    libraryListView.onRestoreInstanceState(restoredState);
+                }
+            }
+
+            @Override
+            public void OnLoading() {
+                progressBar.setVisibility(View.VISIBLE);
+                libraryListView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void OnLoaded() {
+                progressBar.setVisibility(View.GONE);
+                libraryListView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void OnFailedFolderFetch() {
+
+            }
+
+            @Override
+            public void OnOrder(LibraryAdapter adapter) {
+                libraryListView.setAdapter(adapter);
+            }
+        };
+
+        FolderController.addListener(folderListener, this.getActivity());
         LibraryController.addListener(libraryListener);
         LibraryController.getLibraryByDeviceId();
     }
 
     private void getFolderContent(int id, Parcelable state) {
-        showProgressDialog();
         FolderController.getFolderContentById(id, state);
-    }
-
-//    @Override
-//    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        Object object = parent.getAdapter().getItem(position);
-//        if(swipeDetector.swipeDetected()) {
-//            if(object.getClass() == TrackDTO.class) {
-//                TrackDTO track = (TrackDTO) object;
-//                Operation operation = new Operation();
-//                operation.setId(track.getId());
-//                operation.setUserId(SessionConstants.USER_ID);
-//                operation.setTo(SessionConstants.DEVICE_ID);
-//                if(swipeDetector.getAction() == SwipeDetector.Action.LR) {
-//                    operation.setOperationType(RequestTypes.ENQUEUE);
-//                    LibraryController.addId(track.getId());
-//                } else if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
-//                    operation.setOperationType(RequestTypes.REMOVE_FROM_PLAYLIST);
-//                    LibraryController.removeId(track.getId());
-//                }
-//                TCPService.send(operation);
-//            }
-//        } else {
-//            if(object.getClass() == FolderDTO.class) {
-//                FolderDTO selectedFolder = (FolderDTO) object;
-//                getFolderContent(selectedFolder.getId(), libraryListView.onSaveInstanceState());
-//            } else {
-//                TrackDTO track = (TrackDTO) object;
-//                Operation operation = new Operation();
-//                operation.setId(track.getId());
-//                operation.setUserId(SessionConstants.USER_ID);
-//                operation.setOperationType(RequestTypes.PLAY);
-//                operation.setTo(SessionConstants.DEVICE_ID);
-//                TCPService.send(operation);
-//            }
-//        }
-//    }
-
-    @Override
-    public void onSuccessfulFolderFetch(LibraryAdapter adapter, Parcelable restoredState) {
-        this.adapter = adapter;
-        libraryListView.setAdapter(adapter);
-
-        if(restoredState != null) {
-            libraryListView.onRestoreInstanceState(restoredState);
-        }
-        dismissProgressDialog();
-    }
-
-    @Override
-    public void onFailedFolderFetch() {
-
-    }
-
-    @Override
-    public void onOrder(LibraryAdapter adapter) {
-        libraryListView.setAdapter(adapter);
-        dismissProgressDialog();
-    }
-
-    private void showProgressDialog() {
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading, please wait ...");
-        progressDialog.show();
-    }
-
-    private void dismissProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
     }
 
     @Override

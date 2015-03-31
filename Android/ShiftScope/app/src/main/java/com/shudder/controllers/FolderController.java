@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.shudder.dto.FolderContentDTO;
+import com.shudder.listeners.FolderListener;
 import com.shudder.netservices.HTTPService;
 import com.shudder.utils.adapters.LibraryAdapter;
 import com.shudder.utils.comparators.ArtistComparator;
@@ -33,18 +34,20 @@ import java.util.HashMap;
 public class FolderController {
 
     private static FolderContentDTO folderContentDTO;
-    private static FolderCommunicator communicator;
     private static Activity activity;
-    private static LayoutInflater inflater;
     private static LibraryAdapter adapter;
     private static HashMap<Integer, Parcelable> statesHashMap = new HashMap<>();
     private static boolean orderByArtist = true;
     private static boolean orderByTitle = false;
+    private static ArrayList<FolderListener> listeners = new ArrayList<>();
 
-    public static void setCommunicator(Fragment fragment) {
-        activity = fragment.getActivity();
-        inflater = fragment.getActivity().getLayoutInflater();
-        communicator = (FolderCommunicator) fragment;
+    public static void addListener(FolderListener listener, Activity context) {
+        listeners.add(listener);
+        activity = context;
+    }
+
+    public static void removeListener(FolderListener listener) {
+        listeners.remove(listener);
     }
 
     public static void search(String query) {
@@ -75,6 +78,9 @@ public class FolderController {
         RequestParams params = new RequestParams();
         params.add("id", String.valueOf(id));
         params.add("library", String.valueOf(SessionConstants.LIBRARY_ID));
+        for (FolderListener listener : listeners) {
+            listener.OnLoading();
+        }
         HTTPService.get("folder/getFolderContentById", params, responseHandler);
     }
 
@@ -177,26 +183,29 @@ public class FolderController {
                             statesHashMap.remove(folderId);
                         }
                     }
-                    communicator.onSuccessfulFolderFetch(adapter, restoredState);
+
+                    for (FolderListener listener : listeners) {
+                        listener.OnSuccessfulFolderFetch(adapter, savedState);
+                    }
                     break;
                 case ON_FILTER_QUERY:
 
                     break;
 
                 case ON_ORDER_BY_SONG_TITLE:
-                    communicator.onOrder(adapter);
+                    for (FolderListener listener : listeners) {
+                        listener.OnOrder(adapter);
+                    }
                     break;
                 case ON_ORDER_BY_ARTIST:
-                    communicator.onOrder(adapter);
+                    for (FolderListener listener : listeners) {
+                        listener.OnOrder(adapter);
+                    }
                     break;
             }
         }
     }
 
-    public interface FolderCommunicator {
-        public void onSuccessfulFolderFetch(LibraryAdapter adapter, Parcelable restoredState);
-        public void onFailedFolderFetch();
-        public void onOrder(LibraryAdapter adapter);
-    }
+
 
 }

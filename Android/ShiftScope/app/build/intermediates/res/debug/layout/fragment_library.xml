@@ -1,17 +1,32 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="shiftscope.com.shudder.views.fragments.LibraryFragment"
     android:orientation="vertical"
-    android:background="@color/darker_purple"
-    android:layout_marginTop="5dp">
+    android:background="@color/darker_purple">
+
+
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:id="@+id/libraryListView"
         android:layout_gravity="center_horizontal|top"
-        android:dividerHeight="5dp" />
-</LinearLayout>
+        android:dividerHeight="5dp"
+        android:layout_marginTop="5dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/progressBarLayout"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+</RelativeLayout>
 <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/layout/fragment_library.xml -->
