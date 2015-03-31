@@ -17,6 +17,7 @@ import com.shudder.controllers.FolderController;
 import com.shudder.controllers.LibraryController;
 import com.shudder.dto.FolderDTO;
 import com.shudder.dto.TrackDTO;
+import com.shudder.listeners.LibraryListener;
 import com.shudder.netservices.TCPService;
 import com.shudder.utils.Operation;
 import com.shudder.utils.SwipeDetector;
@@ -30,15 +31,16 @@ import shiftscope.com.shiftscope.R;
  * Created by Carlos on 1/3/2015.
  */
 
-public class LibraryFragment extends Fragment implements AdapterView.OnItemClickListener, LibraryController.LibraryCommunicator, FolderController.FolderCommunicator{
+public class LibraryFragment extends Fragment implements AdapterView.OnItemClickListener, FolderController.FolderCommunicator{
 
     private ListView libraryListView;
     private ProgressDialog progressDialog;
     private LibraryAdapter adapter;
+    private LibraryListener libraryListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        LibraryController.setCommunicator(this);
+
         FolderController.setCommunicator(this);
 
         super.onCreate(savedInstanceState);
@@ -68,6 +70,25 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
                 return false;
             }
         });
+
+        libraryListener = new LibraryListener() {
+            @Override
+            public void OnSuccessfulLibraryFetch() {
+                getFolderContent(-1, libraryListView.onSaveInstanceState());
+            }
+
+            @Override
+            public void OnQueueChanged(TrackDTO addedTrack, TrackDTO deletedTrack) {
+                ((LibraryAdapter)(libraryListView.getAdapter())).animateFromQueueChange(addedTrack, deletedTrack);
+            }
+
+            @Override
+            public void OnError() {
+
+            }
+        };
+
+        LibraryController.addListener(libraryListener);
         LibraryController.getLibraryByDeviceId();
     }
 
@@ -112,21 +133,6 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
 //    }
 
     @Override
-    public void onSuccessfulLibraryFetch() {
-        getFolderContent(-1, libraryListView.onSaveInstanceState());
-    }
-
-    @Override
-    public void onQueueChanged(TrackDTO addedTrack, TrackDTO deletedTrack) {
-
-    }
-
-    @Override
-    public void onFailedLibraryFetch() {
-
-    }
-
-    @Override
     public void onSuccessfulFolderFetch(LibraryAdapter adapter, Parcelable restoredState) {
         this.adapter = adapter;
         libraryListView.setAdapter(adapter);
@@ -145,7 +151,6 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onOrder(LibraryAdapter adapter) {
         libraryListView.setAdapter(adapter);
-        Log.v("DEBUG", adapter.toString() + " set");
         dismissProgressDialog();
     }
 
@@ -171,13 +176,6 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
                 operation.setId(track.getId());
                 operation.setUserId(SessionConstants.USER_ID);
                 operation.setTo(SessionConstants.DEVICE_ID);
-//                if(swipeDetector.getAction() == SwipeDetector.Action.LR) {
-//                    operation.setOperationType(RequestTypes.ENQUEUE);
-//                    LibraryController.addId(track.getId());
-//                } else if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
-//                    operation.setOperationType(RequestTypes.REMOVE_FROM_PLAYLIST);
-//                    LibraryController.removeId(track.getId());
-//                }
                 TCPService.send(operation);
             }
 

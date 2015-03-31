@@ -13,13 +13,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.shudder.controllers.LibraryController;
 import com.shudder.controllers.PlaylistController;
 import com.shudder.dto.FolderDTO;
 import com.shudder.dto.TrackDTO;
+import com.shudder.netservices.TCPService;
+import com.shudder.utils.Operation;
 import com.shudder.utils.constants.Constants;
+import com.shudder.utils.constants.RequestTypes;
+import com.shudder.utils.constants.SessionConstants;
 import com.shudder.utils.filters.LibraryFilter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 import shiftscope.com.shiftscope.R;
 
@@ -32,6 +39,7 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
     private ArrayList<Object> folderContent;
     private LibraryFilter filter;
     private FolderDTO folder;
+    private HashMap<Integer, LinearLayout> contentLayouts;
 
 
     public LibraryAdapter(Context context, int resource, ArrayList<Object> objects) {
@@ -39,6 +47,7 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
         this.context = context;
         this.folderContent = objects;
         Constants.MAX_X_POSITION = convertToPx(75);
+        contentLayouts = new HashMap<>();
     }
 
 
@@ -91,43 +100,6 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
         return getCustomView(position, convertView, parent);
     }
 
-/*    private View getCustomView(int position, View convertView, ViewGroup parent) {
-        int layoutType = getItemViewType(position);
-        FolderViewHolder folderHolder;
-        TrackViewHolder trackHolder;
-        View v = convertView;
-
-        switch (layoutType) {
-            case 0:
-                folder = (FolderDTO)folderContent.get(position);
-                if ( v == null) {
-                    LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    v  = layoutInflater.inflate(R.layout.item_library_folder, parent, false);
-                    folderHolder = new FolderViewHolder(v);
-                    v.setTag(folderHolder);
-                } else {
-                    folderHolder = (FolderViewHolder) v.getTag();
-                }
-                folderHolder.folderTitle.setText(folder.getTitle());
-                break;
-            case 1:
-                track = (TrackDTO)folderContent.get(position);
-                if (v == null) {
-                    LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    v  = layoutInflater.inflate(R.layout.item_library_track, parent, false);
-                    trackHolder = new TrackViewHolder(v);
-                    v.setTag(trackHolder);
-                } else {
-                    trackHolder = (TrackViewHolder) v.getTag();
-                }
-                trackHolder.trackTitle.setText(track.getTitle());
-                trackHolder.artistName.setText(track.getArtist());
-
-                break;
-        }
-            return v;
-    }*/
-
     private View getCustomView(int position, View convertView, ViewGroup parent) {
         int layoutType = getItemViewType(position);
         LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -144,16 +116,23 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
 
                 final TrackDTO track = (TrackDTO)folderContent.get(position);
                 final LinearLayout contentLayout = (LinearLayout) v.findViewById(R.id.contentLayout);
+                contentLayouts.put(track.getId(), contentLayout);
                 final LinearLayout checkLayout = (LinearLayout) v.findViewById(R.id.checkLayout);
-//                if (PlaylistController.contains(track.getId())) {
-//                    v.findViewById(R.id.contentLayout).setX(Constants.MAX_X_POSITION);
-//                }
+                if (PlaylistController.contains(track.getId())) {
+                    contentLayout.setX(Constants.MAX_X_POSITION);
+                }
                 final TextView trackTitle = (TextView) v.findViewById(R.id.trackTitle);
                 LinearLayout addBtn = (LinearLayout) v.findViewById(R.id.addToPlaylistLayout);
                 addBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         animateToRight(contentLayout);
+                        Operation operation = new Operation();
+                        operation.setId(track.getId());
+                        operation.setUserId(SessionConstants.USER_ID);
+                        operation.setTo(SessionConstants.DEVICE_ID);
+                        operation.setOperationType(RequestTypes.ENQUEUE);
+                        TCPService.send(operation);
                     }
                 });
 
@@ -161,6 +140,13 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
                     @Override
                     public void onClick(View v) {
                         animateToLeft(contentLayout);
+                        Operation operation = new Operation();
+                        operation.setId(track.getId());
+                        operation.setUserId(SessionConstants.USER_ID);
+                        operation.setTo(SessionConstants.DEVICE_ID);
+                        operation.setOperationType(RequestTypes.REMOVE_FROM_PLAYLIST);
+                        TCPService.send(operation);
+
                     }
                 });
                 trackTitle.setText(track.getTitle().toUpperCase());
@@ -169,6 +155,32 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
                 return v;
         }
         return null;
+    }
+    private View getAdapterViewById(int id) {
+        for (int position = 0; position < getCount(); position++) {
+            Object o = getItem(position);
+            if (o instanceof TrackDTO) {
+                TrackDTO track = (TrackDTO) o;
+                if(track.getId() == id) {
+                    return contentLayouts.get(track.getId());
+                }
+            }
+        }
+        return null;
+    }
+
+    public void animateFromQueueChange(TrackDTO addedTrack, TrackDTO deletedTrack) {
+        if (addedTrack != null) {
+            LinearLayout linearLayout = (LinearLayout)getAdapterViewById(addedTrack.getId());
+            if (linearLayout != null) {
+                animateToRight(linearLayout);
+            }
+        } else if (deletedTrack != null) {
+            LinearLayout linearLayout = (LinearLayout)getAdapterViewById(deletedTrack.getId());
+            if (linearLayout != null) {
+                animateToLeft(linearLayout);
+            }
+        }
     }
 
     @Override

@@ -60,9 +60,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         } else {
                             currentSongText.setText("");
                         }
-
                     }
                     break;
+
                 case RequestTypes.SET_VOLUME:
                     SessionConstants.PLAYER_VOLUME = o.getValue();
                     SessionConstants.VOLUME_FROM_USER = false;

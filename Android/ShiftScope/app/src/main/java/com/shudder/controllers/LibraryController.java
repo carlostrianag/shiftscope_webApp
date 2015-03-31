@@ -9,6 +9,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.shudder.dto.LibraryDTO;
 import com.shudder.dto.TrackDTO;
+import com.shudder.listeners.LibraryListener;
 import com.shudder.netservices.HTTPService;
 import com.shudder.utils.constants.ControllerEvent;
 import com.shudder.utils.constants.SessionConstants;
@@ -16,6 +17,7 @@ import com.shudder.utils.constants.SessionConstants;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -23,30 +25,22 @@ import java.util.ArrayList;
  */
 public class LibraryController {
 
-    private static ArrayList<Integer> addedToPlaylistIds = new ArrayList<>();
-    private static LibraryCommunicator communicator;
+    private static ArrayList<LibraryListener> listeners = new ArrayList<>();
 
-
-    public static void addId(int id) {
-        addedToPlaylistIds.add(id);
+    public static void addListener(LibraryListener listener) {
+        listeners.add(listener);
     }
 
-    public static void removeId(int id) {
-        Integer idNumber = new Integer(id);
-        addedToPlaylistIds.remove(idNumber);
-        Log.v("LOG", "  REMOVIDO");
+    public static void removeListener(LibraryListener listener) {
+        listeners.remove(listener);
     }
-
     public static void queueChanged(TrackDTO addedTrack, TrackDTO deletedTrack) {
-        communicator.onQueueChanged(addedTrack, deletedTrack);
+        for(LibraryListener listener : listeners) {
+            listener.OnQueueChanged(addedTrack, deletedTrack);
+        }
     }
 
-    public static boolean isAdded(int id) {
-        return addedToPlaylistIds.contains(id);
-    }
-    public static void setCommunicator(Fragment fragment) {
-        communicator = (LibraryCommunicator) fragment;
-    }
+
     public static void getLibraryByDeviceId() {
         JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
 
@@ -95,15 +89,13 @@ public class LibraryController {
             super.onPostExecute(aVoid);
             switch(event) {
                 case ON_SUCCESSFUL_LIBRARY_FETCH:
-                    communicator.onSuccessfulLibraryFetch();
+                    for (LibraryListener listener : listeners) {
+                        listener.OnSuccessfulLibraryFetch();
+                    }
                     break;
             }
         }
     };
 
-    public interface LibraryCommunicator {
-        public void onSuccessfulLibraryFetch();
-        public void onQueueChanged(TrackDTO addedTrack, TrackDTO deletedTrack);
-        public void onFailedLibraryFetch();
-    }
+
 }

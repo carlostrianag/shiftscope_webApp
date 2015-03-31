@@ -19,6 +19,7 @@ import com.shudder.netservices.TCPService;
 import com.shudder.utils.Operation;
 import com.shudder.utils.Sync;
 import com.shudder.utils.adapters.LibraryAdapter;
+import com.shudder.utils.adapters.PlaylistAdapter;
 import com.shudder.utils.constants.RequestTypes;
 import com.shudder.utils.constants.SessionConstants;
 
@@ -35,12 +36,14 @@ public class PlayListFragment extends Fragment implements AdapterView.OnItemClic
         @Override
         public void OnSync(Operation o) {
             Sync syncObject = o.getSync();
-            ArrayList<TrackDTO> tracks = syncObject.getCurrentPlaylist();
-            if(tracks != null && !tracks.isEmpty()) {
-                ArrayList<Object> playList = new ArrayList<>();
-                playList.addAll(tracks);
-                LibraryAdapter adapter = new LibraryAdapter(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, playList);
-                playListListView.setAdapter(adapter);
+            if(syncObject != null) {
+                ArrayList<TrackDTO> tracks = syncObject.getCurrentPlaylist();
+                if(tracks != null ) {
+                    ArrayList<TrackDTO> playList = new ArrayList<>();
+                    playList.addAll(tracks);
+                    PlaylistAdapter adapter = new PlaylistAdapter(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, playList);
+                    playListListView.setAdapter(adapter);
+                }
             }
         }
     };
@@ -92,6 +95,7 @@ public class PlayListFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
         TrackDTO track = (TrackDTO) playListListView.getAdapter().getItem(position);
         Operation operation = new Operation();
         operation.setId(track.getId());

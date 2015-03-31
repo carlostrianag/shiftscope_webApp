@@ -126,7 +126,7 @@ public class TCPController {
                                     public void run() {
                                         try {
                                             String JSON = response.getResponseBody();
-                                            MainView.mainBrowser.execute("PlayerController.playSong(JSON.stringify(" + JSON + "), true);");
+                                            MainView.mainBrowser.execute("PlayerController.play(JSON.stringify(" + JSON + "), true);");
                                         } catch (IOException ex) {
                                             for (WebSocketListener listener : listeners) {
                                                 listener.OnError(ex.getMessage());

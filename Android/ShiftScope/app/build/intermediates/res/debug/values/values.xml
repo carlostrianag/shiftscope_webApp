@@ -212,7 +212,7 @@
     <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+
     </style>
     <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
     <eat-comment/>
@@ -971,10 +971,10 @@
     <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/themes.xml -->
     <eat-comment/>
     <style name="CustomActionBarTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionBarStyle">@style/ShudderActionBar</item>
 
         <!-- Support library compatibility -->
-        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="actionBarStyle">@style/ShudderActionBar</item>
         <item name="colorControlNormal">#c5c5c5</item>
         <item name="colorControlActivated">@color/fluor_pink</item>
         <item name="colorControlHighlight">@color/fluor_pink</item>
@@ -1152,6 +1152,15 @@
     </style>
     <style name="RtlOverlay.Widget.AppCompat.SearchView.MagIcon" parent="android:Widget">
         <item name="android:layout_marginLeft">@dimen/abc_dropdownitem_text_padding_left</item>
+    </style>
+    <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/themes.xml -->
+    <eat-comment/>
+    <style name="ShudderActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:customNavigationLayout">@layout/action_bar</item>
+        <item name="android:background">@color/lighter_purple</item>
+        <!-- Support library compatibility -->
+        <item name="background">@color/lighter_purple</item>
+        <item name="customNavigationLayout">@layout/action_bar</item>
     </style>
     <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/styles.xml -->
     <eat-comment/>
