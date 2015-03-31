@@ -83,7 +83,11 @@ public class TCPService{
     public static void send(Operation operation){
         Gson JSONParser = new Gson();
         if (webSocket != null) {
-            webSocket.sendTextMessage(JSONParser.toJson(operation));
+            try {
+                webSocket.sendTextMessage(JSONParser.toJson(operation));
+            } catch (RuntimeException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }

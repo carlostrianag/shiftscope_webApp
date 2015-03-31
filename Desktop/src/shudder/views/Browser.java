@@ -133,7 +133,5 @@ public class Browser extends Region {
     protected double computePrefHeight(double width) {
         return 450;
     }
-    
-
 }
 

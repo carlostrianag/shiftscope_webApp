@@ -79,6 +79,7 @@ public class FolderController {
         RequestParams params = new RequestParams();
         params.add("id", String.valueOf(id));
         params.add("library", String.valueOf(SessionConstants.LIBRARY_ID));
+
         for (FolderListener listener : listeners) {
             listener.OnLoading();
         }
@@ -186,7 +187,7 @@ public class FolderController {
                     }
 
                     for (FolderListener listener : listeners) {
-                        listener.OnSuccessfulFolderFetch(adapter, savedState);
+                        listener.OnSuccessfulFolderFetch(adapter, restoredState);
                     }
                     break;
                 case ON_FILTER_QUERY:

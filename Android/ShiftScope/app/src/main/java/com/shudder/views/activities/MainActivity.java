@@ -30,6 +30,7 @@ import com.shudder.utils.adapters.ShudderPagerAdapter;
 import com.shudder.utils.constants.Constants;
 import com.shudder.utils.constants.RequestTypes;
 import com.shudder.utils.constants.SessionConstants;
+import com.shudder.views.dialogs.ConnectionLostDialog;
 import com.shudder.views.dialogs.VolumeDialog;
 import com.shudder.views.fragments.LibraryFragment;
 import com.shudder.views.fragments.PlayListFragment;
@@ -50,6 +51,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         public void OnSync(Operation o) {
             switch (o.getOperationType()) {
                 case RequestTypes.CONNECTION_LOST:
+                    ConnectionLostDialog dialog = new ConnectionLostDialog();
+                    dialog.show(getFragmentManager(), "CONNECTION");
                     break;
                 case RequestTypes.SYNC:
                     Sync syncObject = o.getSync();

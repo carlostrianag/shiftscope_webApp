@@ -21,6 +21,9 @@
     <string name="last_name_hint">Last name</string>
     <string name="password_hint">Password</string>
     <string name="select_device">"Select a device from the list below."</string>
+    <string name="close">"Close App"</string>
+    <string name="select_other_device">"Choose device"</string>
+    <string name="connection_lost">"The connection with the paired device has been lost. What would you like to do?"</string>
 
 
 </resources>

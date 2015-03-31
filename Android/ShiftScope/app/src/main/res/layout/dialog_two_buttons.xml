@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/radius_corners_darker">
+
+    <com.shudder.custom.ShudderTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:textColor="@color/fluor_pink"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Shudder says: It's been an error ..."
+        android:id="@+id/textView" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="3px"
+        android:id="@+id/imageView3"
+        android:layout_below="@id/textView"
+        android:background="@drawable/radius_corners_fluor_pink"/>
+
+    <com.shudder.custom.ShudderTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:id="@+id/textMessage"
+        android:layout_margin="20dp"
+        android:layout_below="@id/imageView3"
+        android:text="@string/connection_lost"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/textMessage">
+        <com.shudder.custom.ShudderButton
+            style="@style/ShudderButton.Dialog"
+            android:layout_weight="1"
+            android:id="@+id/positiveBtnText"
+            android:text="@string/select_other_device"/>
+        <com.shudder.custom.ShudderButton
+            style="@style/ShudderButton.Dialog"
+            android:layout_weight="1"
+            android:id="@+id/negativeBtnText"
+            android:text="@string/close"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

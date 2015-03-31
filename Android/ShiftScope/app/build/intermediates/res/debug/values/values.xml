@@ -198,7 +198,9 @@
     <eat-comment/>
     <string name="action_settings">Settings</string>
     <string name="app_name">Shudder</string>
+    <string name="close">"Close App"</string>
     <string name="closeDrawer">Closing Drawer</string>
+    <string name="connection_lost">"The connection with the paired device has been lost. What would you like to do?"</string>
     <string name="email_hint">Email</string>
     <string name="get_in">Get In</string>
     <string name="hello_world">Hello world!</string>
@@ -209,6 +211,7 @@
     <string name="password_hint">Password</string>
     <string name="register">Register Now</string>
     <string name="select_device">"Select a device from the list below."</string>
+    <string name="select_other_device">"Choose device"</string>
     <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -1168,6 +1171,16 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:layout_marginTop">7dp</item>
+        <item name="android:bottomRightRadius">10dp</item>
+        <item name="android:bottomLeftRadius">10dp</item>
+        <item name="android:background">@drawable/radius_corners</item>
+        <item name="android:textColor">@color/fluor_pink</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
+    </style>
+    <style name="ShudderButton.Dialog">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:bottomRightRadius">10dp</item>
         <item name="android:bottomLeftRadius">10dp</item>
         <item name="android:background">@drawable/radius_corners</item>
