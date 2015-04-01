@@ -9,7 +9,6 @@ OnContentFetched = (folderDTO)->
 		$("<a class='list-group-item'><div class='folder-wrapper'><div><img class='folder-icon' src='assets/images/ic_folder.png'></div><div><p>"+item.title.toUpperCase()+"</p></div></div></a>")
 			.click((e) ->
 				window.SCROLL_POSITION_FOLDER_ID[item.parentFolder] = $('#library-list').scrollTop()
-				Debugger.display 'SAVE: id ' + item.parentFolder + " ... " + window.SCROLL_POSITION_FOLDER_ID[item.parentFolder]
 				window.SCROLL_POS = if window.SCROLL_POSITION_FOLDER_ID[item.id] then window.SCROLL_POSITION_FOLDER_ID[item.id] else 0				
 				$('#library-list').empty()
 				FolderController.getFolderContentById(JSON.stringify({id: item.id}))
@@ -36,7 +35,6 @@ OnContentFetched = (folderDTO)->
 
 		divElement.on("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", ->
 			if listElement.hasClass 'move-right'
-				Debugger.display 'finish right'
 				listElement.find('.action-container').mouseout()
 				listElement.addClass('added-to-playlist')
 				listElement.removeClass('move-right')
@@ -70,7 +68,6 @@ OnContentFetched = (folderDTO)->
 		listElement.appendTo('#library-list')
 		return
 	)
-	Debugger.display window.SCROLL_POS
 	$('#library-list').scrollTop(window.SCROLL_POS)
 
 	return

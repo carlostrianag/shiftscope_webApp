@@ -1,3 +1,16 @@
+showErrorDialog = (message, dissmisable) ->
+	$('.modal-body p').text message
+	actualLocation = window.location.href
+	if dissmisable
+		$('#error').click((e) ->
+			window.location.href = actualLocation
+			return)
+	else
+		$('#error').click((e) ->
+			e.preventDefault()
+			return)
+	window.location.href += '#error'
+	return
 $(document).ready ->
 
 	$('#login-form input').on 'keyup', (e) ->

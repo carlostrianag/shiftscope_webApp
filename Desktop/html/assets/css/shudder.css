@@ -737,12 +737,14 @@ input[type=range]:focus::-ms-fill-upper {
 	top: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(139, 137, 137, 0.4);
+	background: rgba(0, 0, 0, 0.7);
 	opacity: 0;
-	transition: opacity 0.4s linear;
+	transition: opacity 0.5s;
+	pointer-events: none;
 }
 
 #error:target {
+	pointer-events: auto;
 	opacity: 1;
 }
 

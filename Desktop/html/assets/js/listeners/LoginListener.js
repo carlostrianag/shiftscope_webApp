@@ -5,5 +5,5 @@ OnSuccessfulLogin = function() {
 };
 
 OnFailedLogin = function() {
-  $('#invalidModal').modal('show');
+  showErrorDialog('Invalid email/password combination, please try again.', true);
 };

@@ -3,5 +3,5 @@ OnSuccessfulLogin = ->
 	return
 
 OnFailedLogin = ->
-	$('#invalidModal').modal 'show'
+	showErrorDialog 'Invalid email/password combination, please try again.', true
 	return
