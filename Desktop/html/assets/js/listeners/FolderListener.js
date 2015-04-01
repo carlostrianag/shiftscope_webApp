@@ -1,12 +1,8 @@
-var OnBuildFolderFinished, OnContentFetched, OnFilesScanned, OnProgressUpdated, QUEUE_SONGS, TOTAL_FILES, controllMarquee, drawSearchResults;
+var OnBuildFolderFinished, OnContentFetched, OnFilesScanned, OnLoaded, OnLoading, OnProgressUpdated, QUEUE_SONGS, TOTAL_FILES, drawSearchResults;
 
 QUEUE_SONGS = {};
 
 TOTAL_FILES = 0;
-
-controllMarquee = function() {
-  Debugger.display($(this).offsetWidth());
-};
 
 OnContentFetched = function(folderDTO) {
   $('#library-list').empty();
@@ -14,6 +10,8 @@ OnContentFetched = function(folderDTO) {
   $.each(folderDTO.folders, function(i, item) {
     return $("<a class='list-group-item'><div class='folder-wrapper'><div><img class='folder-icon' src='assets/images/ic_folder.png'></div><div><p>" + item.title.toUpperCase() + "</p></div></div></a>").click(function(e) {
       window.SCROLL_POSITION_FOLDER_ID[item.parentFolder] = $('#library-list').scrollTop();
+      Debugger.display('SAVE: id ' + item.parentFolder + " ... " + window.SCROLL_POSITION_FOLDER_ID[item.parentFolder]);
+      window.SCROLL_POS = window.SCROLL_POSITION_FOLDER_ID[item.id] ? window.SCROLL_POSITION_FOLDER_ID[item.id] : 0;
       $('#library-list').empty();
       FolderController.getFolderContentById(JSON.stringify({
         id: item.id
@@ -25,12 +23,12 @@ OnContentFetched = function(folderDTO) {
     if (QUEUE_SONGS[item.id]) {
       divElement = $("<div id='check-song-" + item.id + "' class='check-box added-to-playlist'><img src='assets/images/ic_check.png'></div>");
       divElement.appendTo('#library-list');
-      listElement = $("<a id='song-" + item.id + "' class='list-group-item added-to-playlist'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_stop.png'></div><div><p>" + item.title.toUpperCase() + "</p></div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
+      listElement = $("<a id='song-" + item.id + "' class='list-group-item added-to-playlist'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_stop.png'></div><div><p>" + item.title.toUpperCase() + "</p></div><div><p>" + item.artist.toUpperCase() + "</p></div><div>" + item.duration + "</div></div></a>");
     } else {
       divElement = $("<div id='check-song-" + item.id + "' class='check-box'><img src='assets/images/ic_check.png'></div>");
       divElement.appendTo('#library-list');
       tableString = "";
-      listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_plus.png'><img class='trash-icon' src='assets/images/ic_trash.png'></div><div class='item-song-name'><p>" + item.title.toUpperCase() + "</p></div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
+      listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_plus.png'><img class='trash-icon' src='assets/images/ic_trash.png'></div><div class='item-song-name'><p>" + item.title.toUpperCase() + "</p></div><div><p>" + item.artist.toUpperCase() + "</p></div><div>" + item.duration + "</div></div></a>");
     }
     listElement.click(function(e) {
       if (e.which === 1) {
@@ -72,6 +70,7 @@ OnContentFetched = function(folderDTO) {
     });
     listElement.appendTo('#library-list');
   });
+  Debugger.display(window.SCROLL_POS);
   $('#library-list').scrollTop(window.SCROLL_POS);
 };
 
@@ -142,4 +141,16 @@ OnBuildFolderFinished = function() {
   }));
   TOTAL_FILES = 0;
   $('#loading-bar').css('width', '0%');
+};
+
+OnLoading = function() {
+  $('#library-list').removeClass('active-content');
+  $('#playlist-list').removeClass('active-content');
+  $('#loader-div').addClass('active-content');
+};
+
+OnLoaded = function() {
+  $('#library-list').addClass('active-content');
+  $('#playlist-list').removeClass('active-content');
+  $('#loader-div').removeClass('active-content');
 };

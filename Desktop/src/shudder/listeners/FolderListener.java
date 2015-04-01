@@ -33,14 +33,13 @@ public abstract class FolderListener {
             }
         });    
     };
-    public void fetchingContent(){};
     public void OnContentFetched(FolderDTO folderContent){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 Gson JSONParser = new Gson();
                 String JSONObject = JSONParser.toJson(folderContent);
-                MainView.mainBrowser.execute("OnContentFetched("+JSONObject+");");
+                MainView.mainBrowser.execute("OnLoaded(); OnContentFetched("+JSONObject+");");
             }
         });
     };
@@ -55,6 +54,24 @@ public abstract class FolderListener {
             }
         });
     }
+    
+    public void OnLoading() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnLoading();");
+            }
+        });        
+    }
+    
+    public void OnLoaded() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnLoaded();");
+            }
+        });        
+    }    
 
     public void drawSearchResults(ArrayList<Track> tracks) {
         Platform.runLater(new Runnable() {

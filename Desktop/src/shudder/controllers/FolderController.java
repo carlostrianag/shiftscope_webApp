@@ -122,7 +122,7 @@ public class FolderController {
         };
         HTTPService.HTTPGet("/folder/getFolderContentById?id="+criteria.getId()+"&library="+criteria.getLibrary(), responseHandler);
         for (FolderListener listener : listeners) {
-            listener.fetchingContent();
+            listener.OnLoading();
         }
     }
     

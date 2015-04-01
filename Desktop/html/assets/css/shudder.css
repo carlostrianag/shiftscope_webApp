@@ -317,6 +317,13 @@ input[type=range] {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	height: 17px;
+}
+
+.song-wrapper div:nth-child(3) > p {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	height: 16px;
 }
 
@@ -692,9 +699,9 @@ input[type=range]:focus::-ms-fill-upper {
 
 .check-box {
 	width: 40px;
-	height: 40px;
+	height: 47px;
 	float: left;
-	/*background-color: rgb(204, 0 , 51);*/
+	background-color: rgb(204, 0 , 51);
 	margin-left: -40px;
 }
 
@@ -702,6 +709,7 @@ input[type=range]:focus::-ms-fill-upper {
 .check-box img{
 	display: block;
 	margin: auto auto;
+	margin-top: 6px;
 }
 
 .active-content {
@@ -775,3 +783,15 @@ input[type=range]:focus::-ms-fill-upper {
 	color: white;
 }
 
+#loader-div {
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+
+#loader-div img {
+	display: block;
+	margin: 0 auto;
+	width: 30px;
+	padding-top: 10%;
+}
