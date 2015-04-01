@@ -268,11 +268,11 @@ input[type=range] {
 }
 
 .song-name {
-	width: auto;
+	max-width: 400px;
 }
 
 .song-name p {
-	overflow: hidden;
+	text-overflow: scroll;
 	white-space: nowrap;
 	font-family: "ShudderFont";
 	font-size: 15px;
@@ -294,13 +294,36 @@ input[type=range] {
 	width: 100%;
 }
 
-.song-wrapper div:nth-child(2), div:nth-child(3) {
+
+.folder-wrapper {
+	display: -webkit-flex;
+	width: 100%;
+}
+
+
+.folder-wrapper div:nth-child(2){
 	-webkit-flex: 1;
 }
 
-.song-wrapper div:nth-child(3) {
-	text-align: center;
+.folder-wrapper div:nth-child(2) p{
+	height: 10px;
 }
+
+.song-wrapper div:nth-child(2) {
+	-webkit-flex: 2;
+}
+
+.song-wrapper div:nth-child(2) > p {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	height: 16px;
+}
+
+.song-wrapper div:nth-child(3) {
+ 	-webkit-flex: 1;
+}
+
 
 .song-wrapper div:last-child {
 	text-align: right;
@@ -386,7 +409,7 @@ input[type=range] {
 }*/
 
 .song-name-text {
-	overflow-x: hidden;
+	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 .search-bar-container {

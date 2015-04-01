@@ -34,9 +34,9 @@ public class MainView extends Application {
         
         stage.getIcons().add(new Image("file:/" + Constants.USER_DIR + "/html/assets/images/icon_144.png"));
         mainBrowser = new Browser(stage);
-        scene = new Scene(mainBrowser, 700, 450, Color.web("#666970"));
+        scene = new Scene(mainBrowser, 820, 450, Color.web("#666970"));
         stage.setScene(scene);
-        stage.setMinWidth(700);
+        stage.setMinWidth(820);
         stage.setMinHeight(450);
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 
