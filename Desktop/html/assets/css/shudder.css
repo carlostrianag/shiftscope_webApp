@@ -743,9 +743,9 @@ input[type=range]:focus::-ms-fill-upper {
 	pointer-events: none;
 }
 
-#error:target {
-	pointer-events: auto;
+.showing {
 	opacity: 1;
+	pointer-events: auto;
 }
 
 .modal-dialog {

@@ -1,15 +1,16 @@
 showErrorDialog = (message, dissmisable) ->
 	$('.modal-body p').text message
-	actualLocation = window.location.href
+	$('#error').css 'opacity', 1
+	$('#error').css 'pointer-events', 'auto'
 	if dissmisable
 		$('#error').click((e) ->
-			window.location.href = actualLocation
+			$('#error').css 'opacity', 0
+			$('#error').css 'pointer-events', 'none'
 			return)
 	else
 		$('#error').click((e) ->
 			e.preventDefault()
 			return)
-	window.location.href += '#error'
 	return
 $(document).ready ->
 

@@ -1,19 +1,19 @@
 var showErrorDialog;
 
 showErrorDialog = function(message, dissmisable) {
-  var actualLocation;
   $('.modal-body p').text(message);
-  actualLocation = window.location.href;
+  $('#error').css('opacity', 1);
+  $('#error').css('pointer-events', 'auto');
   if (dissmisable) {
     $('#error').click(function(e) {
-      window.location.href = actualLocation;
+      $('#error').css('opacity', 0);
+      $('#error').css('pointer-events', 'none');
     });
   } else {
     $('#error').click(function(e) {
       e.preventDefault();
     });
   }
-  window.location.href += '#error';
 };
 
 $(document).ready(function() {
