@@ -101,7 +101,7 @@ public class UserController {
         Device returnedDevice;
         Library returnedLibrary;
         LibraryCriteria libraryCriteria;
-        File f = new File("secure-key_"+SessionConstants.USER_ID+".shft");
+        File f = new File("secure-key_" + SessionConstants.USER_ID + ".shft");
         JSONParser = new Gson();
         if (f.exists()) {
             try {
