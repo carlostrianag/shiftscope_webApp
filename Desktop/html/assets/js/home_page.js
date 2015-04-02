@@ -54,9 +54,10 @@ $(document).ready(function() {
     FolderController.orderTracksBySongName();
   });
   $('input[name=query]').keyup(function(e) {
-    if (e.keyCode === 13) {
-      FolderController.search($(this).val());
+    if (e.keyCode === 27) {
+      $(this).val("");
     }
+    FolderController.search($(this).val());
   });
   $('#back-btn').click(function(e) {
     PlayerController.back();

@@ -52,7 +52,9 @@ $(document).ready ->
 		return)
 
 	$('input[name=query]').keyup((e)->
-		FolderController.search($(this).val()) if e.keyCode is 13
+		if e.keyCode is 27
+			$(this).val("")
+		FolderController.search($(this).val())
 		return)
 
 	$('#back-btn').click((e)->
