@@ -1,4 +1,4 @@
-var OnFailedLogin, OnSuccessfulLogin;
+var OnError, OnFailedLogin, OnSuccessfulLogin;
 
 OnSuccessfulLogin = function() {
   loadPage('home_page.html');
@@ -7,3 +7,5 @@ OnSuccessfulLogin = function() {
 OnFailedLogin = function() {
   showErrorDialog('Invalid email/password combination, please try again.', true);
 };
+
+OnError = function(message) {};

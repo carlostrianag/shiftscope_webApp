@@ -23,7 +23,6 @@ public class HTTPService {
     public static void HTTPGet(String targetURL, AsyncCompletionHandler<Void> responseHandler) {
         AsyncHttpClient client = new AsyncHttpClient();
         client.prepareGet(Constants.SERVER_URL + targetURL).execute(responseHandler);
-        //System.out.println(r.getResponseBody() + " from: " + Constants.SERVER_URL+targetURL);
     }
     
     public static Response HTTPSyncGet(String targetURL) {
@@ -42,6 +41,7 @@ public class HTTPService {
     }
 
     public static void HTTPPost(String targetURL, String urlParameters, AsyncCompletionHandler<Void> responseHandler) {
+        System.out.println("post - " + urlParameters);
         AsyncHttpClient client = new AsyncHttpClient();
         client.preparePost(Constants.SERVER_URL + targetURL)
             .addHeader("content-type", "application/json; charset=utf-8")

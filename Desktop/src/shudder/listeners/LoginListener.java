@@ -32,5 +32,12 @@ public abstract class LoginListener {
     };
     public void loading() {};
     public void laoded() {};
-    public void OnError(String error) {};
+    public void OnError(String error) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnError();");
+            }
+        });    
+    };
 }

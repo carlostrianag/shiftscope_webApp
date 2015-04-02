@@ -5,3 +5,6 @@ OnSuccessfulLogin = ->
 OnFailedLogin = ->
 	showErrorDialog 'Invalid email/password combination, please try again.', true
 	return
+
+OnError = (message) ->
+	return
