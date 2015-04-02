@@ -30,6 +30,7 @@ import shudder.criteria.FolderCriteria;
 import shudder.dto.FolderCreationDTO;
 import shudder.dto.FolderDTO;
 import shudder.listeners.FolderListener;
+import shudder.listeners.LoginListener;
 import shudder.model.Folder;
 import shudder.model.Track;
 import shudder.netservices.HTTPService;
@@ -115,10 +116,23 @@ public class FolderController {
                     SessionConstants.PARENT_FOLDER_ID = folderContent.getParentFolder();
                     new FolderWorker(Events.ON_CONTENT_FETCHED).execute();
                 } else {
+                    for (FolderListener listener : listeners) {
+                        listener.OnError("The folder could not be fetched.");                       
+                    }
                     SessionConstants.PARENT_FOLDER_ID = -1;
                 }
                 return null;
             }
+
+            @Override
+            public void onThrowable(Throwable t) {
+                super.onThrowable(t);
+                for (FolderListener listener : listeners) {
+                    listener.OnError("There is no internet connection, please check and try again.");
+                }                
+            }
+            
+            
         };
         HTTPService.HTTPGet("/folder/getFolderContentById?id="+criteria.getId()+"&library="+criteria.getLibrary(), responseHandler);
         for (FolderListener listener : listeners) {
@@ -315,7 +329,6 @@ public class FolderController {
             this.event = event;
             this.matchingCriteria = matchingCriteria;
         }
-        
         
         
         @Override

@@ -151,4 +151,9 @@ OnLoaded = ->
 	$('#loader-div').removeClass 'active-content'
 	return	
 
+OnError = (message)->
+	showErrorDialog message
+	return	
+
+
 

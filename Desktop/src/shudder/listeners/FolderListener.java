@@ -44,7 +44,14 @@ public abstract class FolderListener {
         });
     };
     
-    public void OnError(String error){};
+    public void OnError(String error) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnError('"+error+"');");
+            }
+        });    
+    };
 
     public void OnBuildFolderFinished() {
         Platform.runLater(new Runnable() {

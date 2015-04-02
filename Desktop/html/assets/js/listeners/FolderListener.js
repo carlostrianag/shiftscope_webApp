@@ -1,4 +1,4 @@
-var OnBuildFolderFinished, OnContentFetched, OnFilesScanned, OnLoaded, OnLoading, OnProgressUpdated, QUEUE_SONGS, TOTAL_FILES, drawSearchResults;
+var OnBuildFolderFinished, OnContentFetched, OnError, OnFilesScanned, OnLoaded, OnLoading, OnProgressUpdated, QUEUE_SONGS, TOTAL_FILES, drawSearchResults;
 
 QUEUE_SONGS = {};
 
@@ -150,4 +150,8 @@ OnLoaded = function() {
   $('#library-list').addClass('active-content');
   $('#playlist-list').removeClass('active-content');
   $('#loader-div').removeClass('active-content');
+};
+
+OnError = function(message) {
+  showErrorDialog(message);
 };
