@@ -117,9 +117,9 @@ body {
 .search-textbox {
 	margin-top: -6px;
 	border: none;
-	border-bottom-style: solid;
+/*	border-bottom-style: solid;
 	border-width: 1px;
-	border-color: rgb(204, 0, 51);
+	border-color: rgb(204, 0, 51);*/
 	outline:0;
 	background: transparent;
 	text-align: left;
@@ -599,6 +599,19 @@ a.list-group-item {
     border: none !important;
 }
 
+a.list-group-item.playing {
+	cursor: pointer;
+	pointer-events: none;
+	background-color: rgb(204, 0, 51) !important;
+	font-family: "ShudderFont";
+	font-size: 15px;
+    color: rgb(57, 6, 57) !important;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    margin-left: 5px;
+    border: none !important;
+}
+
 a.list-group-item:hover {
     background-color: rgb(28, 0, 28);
     color: rgb(204, 0, 51);
@@ -794,6 +807,6 @@ input[type=range]:focus::-ms-fill-upper {
 #loader-div img {
 	display: block;
 	margin: 0 auto;
-	width: 30px;
+	width: 60px;
 	padding-top: 10%;
 }

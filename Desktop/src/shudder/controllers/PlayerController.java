@@ -40,7 +40,7 @@ public class PlayerController {
     private String totalTimeString;
     private String elapsedTimeString;
     private ArrayList<Track> queuePaths;
-    private Track currentSong;
+    public Track currentSong;
     private BasicPlayer player;
     private float volume;
     private BasicController control;

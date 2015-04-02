@@ -47,13 +47,15 @@ $(document).ready ->
 		return)
 	$('#title-checkbox').click((e)->
 		$(this).addClass('checkbox-selected')
-		$('#artist-checkbox').removeClass('checkbox-selected')		
+		$('#artist-checkbox').removeClass('checkbox-selected')
 		FolderController.orderTracksBySongName()
 		return)
 
 	$('input[name=query]').keyup((e)->
 		if e.keyCode is 27
 			$(this).val("")
+		else
+			
 		FolderController.search($(this).val())
 		return)
 

@@ -10,8 +10,14 @@ OnOpened = function(totalTime, totalSeconds) {
 OnPlaylistFetched = function(playlist) {
   $('#playlist-list').empty();
   $.each(playlist, function(i, item) {
-    var listElement;
-    listElement = $("<a id='song-" + item.id + "' class='list-group-item'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_plus.png'><img class='trash-icon' src='assets/images/ic_trash.png'></div><div class='song-name-text'>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
+    var currentSongClass, listElement;
+    currentSongClass = '';
+    if (PlayerController.currentSong) {
+      if (item.id === PlayerController.currentSong.getId()) {
+        currentSongClass = 'playing';
+      }
+    }
+    listElement = $("<a id='playlist-song-" + item.id + "' class='list-group-item " + currentSongClass + "'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_plus.png'><img class='trash-icon' src='assets/images/ic_trash.png'></div><div class='song-name-text'>" + item.title.toUpperCase() + "</div><div> " + item.artist.toUpperCase() + "</div><div>" + item.duration + "</div></div></a>");
     listElement.click(function(e) {
       if (e.which === 1) {
         PlayerController.play(JSON.stringify(item), true);
@@ -39,6 +45,11 @@ OnQueueChanged = function(addedTrack, deletedTrack) {
 
 OnPlaying = function(songName, artistName) {
   $('#song-name-text').text(songName.toUpperCase() + " - " + artistName.toUpperCase());
+  $.each($('.playing'), function(i, item) {
+    $(item).removeClass('playing');
+  });
+  $("#song-" + PlayerController.currentSong.getId()).addClass('playing');
+  $("#playlist-song-" + PlayerController.currentSong.getId()).addClass('playing');
 };
 
 OnProgress = function(elapsedTime, currentSecond) {

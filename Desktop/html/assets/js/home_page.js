@@ -56,6 +56,8 @@ $(document).ready(function() {
   $('input[name=query]').keyup(function(e) {
     if (e.keyCode === 27) {
       $(this).val("");
+    } else {
+
     }
     FolderController.search($(this).val());
   });
