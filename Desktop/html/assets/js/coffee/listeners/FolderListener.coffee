@@ -34,12 +34,12 @@ drawTracks = (tracks) ->
 		if 	QUEUE_SONGS[item.id]
 			divElement = $("<div id='check-song-"+item.id+"' class='check-box added-to-playlist'><img src='assets/images/ic_check.png'></div>")
 			divElement.appendTo('#library-list')			
-			listElement = $("<a id='song-"+item.id+"' class='list-group-item added-to-playlist'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_stop.png'></div><div><p>"+item.title.toUpperCase()+"</p></div><div><p>"+item.artist.toUpperCase()+"</p></div><div>"+item.duration+"</div></div></a>")
+			# listElement = $("<a id='song-"+item.id+"' class='list-group-item added-to-playlist'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_stop.png'></div><div><p>"+item.title.toUpperCase()+"</p></div><div><p>"+item.artist.toUpperCase()+"</p></div><div>"+item.duration+"</div></div></a>")
+			listElement = $("<a id='song-"+item.id+"' class='list-group-item added-to-playlist "+currentSongClass+"'><div class='song-wrapper'><div><img class='headphones-icon' src='assets/images/ic_headphones.png'></div><div class='item-song-name'><p>"+item.title.toUpperCase()+"</p></div><div><p>"+item.artist.toUpperCase()+"</p></div><div>"+item.duration+"</div><div><img class='add-icon' align='right' src='assets/images/ic_plus.png'></div></div></a>")
 		else
 			divElement = $("<div id='check-song-"+item.id+"' class='check-box'><img src='assets/images/ic_check.png'></div>")
 			divElement.appendTo('#library-list')
-			tableString = ""
-			listElement = $("<a id='song-"+item.id+"' class='list-group-item "+currentSongClass+"'><div class='song-wrapper'><div class='action-container'><img class='headphones-icon' src='assets/images/ic_headphones.png'><img class='add-icon' src='assets/images/ic_plus.png'><img class='trash-icon' src='assets/images/ic_trash.png'></div><div class='item-song-name'><p>"+item.title.toUpperCase()+"</p></div><div><p>"+item.artist.toUpperCase()+"</p></div><div>"+item.duration+"</div></div></a>")
+			listElement = $("<a id='song-"+item.id+"' class='list-group-item "+currentSongClass+"'><div class='song-wrapper'><div><img class='headphones-icon' src='assets/images/ic_headphones.png'></div><div class='item-song-name'><p>"+item.title.toUpperCase()+"</p></div><div><p>"+item.artist.toUpperCase()+"</p></div><div>"+item.duration+"</div><div><img class='add-icon' align='right' src='assets/images/ic_plus.png'></div></div></a>")
 
 
 		listElement.click((e) ->
@@ -62,7 +62,7 @@ drawTracks = (tracks) ->
 				listElement.removeClass('added-to-playlist')								
 			return)
 
-		listElement.find('.action-container').bind('click', (e)->
+		listElement.find('.add-icon').bind('click', (e)->
 			e.stopPropagation()
 			if !QUEUE_SONGS[item.id]
 				listElement.addClass('move-right')
