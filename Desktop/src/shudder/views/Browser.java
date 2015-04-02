@@ -31,6 +31,7 @@ import shudder.listeners.LoginListener;
 import shudder.listeners.PlayerListener;
 import shudder.util.Constants;
 import shudder.util.Debugger;
+import shudder.util.OSValidator;
 
 /**
  *
@@ -58,8 +59,13 @@ public class Browser extends Region {
         getStyleClass().add("browser");
         webEngine.getLoadWorker().stateProperty().addListener(changeListener);
         getChildren().add(browser);
-        //openHTML("index.html");
-        openHTMLOnMac("index.html");
+        if (OSValidator.isWindows()) {
+            System.out.println("WINDOWS");
+            openHTML("index.html");
+        } else if (OSValidator.isMac()) {
+            System.out.println("MAC");
+            openHTMLOnMac("index.html");
+        }
     }
 
     private Node createSpacer() {

@@ -73,7 +73,7 @@ public class UserController {
             @Override
             public void onThrowable(Throwable t) {
                 for (LoginListener listener : listeners) {
-                    listener.OnError(t.getMessage());
+                    listener.OnError("There is no internet connection, please check and try again.");
                 }
             }
             

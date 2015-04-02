@@ -7,4 +7,5 @@ OnFailedLogin = ->
 	return
 
 OnError = (message) ->
+	showErrorDialog(message)
 	return

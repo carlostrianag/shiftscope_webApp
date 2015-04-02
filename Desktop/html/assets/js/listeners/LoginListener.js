@@ -8,4 +8,6 @@ OnFailedLogin = function() {
   showErrorDialog('Invalid email/password combination, please try again.', true);
 };
 
-OnError = function(message) {};
+OnError = function(message) {
+  showErrorDialog(message);
+};

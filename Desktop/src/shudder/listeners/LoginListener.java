@@ -36,7 +36,7 @@ public abstract class LoginListener {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                MainView.mainBrowser.execute("OnError();");
+                MainView.mainBrowser.execute("OnError('"+error+"');");
             }
         });    
     };
