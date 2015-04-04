@@ -1,20 +1,18 @@
 package com.shudder.views.fragments;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.shudder.R;
 import com.shudder.controllers.FolderController;
 import com.shudder.controllers.LibraryController;
 import com.shudder.dto.FolderDTO;
@@ -23,12 +21,10 @@ import com.shudder.listeners.FolderListener;
 import com.shudder.listeners.LibraryListener;
 import com.shudder.netservices.TCPService;
 import com.shudder.utils.Operation;
-import com.shudder.utils.SwipeDetector;
 import com.shudder.utils.adapters.LibraryAdapter;
 import com.shudder.utils.constants.RequestTypes;
 import com.shudder.utils.constants.SessionConstants;
 
-import shiftscope.com.shiftscope.R;
 
 /**
  * Created by Carlos on 1/3/2015.

@@ -7,9 +7,9 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.shudder.R;
 import com.shudder.netservices.HTTPService;
 
-import shiftscope.com.shiftscope.R;
 
 /**
  * Created by Carlos on 1/4/2015.

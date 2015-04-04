@@ -1,7 +1,6 @@
 package com.shudder.controllers;
 
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -17,7 +16,6 @@ import com.shudder.utils.constants.SessionConstants;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**

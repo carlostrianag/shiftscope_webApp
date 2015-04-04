@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.shudder.R;
 import com.shudder.dto.TrackDTO;
 import com.shudder.listeners.WebSocketListener;
 import com.shudder.netservices.TCPService;
@@ -25,7 +26,6 @@ import com.shudder.utils.constants.SessionConstants;
 
 import java.util.ArrayList;
 
-import shiftscope.com.shiftscope.R;
 
 /**
  * Created by Carlos on 2/4/2015.

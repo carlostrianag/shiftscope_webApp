@@ -3,9 +3,6 @@ package com.shudder.controllers;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.widget.Filter;
 
 import com.google.gson.Gson;

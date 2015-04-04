@@ -8,12 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.shudder.controllers.LibraryController;
+import com.shudder.R;
 import com.shudder.controllers.PlaylistController;
 import com.shudder.dto.FolderDTO;
 import com.shudder.dto.TrackDTO;
@@ -26,9 +24,8 @@ import com.shudder.utils.filters.LibraryFilter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
-import shiftscope.com.shiftscope.R;
+
 
 /**
  * Created by Carlos on 1/4/2015.

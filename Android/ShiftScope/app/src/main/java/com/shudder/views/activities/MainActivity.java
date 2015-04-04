@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.shudder.R;
 import com.shudder.controllers.FolderController;
 import com.shudder.controllers.LibraryController;
 import com.shudder.controllers.PlaylistController;
@@ -34,8 +35,6 @@ import com.shudder.views.dialogs.ConnectionLostDialog;
 import com.shudder.views.dialogs.VolumeDialog;
 import com.shudder.views.fragments.LibraryFragment;
 import com.shudder.views.fragments.PlayListFragment;
-
-import shiftscope.com.shiftscope.R;
 
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener, SearchView.OnQueryTextListener, MenuItem.OnMenuItemClickListener{

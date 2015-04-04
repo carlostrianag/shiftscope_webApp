@@ -7,12 +7,12 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.shudder.R;
 import com.shudder.controllers.PlaylistController;
 import com.shudder.dto.FolderDTO;
 import com.shudder.dto.TrackDTO;
 import com.shudder.utils.constants.Constants;
 
-import shiftscope.com.shiftscope.R;
 
 /**
  * Created by Carlos on 1/16/2015.

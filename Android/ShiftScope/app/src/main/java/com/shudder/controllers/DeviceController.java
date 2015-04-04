@@ -42,6 +42,7 @@ public class DeviceController {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
                 Log.v("MIO", responseString);
             }
         };

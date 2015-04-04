@@ -12,12 +12,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.SeekBar;
 
+import com.shudder.R;
 import com.shudder.netservices.TCPService;
 import com.shudder.utils.Operation;
 import com.shudder.utils.constants.RequestTypes;
 import com.shudder.utils.constants.SessionConstants;
 
-import shiftscope.com.shiftscope.R;
 
 /**
  * Created by Carlos on 1/10/2015.

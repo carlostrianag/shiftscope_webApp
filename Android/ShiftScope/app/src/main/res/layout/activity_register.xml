@@ -49,7 +49,7 @@
             style="@style/ShudderButton"
             android:layout_below="@id/passwordText"
             android:layout_centerVertical="true"
-            android:id="@+id/getInBtn"
+            android:id="@+id/registerBtn"
             android:text="@string/register"/>
     </RelativeLayout>
 

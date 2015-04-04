@@ -3,15 +3,13 @@ package com.shudder.views.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import shiftscope.com.shiftscope.R;
+import com.shudder.R;
+
 
 /**
  * Created by Carlos on 31/03/2015.

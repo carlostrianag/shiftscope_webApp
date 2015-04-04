@@ -1,21 +1,19 @@
 package com.shudder.views.activities;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.shudder.R;
 import com.shudder.controllers.LoginController;
 import com.shudder.dto.LoginCredentialsDTO;
 import com.shudder.listeners.LoginListener;
 import com.shudder.views.dialogs.ErrorDialog;
 
-import shiftscope.com.shiftscope.R;
 
 /**
  * Created by Carlos on 30/03/2015.

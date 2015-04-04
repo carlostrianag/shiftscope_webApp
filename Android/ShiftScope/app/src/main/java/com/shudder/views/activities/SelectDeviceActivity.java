@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.shudder.R;
 import com.shudder.controllers.DeviceController;
 import com.shudder.dto.DeviceDTO;
 import com.shudder.netservices.TCPService;
@@ -19,7 +20,6 @@ import com.shudder.utils.constants.SessionConstants;
 
 import java.util.ArrayList;
 
-import shiftscope.com.shiftscope.R;
 
 /**
  * Created by Carlos on 1/4/2015.

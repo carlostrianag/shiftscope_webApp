@@ -1,18 +1,15 @@
 package com.shudder.utils.adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.shudder.controllers.PlaylistController;
-import com.shudder.dto.FolderDTO;
+import com.shudder.R;
 import com.shudder.dto.TrackDTO;
 import com.shudder.netservices.TCPService;
 import com.shudder.utils.Operation;
@@ -24,7 +21,6 @@ import com.shudder.utils.filters.LibraryFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import shiftscope.com.shiftscope.R;
 
 /**
  * Created by Carlos on 1/4/2015.

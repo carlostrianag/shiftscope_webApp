@@ -8,11 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.shudder.R;
 import com.shudder.utils.MenuEntry;
 
 import java.util.ArrayList;
 
-import shiftscope.com.shiftscope.R;
 
 /**
  * Created by Carlos on 1/3/2015.

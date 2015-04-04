@@ -1,10 +1,10 @@
 package com.shudder.utils.constants;
 
+import com.shudder.R;
 import com.shudder.utils.MenuEntry;
 
 import java.util.ArrayList;
 
-import shiftscope.com.shiftscope.R;
 
 /**
  * Created by Carlos on 1/3/2015.

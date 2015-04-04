@@ -1,8 +1,5 @@
 package com.shudder.controllers;
 
-import android.support.v4.app.DialogFragment;
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -38,9 +35,21 @@ public class LoginController {
         }
     }
 
+    private static void invokeOnRegistered() {
+        for(LoginListener listener : listeners) {
+            listener.OnRegistered();
+        }
+    }
+
     private static void invokeOnFailed() {
         for(LoginListener listener : listeners) {
             listener.OnFailed();
+        }
+    }
+
+    private static void invokeOnFailedRegister() {
+        for(LoginListener listener : listeners) {
+            listener.OnFailedRegister();
         }
     }
 
@@ -84,5 +93,42 @@ public class LoginController {
             listener.OnLoading();
         }
         HTTPService.post("user/login", params, responseHandler);
+    }
+
+    public static void register(UserDTO user) {
+        JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                if(statusCode == 200) {
+                    Gson JSONParser = new Gson();
+                    UserDTO user = JSONParser.fromJson(response.toString(), UserDTO.class);
+                    invokeOnRegistered();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                if (statusCode == 0) {
+                    invokeOnError("No internet connection detected, please check and try again.");
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                invokeOnError(responseString);
+            }
+        };
+
+        RequestParams params = new RequestParams();
+        params.add("name", user.getName());
+        params.add("lastName", user.getLastName());
+        params.add("email", user.getEmail());
+        params.add("password", user.getPassword());
+        for (LoginListener listener : listeners) {
+            listener.OnLoading();
+        }
+        HTTPService.post("user/create", params, responseHandler);
     }
 }

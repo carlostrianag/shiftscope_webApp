@@ -5,6 +5,8 @@ package com.shudder.listeners;
  */
 public abstract class LoginListener{
     public void OnSuccess() {OnLoaded();};
+    public void OnRegistered() {OnLoaded();}
+    public void OnFailedRegister(){OnLoaded();}
     public void OnFailed() {OnError("Email/password combination is not valid.");};
     public abstract void OnLoading();
     public abstract void OnLoaded();
