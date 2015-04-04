@@ -29,6 +29,7 @@ import shudder.controllers.UserController;
 import shudder.listeners.FolderListener;
 import shudder.listeners.LoginListener;
 import shudder.listeners.PlayerListener;
+import shudder.listeners.WebSocketListener;
 import shudder.util.Constants;
 import shudder.util.Debugger;
 import shudder.util.OSValidator;
@@ -86,7 +87,7 @@ public class Browser extends Region {
         playerController.addListener(playerListener);
         userController.addListener(loginListener);
         TCPController tcpController = new TCPController();
-        
+        tcpController.addListener(new WebSocketListener());
         javaScriptObject.setMember("UserController", userController);
         javaScriptObject.setMember("FolderController", folderController);
         javaScriptObject.setMember("PlayerController", playerController);

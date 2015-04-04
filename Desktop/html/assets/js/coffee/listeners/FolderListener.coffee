@@ -62,6 +62,7 @@ drawTracks = (tracks) ->
 				listElement.removeClass('added-to-playlist')								
 			return)
 
+		
 		listElement.find('.add-icon').bind('click', (e)->
 			e.stopPropagation()
 			if !QUEUE_SONGS[item.id]

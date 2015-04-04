@@ -202,6 +202,9 @@ public class TCPController {
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
                     System.out.println("WebSocket Closed ...");
+                    for (WebSocketListener listener : listeners) {
+                        listener.OnClose("Websocket connection has been closed. What do you want to do?");
+                    }                    
                 }
 
                 @Override

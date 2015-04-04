@@ -5,13 +5,24 @@
  */
 package shudder.listeners;
 
+import javafx.application.Platform;
+import shudder.views.MainView;
+
 /**
  *
  * @author Carlos
  */
-public abstract class WebSocketListener {
-    public abstract void OnOpened();
-    public abstract void OnError(String error);
-    public abstract void loading();
-    public abstract void loaded();
+public class WebSocketListener {
+    public void OnOpened() {};
+    public void OnError(String error) {};
+    public void loading() {};
+    public void loaded() {};
+    public void OnClose(String message){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnClose('"+message+"');");
+            }
+        });
+    }
 }
