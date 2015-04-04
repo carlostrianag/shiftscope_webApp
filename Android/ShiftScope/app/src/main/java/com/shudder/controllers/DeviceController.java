@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.shudder.dto.DeviceDTO;
+import com.shudder.listeners.DeviceListener;
 import com.shudder.netservices.HTTPService;
 import com.shudder.utils.constants.ControllerEvent;
 import com.shudder.utils.constants.SessionConstants;
@@ -24,10 +25,14 @@ import java.util.ArrayList;
 public class DeviceController {
 
 
-    private static DeviceCommunicator communicator;
+    private static ArrayList<DeviceListener> listeners = new ArrayList<>();
 
-    public static void setCommunicator(Activity activity) {
-        communicator = (DeviceCommunicator)activity;
+    public static void addListener(DeviceListener listener) {
+         listeners.add(listener);
+    }
+
+    public static void removeListener(DeviceListener listener) {
+        listeners.remove(listener);
     }
 
     public static void getDevicesByUserId(){
@@ -43,11 +48,16 @@ public class DeviceController {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
-                Log.v("MIO", responseString);
+                if(statusCode == 404) {
+                    new DeviceWorker(ControllerEvent.ON_NOT_FOUND_DEVICE).execute();
+                }
             }
         };
         RequestParams params = new RequestParams();
         params.add("userId", String.valueOf(id));
+        for(DeviceListener listener : listeners) {
+            listener.OnLoading();
+        }
         HTTPService.get("device/getDevicesByUserId", params, responseHandler);
     }
 
@@ -65,12 +75,20 @@ public class DeviceController {
             this.devices = new ArrayList<>();
         }
 
+        public DeviceWorker(ControllerEvent event) {
+            super();
+            this.event = event;
+            this.devices = new ArrayList<>();
+        }
+
         @Override
         protected Void doInBackground(Void... params) {
             Gson JSONParser = new Gson();
             switch(event) {
                 case ON_SUCCESSFUL_DEVICE_FETCH:
                     devices = JSONParser.fromJson(jsonArray.toString(), new TypeToken<ArrayList<DeviceDTO>>(){}.getType());
+                    break;
+                case ON_NOT_FOUND_DEVICE:
                     break;
             }
             return null;
@@ -81,7 +99,13 @@ public class DeviceController {
             super.onPostExecute(aVoid);
             switch(event) {
                 case ON_SUCCESSFUL_DEVICE_FETCH:
-                    communicator.onSuccessfulDeviceFetch(devices);
+                    for(DeviceListener listener : listeners) {
+                        listener.OnSuccessfulDeviceFetch(devices);
+                    }
+                case ON_NOT_FOUND_DEVICE:
+                    for(DeviceListener listener : listeners) {
+                        listener.OnSuccessfulDeviceFetch(devices);
+                    }
                     break;
             }
         }
@@ -89,7 +113,6 @@ public class DeviceController {
 
 
     public interface DeviceCommunicator {
-        public void onSuccessfulDeviceFetch(ArrayList<DeviceDTO> devices);
-        public void onFailedDeviceFetch();
+
     }
 }
