@@ -101,13 +101,11 @@ public class Browser extends Region {
 
     public void openHTML(String file) {
         String path = "file:/" + Constants.USER_DIR + "/html/" + file;
-        System.out.println(path);
         webEngine.load(path);
     }
     
     public void openHTMLOnMac(String file) {
         String path = "file://" + Constants.USER_DIR + "/html/" + file;
-        System.out.println(path);
         webEngine.load(path);
     }
     

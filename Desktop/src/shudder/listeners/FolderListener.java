@@ -78,7 +78,16 @@ public abstract class FolderListener {
                 MainView.mainBrowser.execute("OnLoaded();");
             }
         });        
-    }    
+    }
+    
+    public void OnFolderDeleted(String deletedFolder) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MainView.mainBrowser.execute("OnFolderDeleted("+deletedFolder+");");
+            }
+        });
+    }
 
     public void drawSearchResults(ArrayList<Track> tracks) {
         Platform.runLater(new Runnable() {

@@ -67,6 +67,6 @@ public class HTTPService {
     
     public static void HTTPDelete(String targetURL, AsyncCompletionHandler<Void> responseHandler) {
         AsyncHttpClient client = new AsyncHttpClient();
-        client.prepareDelete(Constants.SERVER_URL + targetURL).execute();
+        client.prepareDelete(Constants.SERVER_URL + targetURL).execute(responseHandler);
     }    
 }

@@ -104,8 +104,19 @@ public class FolderController {
         return HTTPService.HTTPSyncPost("/folder/createOptimized", object);
     }
     
-    public void deleteFolder(FolderCreationDTO folderCriteria) {
-        HTTPService.HTTPDelete("/folder/destroy/"+folderCriteria.getFolder().getId(), null);
+    public void deleteFolder(int id) {
+        AsyncCompletionHandler<Void> responseHandler = new AsyncCompletionHandler<Void>() {
+
+            @Override
+            public Void onCompleted(Response response) throws Exception {
+                String responseObject = response.getResponseBody();
+                for(FolderListener listener : listeners) {
+                    listener.OnFolderDeleted(responseObject);
+                }
+                return null;
+            }
+        };
+        HTTPService.HTTPDelete("/folder/destroy/"+id, responseHandler);
     }
     
     public void getFolderContentById(String JSONFolderCriteria) {

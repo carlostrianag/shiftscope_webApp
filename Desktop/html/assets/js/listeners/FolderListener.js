@@ -1,4 +1,4 @@
-var OnBuildFolderFinished, OnContentFetched, OnError, OnFilesScanned, OnLoaded, OnLoading, OnProgressUpdated, QUEUE_SONGS, TOTAL_FILES, drawSearchResults, drawTracks;
+var OnBuildFolderFinished, OnContentFetched, OnError, OnFilesScanned, OnFolderDeleted, OnLoaded, OnLoading, OnProgressUpdated, QUEUE_SONGS, TOTAL_FILES, drawSearchResults, drawTracks;
 
 QUEUE_SONGS = {};
 
@@ -8,7 +8,13 @@ OnContentFetched = function(folderDTO) {
   $('#library-list').empty();
   window.PARENT_FOLDER = folderDTO.parentFolder;
   $.each(folderDTO.folders, function(i, item) {
-    return $("<a class='list-group-item'><div class='folder-wrapper'><div><img class='folder-icon' src='assets/images/ic_folder.png'></div><div><p>" + item.title.toUpperCase() + "</p></div></div></a>").click(function(e) {
+    var itemObject;
+    itemObject = $("<a class='list-group-item'><div class='folder-wrapper'><div><img class='folder-icon' src='assets/images/ic_folder.png'></div><div><p>" + item.title.toUpperCase() + "</p></div><div><img class='trash-icon' data-id='" + item.id + "' src='assets/images/ic_trash.png'></div></div></a>");
+    itemObject.find('.trash-icon').click(function(e) {
+      e.stopPropagation();
+      FolderController.deleteFolder($(this).data('id'));
+    });
+    return itemObject.click(function(e) {
       window.SCROLL_POSITION_FOLDER_ID[item.parentFolder] = $('#library-list').scrollTop();
       window.SCROLL_POS = window.SCROLL_POSITION_FOLDER_ID[item.id] ? window.SCROLL_POSITION_FOLDER_ID[item.id] : 0;
       $('#library-list').empty();
@@ -112,6 +118,12 @@ OnLoaded = function() {
   $('#library-list').addClass('active-content');
   $('#playlist-list').removeClass('active-content');
   $('#loader-div').removeClass('active-content');
+};
+
+OnFolderDeleted = function(deletedFolder) {
+  FolderController.getFolderContentById(JSON.stringify({
+    id: deletedFolder.parentFolder.id
+  }));
 };
 
 OnError = function(message) {
