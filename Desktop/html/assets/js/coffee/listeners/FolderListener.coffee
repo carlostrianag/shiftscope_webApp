@@ -1,6 +1,6 @@
 QUEUE_SONGS = {}
 TOTAL_FILES = 0
-
+POSITION_BEFORE_DELETED_FOLDER = null
 
 OnContentFetched = (folderDTO)->
 	$('#library-list').empty()
@@ -9,6 +9,7 @@ OnContentFetched = (folderDTO)->
 		itemObject = $("<a class='list-group-item'><div class='folder-wrapper'><div><img class='folder-icon' src='assets/images/ic_folder.png'></div><div><p>"+item.title.toUpperCase()+"</p></div><div><img class='trash-icon' data-id='"+item.id+"' src='assets/images/ic_trash.png'></div></div></a>")
 		itemObject.find('.trash-icon').click((e)->
 			e.stopPropagation()
+			POSITION_BEFORE_DELETED_FOLDER = $('#library-list').scrollTop()
 			FolderController.deleteFolder($(this).data('id'))
 			return)
 		itemObject.click((e) ->
@@ -22,7 +23,11 @@ OnContentFetched = (folderDTO)->
 	
 
 	drawTracks(folderDTO.tracks)
-	$('#library-list').scrollTop(window.SCROLL_POS)
+	if POSITION_BEFORE_DELETED_FOLDER
+		$('#library-list').scrollTop(window.POSITION_BEFORE_DELETED_FOLDER)
+		POSITION_BEFORE_DELETED_FOLDER = null
+	else
+		$('#library-list').scrollTop(window.SCROLL_POS)
 
 	return
 
