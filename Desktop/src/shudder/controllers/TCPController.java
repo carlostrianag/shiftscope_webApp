@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import javafx.application.Platform;
+import shudder.criteria.FolderCriteria;
 import shudder.criteria.TrackCriteria;
 import shudder.listeners.WebSocketListener;
 import shudder.model.Track;
@@ -173,13 +174,6 @@ public class TCPController {
                                 }
                             });
                             break;
-                        case OperationType.VOLUME_DOWN:
-                            //PlayerController.volumeDown();
-                            break;
-
-                        case OperationType.VOLUME_UP:
-                            //PlayerController.volumeUp();
-                            break;
 
                         case OperationType.SET_VOLUME:
                             Platform.runLater(new Runnable() {
@@ -188,7 +182,7 @@ public class TCPController {
                                     MainView.mainBrowser.execute("OnVolumeChanged("+request.getValue()*100+"); PlayerController.setVolumeFromValue("+request.getValue()+", false);");      
                                 }
                             });
-                            
+                            break;
 
                         case OperationType.SYNC:
                             Operation syncRequest = new Operation();
@@ -196,6 +190,21 @@ public class TCPController {
                             syncRequest.setUserId(SessionConstants.USER_ID);
                             syncRequest.setSync(SessionConstants.sync);
                             sendRequest(syncRequest);
+                            break;
+                        
+                        case OperationType.REMOVE_FOLDER:
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    FolderCriteria criteria = new FolderCriteria();
+                                    criteria.setId(request.getId());
+                                    String JSONObject = JSONParser.toJson(criteria);
+                                    MainView.mainBrowser.execute("FolderController.getFolderContentById(JSON.stringify("+JSONObject+"));");      
+                                }
+                            });                            
+                            break;
+                            
+                        
                     }
                 }
 

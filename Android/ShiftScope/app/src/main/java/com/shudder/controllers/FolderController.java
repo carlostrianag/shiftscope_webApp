@@ -13,10 +13,13 @@ import com.shudder.dto.FolderContentDTO;
 import com.shudder.dto.FolderDTO;
 import com.shudder.listeners.FolderListener;
 import com.shudder.netservices.HTTPService;
+import com.shudder.netservices.TCPService;
+import com.shudder.utils.Operation;
 import com.shudder.utils.adapters.LibraryAdapter;
 import com.shudder.utils.comparators.ArtistComparator;
 import com.shudder.utils.comparators.TitleComparator;
 import com.shudder.utils.constants.ControllerEvent;
+import com.shudder.utils.constants.RequestTypes;
 import com.shudder.utils.constants.SessionConstants;
 
 import org.apache.http.Header;
@@ -217,6 +220,7 @@ public class FolderController {
                     break;
                 case ON_SUCCESSFUL_FOLDER_DELETION:
                     Log.v("DELETED ", folder.getTitle());
+
                     for (FolderListener listener : listeners) {
                         listener.OnFolderDeleted(folder);
                     }

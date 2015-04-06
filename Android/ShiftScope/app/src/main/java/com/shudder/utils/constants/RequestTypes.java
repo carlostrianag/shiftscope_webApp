@@ -28,4 +28,5 @@ public class RequestTypes {
     public static final int SYNC = 24;
     public static final int SET_VOLUME = 25;
     public static final int REMOVE_FROM_PLAYLIST = 26;
+    public static final int REMOVE_FOLDER = 27;
 }

@@ -93,6 +93,12 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
             @Override
             public void OnFolderDeleted(FolderDTO folder) {
                 super.OnFolderDeleted(folder);
+                Operation operation = new Operation();
+                operation.setId(folder.getParentFolder());
+                operation.setUserId(SessionConstants.USER_ID);
+                operation.setTo(SessionConstants.DEVICE_ID);
+                operation.setOperationType(RequestTypes.REMOVE_FOLDER);
+                TCPService.send(operation);
                 FolderController.getFolderContentById(folder.getParentFolder(), null);
             }
 
