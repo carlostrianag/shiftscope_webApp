@@ -116,7 +116,7 @@ public class FolderController {
                 return null;
             }
         };
-        HTTPService.HTTPDelete("/folder/destroy/"+id, responseHandler);
+        HTTPService.HTTPDelete("/folder/destroy/"+id+"?populate=false", responseHandler);
     }
     
     public void getFolderContentById(String JSONFolderCriteria) {
@@ -247,20 +247,21 @@ public class FolderController {
 
                     track.setPath(path);
                     track.setLibrary(SessionConstants.LIBRARY_ID);
-                    //jLabel2.setText(f.getAbsolutePath());
                     currentFileScanned++;
                     for(FolderListener listener : listeners) {
                         listener.OnProgressUpdated(currentFileScanned);
                     }
                     tracks.add(track);
                 } catch (IOException ex) {
+                    System.out.println("Ommited: " + f.getName());
                 } catch (UnsupportedAudioFileException ex) {
+                    System.out.println("Error on: " + f.getName());
                 }
             }
         }
 
         folderToCreate.setTracks(tracks);
-        System.out.println("Crear " + folder + "   " + new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
+        System.out.println("Create " + folder + "   " + new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime()));
         createdFolder = createFolderByLimit(folderToCreate, 300);
         if (createdFolder != null) {
             for (File file : folders) {

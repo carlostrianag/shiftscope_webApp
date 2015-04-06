@@ -1,5 +1,5 @@
 var OnClose;
 
 OnClose = function(message) {
-  showErrorDialog(message, false);
+  showErrorDialog(message, true);
 };

@@ -120,6 +120,7 @@ OnLoaded = ->
 	return
 
 OnFolderDeleted = (deletedFolder)->
+	Debugger.display deletedFolder
 	FolderController.getFolderContentById(JSON.stringify({id: deletedFolder.parentFolder.id}))
 	return
 

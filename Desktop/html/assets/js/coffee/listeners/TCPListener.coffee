@@ -1,3 +1,3 @@
 OnClose = (message)->
-	showErrorDialog message, false
+	showErrorDialog message, true
 	return
