@@ -2,6 +2,7 @@ package com.shudder.listeners;
 
 import android.os.Parcelable;
 
+import com.shudder.dto.FolderDTO;
 import com.shudder.utils.adapters.LibraryAdapter;
 
 /**
@@ -9,6 +10,7 @@ import com.shudder.utils.adapters.LibraryAdapter;
  */
 public abstract class FolderListener {
     public void OnSuccessfulFolderFetch(LibraryAdapter adapter, Parcelable restoredState) {OnLoaded();};
+    public void OnFolderDeleted(FolderDTO folder){OnLoaded();}
     public abstract void OnLoading();
     public abstract void OnLoaded();
     public abstract void OnFailedFolderFetch();

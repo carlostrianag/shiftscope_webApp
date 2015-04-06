@@ -170,7 +170,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         tabs.setViewPager(viewPager);
         SharedPreferences sharedPreferences = getSharedPreferences("ShudderSharedPreferences", Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
-        Log.v("Activity", "CREATEEEEEEEEEED");
     }
 
     @Override

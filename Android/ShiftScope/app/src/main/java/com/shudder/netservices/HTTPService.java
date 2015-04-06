@@ -36,6 +36,10 @@ public class HTTPService {
         client.post(getAbsoluteUrl(url), params, responseHandler);
     }
 
+    public static void delete(String url, AsyncHttpResponseHandler responseHandler) {
+        client.delete(getAbsoluteUrl(url), responseHandler);
+    }
+
     public static void syncGet(String url, RequestParams params, ResponseHandlerInterface responseHandler) {
         syncClient.get(getAbsoluteUrl(url), params, responseHandler);
     }

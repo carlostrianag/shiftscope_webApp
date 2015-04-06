@@ -3,12 +3,14 @@ package com.shudder.controllers;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Parcelable;
+import android.util.Log;
 import android.widget.Filter;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.shudder.dto.FolderContentDTO;
+import com.shudder.dto.FolderDTO;
 import com.shudder.listeners.FolderListener;
 import com.shudder.netservices.HTTPService;
 import com.shudder.utils.adapters.LibraryAdapter;
@@ -83,10 +85,31 @@ public class FolderController {
         HTTPService.get("folder/getFolderContentById", params, responseHandler);
     }
 
+    public static void deleteFolderById(FolderDTO folderDTO) {
+        JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                if(statusCode == 200) {
+                    new FolderWorker(ControllerEvent.ON_SUCCESSFUL_FOLDER_DELETION, response).execute();
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+            }
+        };
+
+        for (FolderListener listener : listeners) {
+            listener.OnLoading();
+        }
+        HTTPService.delete("folder/destroy/" + folderDTO.getId() + "?populate=false", responseHandler);
+    }
+
 
     private static class FolderWorker extends AsyncTask<Void, Void, Void> {
         private ControllerEvent event;
         private JSONObject response;
+        private FolderDTO folder;
         private String query;
         private Filter filter;
         private Parcelable savedState;
@@ -123,10 +146,11 @@ public class FolderController {
         @Override
         protected Void doInBackground(Void... params) {
             ArrayList<Object> folderContent;
+            Gson JSONParser = new Gson();
             switch (event) {
                 case ON_SUCCESSFUL_FOLDER_FETCH:
 
-                    Gson JSONParser = new Gson();
+
                     folderContent = new ArrayList<>();
                     folderContentDTO = JSONParser.fromJson(response.toString(), FolderContentDTO.class);
 
@@ -141,6 +165,9 @@ public class FolderController {
                     folderContent.addAll(folderContentDTO.getTracks());
                     adapter = new LibraryAdapter(activity, android.R.layout.simple_list_item_1, folderContent);
                     SessionConstants.PARENT_FOLDER = folderContentDTO.getParentFolder();
+                    break;
+                case ON_SUCCESSFUL_FOLDER_DELETION:
+                    folder = JSONParser.fromJson(response.toString(), FolderDTO.class);
                     break;
                 case ON_FILTER_QUERY:
                     filter.filter(query);
@@ -173,18 +200,25 @@ public class FolderController {
             super.onPostExecute(aVoid);
             switch(event){
                 case ON_SUCCESSFUL_FOLDER_FETCH:
-                    restoredState = statesHashMap.get(parentFolder);
-                    if(restoredState == null) {
-                        statesHashMap.put(parentFolder, savedState);
-                    } else{
-                        restoredState = statesHashMap.get(folderId);
-                        if(restoredState != null) {
-                            statesHashMap.remove(folderId);
+                    if(savedState != null) {
+                        restoredState = statesHashMap.get(parentFolder);
+                        if(restoredState == null) {
+                            statesHashMap.put(parentFolder, savedState);
+                        } else{
+                            restoredState = statesHashMap.get(folderId);
+                            if(restoredState != null) {
+                                statesHashMap.remove(folderId);
+                            }
                         }
                     }
-
                     for (FolderListener listener : listeners) {
                         listener.OnSuccessfulFolderFetch(adapter, restoredState);
+                    }
+                    break;
+                case ON_SUCCESSFUL_FOLDER_DELETION:
+                    Log.v("DELETED ", folder.getTitle());
+                    for (FolderListener listener : listeners) {
+                        listener.OnFolderDeleted(folder);
                     }
                     break;
                 case ON_FILTER_QUERY:

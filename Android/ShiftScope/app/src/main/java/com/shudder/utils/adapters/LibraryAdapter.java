@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shudder.R;
+import com.shudder.controllers.FolderController;
 import com.shudder.controllers.PlaylistController;
 import com.shudder.dto.FolderDTO;
 import com.shudder.dto.TrackDTO;
@@ -35,7 +36,7 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
     private Context context;
     private ArrayList<Object> folderContent;
     private LibraryFilter filter;
-    private FolderDTO folder;
+
     private HashMap<Integer, LinearLayout> contentLayouts;
 
 
@@ -103,10 +104,17 @@ public class LibraryAdapter extends ArrayAdapter<Object> implements Filterable{
         final View v;
         switch (layoutType) {
             case 0:
-                folder = (FolderDTO)folderContent.get(position);
+                final FolderDTO folder = (FolderDTO)folderContent.get(position);
                 v  = layoutInflater.inflate(R.layout.item_library_folder, parent, false);
                 TextView folderTitle = (TextView) v.findViewById(R.id.folderTitle);
                 folderTitle.setText(folder.getTitle().toUpperCase());
+                LinearLayout removeBtn = (LinearLayout) v.findViewById(R.id.removeLayout);
+                removeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FolderController.deleteFolderById(folder);
+                    }
+                });
                 return v;
             case 1:
                 v  = layoutInflater.inflate(R.layout.item_library_track, parent, false);

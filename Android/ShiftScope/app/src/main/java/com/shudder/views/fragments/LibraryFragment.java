@@ -89,6 +89,13 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
         };
 
         folderListener = new FolderListener() {
+
+            @Override
+            public void OnFolderDeleted(FolderDTO folder) {
+                super.OnFolderDeleted(folder);
+                FolderController.getFolderContentById(folder.getParentFolder(), null);
+            }
+
             @Override
             public void OnSuccessfulFolderFetch(LibraryAdapter adapter, Parcelable restoredState) {
                 super.OnSuccessfulFolderFetch(adapter, restoredState);
