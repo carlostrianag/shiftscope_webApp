@@ -252,6 +252,7 @@ public class PlayerController {
     public void play(String track, boolean playedFromPlaylist) {
         try {
             Track t = new Gson().fromJson(track, Track.class);
+            System.out.println(t.getPath());
             currentSong = t;
             control.open(new File(t.getPath()));
             control.play();

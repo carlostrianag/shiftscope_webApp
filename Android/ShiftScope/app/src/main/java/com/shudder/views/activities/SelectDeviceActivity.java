@@ -93,6 +93,7 @@ public class SelectDeviceActivity extends ActionBarActivity implements AdapterVi
         if(device.isOnline()) {
             SessionConstants.DEVICE_ID = device.getId();
             TCPService.initTCPService();
+
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }

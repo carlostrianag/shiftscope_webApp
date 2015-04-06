@@ -1,5 +1,7 @@
 package com.shudder.views.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -8,6 +10,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -164,6 +168,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         tabs.setTypeface(Typeface.createFromAsset(getAssets(), "font/FuturaLTBook.ttf"), Typeface.BOLD);
         tabs.setShouldExpand(true);
         tabs.setViewPager(viewPager);
+        SharedPreferences sharedPreferences = getSharedPreferences("ShudderSharedPreferences", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+        Log.v("Activity", "CREATEEEEEEEEEED");
     }
 
     @Override
@@ -182,6 +189,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.v("ACTIVITY", "DESTROY");
         TCPService.removeListener(socketListener);
     }
 
@@ -256,4 +264,24 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
         return false;
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.v("ACTIVITY", "PAUSE" + viewPager.getCurrentItem());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.v("ACTIVITY", "RESUME");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.v("ACTIVITY", "STOP");
+    }
+
+
 }

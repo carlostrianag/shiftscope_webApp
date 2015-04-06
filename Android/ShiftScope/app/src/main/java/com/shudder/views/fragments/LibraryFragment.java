@@ -1,9 +1,12 @@
 package com.shudder.views.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +54,7 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onStart() {
         super.onStart();
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("ShudderSharedPreferences", Context.MODE_PRIVATE);
         libraryListView = (ListView)getView().findViewById(R.id.libraryListView);
         libraryListView.setOnItemClickListener(this);
         progressBar = (RelativeLayout) getView().findViewById(R.id.progressBarLayout);
@@ -120,7 +124,9 @@ public class LibraryFragment extends Fragment implements AdapterView.OnItemClick
 
         FolderController.addListener(folderListener, this.getActivity());
         LibraryController.addListener(libraryListener);
+
         LibraryController.getLibraryByDeviceId();
+        Log.v("FRAGMENT", "START");
     }
 
     private void getFolderContent(int id, Parcelable state) {
