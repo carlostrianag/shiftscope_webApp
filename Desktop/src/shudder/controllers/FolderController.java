@@ -110,6 +110,7 @@ public class FolderController {
             @Override
             public Void onCompleted(Response response) throws Exception {
                 String responseObject = response.getResponseBody();
+                System.out.println(responseObject);
                 for(FolderListener listener : listeners) {
                     listener.OnFolderDeleted(responseObject);
                 }

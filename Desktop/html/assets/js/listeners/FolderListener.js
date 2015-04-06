@@ -121,9 +121,8 @@ OnLoaded = function() {
 };
 
 OnFolderDeleted = function(deletedFolder) {
-  Debugger.display(deletedFolder);
   FolderController.getFolderContentById(JSON.stringify({
-    id: deletedFolder.parentFolder.id
+    id: deletedFolder.parentFolder
   }));
 };
 
