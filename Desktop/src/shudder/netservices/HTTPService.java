@@ -41,7 +41,6 @@ public class HTTPService {
     }
 
     public static void HTTPPost(String targetURL, String urlParameters, AsyncCompletionHandler<Void> responseHandler) {
-        System.out.println("post - " + urlParameters);
         AsyncHttpClient client = new AsyncHttpClient();
         client.preparePost(Constants.SERVER_URL + targetURL)
             .addHeader("content-type", "application/json; charset=utf-8")

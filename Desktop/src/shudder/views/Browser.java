@@ -61,10 +61,8 @@ public class Browser extends Region {
         webEngine.getLoadWorker().stateProperty().addListener(changeListener);
         getChildren().add(browser);
         if (OSValidator.isWindows()) {
-            System.out.println("WINDOWS");
             openHTML("index.html");
-        } else if (OSValidator.isMac()) {
-            System.out.println("MAC");
+        } else if (OSValidator.isMac() || OSValidator.isUnix()) {
             openHTMLOnMac("index.html");
         }
     }
