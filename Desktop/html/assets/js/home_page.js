@@ -10,6 +10,12 @@ window.SCROLL_POSITION_FOLDER_ID = {};
 
 window.SCROLL_POS = 0;
 
+window.DRAGGIN = false;
+
+window.PRESSED = false;
+
+window.TOTAL_SECONDS = 0;
+
 $(document).ready(function() {
   document.oncontextmenu = function() {
     return false;
@@ -79,6 +85,23 @@ $(document).ready(function() {
   });
   $('#volume-slider').on("change", (function() {
     PlayerController.setVolumeFromValue($(this).val() / 100, true);
+  }));
+  $('#slider').on('mousedown', (function() {
+    window.PRESSED = true;
+  }));
+  $('#slider').on('mousemove', (function() {
+    if (window.PRESSED) {
+      window.DRAGGIN = true;
+    }
+  }));
+  $('#slider').on('mouseup', (function() {
+    var percentage;
+    percentage = $(this).val() / window.TOTAL_SECONDS;
+    if (window.DRAGGIN) {
+      PlayerController.seek(percentage);
+    }
+    window.DRAGGIN = false;
+    window.PRESSED = false;
   }));
   $('.library-tab').click();
   $('#library-list').height($(window).height() - MAX_Y);

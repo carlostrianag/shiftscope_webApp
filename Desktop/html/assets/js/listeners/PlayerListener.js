@@ -5,6 +5,7 @@ OnOpened = function(totalTime, totalSeconds) {
   $('#remaining-time-text').text(totalTime);
   $('#slider').attr('min', 0);
   $('#slider').attr('max', totalSeconds);
+  window.TOTAL_SECONDS = totalSeconds;
 };
 
 OnPlaylistFetched = function(playlist) {
@@ -58,7 +59,9 @@ OnPlaying = function(songName, artistName) {
 
 OnProgress = function(elapsedTime, currentSecond) {
   $('#elapsed-time-text').text(elapsedTime);
-  $('#slider').val(currentSecond);
+  if (!window.DRAGGIN) {
+    $('#slider').val(currentSecond);
+  }
 };
 
 OnPlayed = function() {

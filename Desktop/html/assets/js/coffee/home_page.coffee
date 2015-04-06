@@ -3,6 +3,9 @@ window.PARENT_FOLDER = null
 PLAYING = true
 window.SCROLL_POSITION_FOLDER_ID = {}
 window.SCROLL_POS = 0
+window.DRAGGIN = false
+window.PRESSED = false
+window.TOTAL_SECONDS = 0
 
 $(document).ready ->
 	document.oncontextmenu = ->
@@ -81,6 +84,19 @@ $(document).ready ->
 
 	$('#volume-slider').on("change", (->
 		PlayerController.setVolumeFromValue($(this).val()/100, true)
+		return))
+
+	$('#slider').on('mousedown', (->
+		window.PRESSED = true
+		return))
+	$('#slider').on('mousemove', (->
+		window.DRAGGIN = true if window.PRESSED
+		return))
+	$('#slider').on('mouseup', (->
+		percentage = ($(this).val()/window.TOTAL_SECONDS)
+		PlayerController.seek(percentage) if window.DRAGGIN
+		window.DRAGGIN = false
+		window.PRESSED = false
 		return))
 
 	$('.library-tab').click()

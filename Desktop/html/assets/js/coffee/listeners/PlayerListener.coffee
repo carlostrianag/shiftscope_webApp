@@ -4,6 +4,7 @@ OnOpened = (totalTime, totalSeconds) ->
 	$('#remaining-time-text').text(totalTime)
 	$('#slider').attr('min', 0)
 	$('#slider').attr('max', totalSeconds)
+	window.TOTAL_SECONDS = totalSeconds
 	return
 
 
@@ -54,7 +55,7 @@ OnPlaying = (songName, artistName) ->
 
 OnProgress = (elapsedTime, currentSecond) ->
 	$('#elapsed-time-text').text elapsedTime
-	$('#slider').val(currentSecond)
+	$('#slider').val(currentSecond) if not window.DRAGGIN
 	return
 
 
