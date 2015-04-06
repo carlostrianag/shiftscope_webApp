@@ -104,6 +104,10 @@ public class FolderController {
         return HTTPService.HTTPSyncPost("/folder/createOptimized", object);
     }
     
+    public void deleteFolder(FolderCreationDTO folderCriteria) {
+        HTTPService.HTTPDelete("/folder/destroy/"+folderCriteria.getFolder().getId(), null);
+    }
+    
     public void getFolderContentById(String JSONFolderCriteria) {
         Gson JSONParser = new Gson();
         FolderCriteria criteria = JSONParser.fromJson(JSONFolderCriteria, FolderCriteria.class);
@@ -240,7 +244,6 @@ public class FolderController {
                     tracks.add(track);
                 } catch (IOException ex) {
                 } catch (UnsupportedAudioFileException ex) {
-                    //Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

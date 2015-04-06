@@ -6,7 +6,7 @@ OnContentFetched = (folderDTO)->
 	$('#library-list').empty()
 	window.PARENT_FOLDER = folderDTO.parentFolder
 	$.each(folderDTO.folders, (i, item) ->
-		$("<a class='list-group-item'><div class='folder-wrapper'><div><img class='folder-icon' src='assets/images/ic_folder.png'></div><div><p>"+item.title.toUpperCase()+"</p></div></div></a>")
+		$("<a class='list-group-item'><div class='folder-wrapper'><div><img class='folder-icon' src='assets/images/ic_folder.png'></div><div><img class='folder-icon' src='assets/images/ic_trash.png'></div><div><p>"+item.title.toUpperCase()+"</p></div></div></a>")
 			.click((e) ->
 				window.SCROLL_POSITION_FOLDER_ID[item.parentFolder] = $('#library-list').scrollTop()
 				window.SCROLL_POS = if window.SCROLL_POSITION_FOLDER_ID[item.id] then window.SCROLL_POSITION_FOLDER_ID[item.id] else 0				
