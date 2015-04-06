@@ -6,17 +6,14 @@
 package shudder.controllers;
 
 import com.google.gson.Gson;
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javazoom.jlgui.basicplayer.BasicController;
-import javazoom.jlgui.basicplayer.BasicPlayer;
-import javazoom.jlgui.basicplayer.BasicPlayerEvent;
-import javazoom.jlgui.basicplayer.BasicPlayerException;
-import javazoom.jlgui.basicplayer.BasicPlayerListener;
-import shudder.listeners.FolderListener;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import shudder.listeners.PlayerListener;
 import shudder.model.Track;
 import shudder.util.Operation;
@@ -41,128 +38,161 @@ public class PlayerController {
     private String elapsedTimeString;
     private ArrayList<Track> queuePaths;
     public Track currentSong;
-    private BasicPlayer player;
     private float volume;
-    private BasicController control;
-    private ArrayList<PlayerListener> listeners = new ArrayList<>();
-    private FolderListener folderListener = new FolderListener() {
-        
+    private MediaPlayer player;
+    private Duration duration;
+    private Runnable onReady = new Runnable() {
+
         @Override
-        public void OnBuildFolderFinished() {
-            SessionConstants.sync.setNewFolders(true);
+        public void run() {
+            duration = player.getMedia().getDuration();
+            invokeOnOpened(formatTime(duration, duration), (int)duration.toSeconds());
+            
+        }
+    };
+    private Runnable onPlaying = new Runnable() {
+
+        @Override
+        public void run() {
             Operation request = new Operation();
             request.setOperationType(OperationType.SYNC);
             request.setUserId(SessionConstants.USER_ID);
+            invokeOnPlaying(currentSong.getTitle(), currentSong.getArtist());
+            SessionConstants.sync.setCurrentSongId(currentSong.getId());
+            SessionConstants.sync.setCurrentSongName(currentSong.getTitle());
+            SessionConstants.sync.setCurrentSongArtist(currentSong.getArtist());
+            SessionConstants.sync.setCurrentSongDuration(currentSong.getDuration());
+            SessionConstants.sync.setCurrentVolume((int) player.getVolume());
+            SessionConstants.sync.setIsPlaying(true);
+            SessionConstants.sync.setIsPaused(false);
+            request.setSync(SessionConstants.sync);
+            TCPController.sendJSRequest(request);      
+        }
+    };
+    private Runnable onPaused = new Runnable() {
+
+        @Override
+        public void run() {
+            Operation request = new Operation();
+            request.setOperationType(OperationType.SYNC);
+            request.setUserId(SessionConstants.USER_ID);            
+            SessionConstants.sync.setIsPlaying(false);
+            SessionConstants.sync.setIsPaused(true);
             request.setSync(SessionConstants.sync);
             TCPController.sendJSRequest(request);
-            SessionConstants.sync.setNewFolders(false);
-        }
-        
-        
-        @Override
-        public void OnProgressUpdated(int progress) {
-            
-        }
-
-        @Override
-        public void OnFilesScanned(int filesCount) {
-            
-        }
-
-        @Override
-        public void OnError(String error) {
-            
+            paused = true;
+            invokeOnPaused();            
         }
     };
+    private InvalidationListener valueListener = new InvalidationListener() {
+            public void invalidated(Observable ov) {
+                invokeOnProgress(formatTime(player.getCurrentTime(), duration), (int)player.getCurrentTime().toSeconds());
+            }  
+    } ;
+    private ArrayList<PlayerListener> listeners = new ArrayList<>();
     
-    private BasicPlayerListener basicPlayerListener = new BasicPlayerListener() {
-        @Override
-        public void opened(Object o, Map map) {
-            Long duration = (Long) map.get("duration");
-            int mili = (int) (duration / 1000);
-            int sec = (int) (mili / 1000) % 60;
-            int min = (int) (mili / 1000) / 60;
-            totalTimeString = min + ":" + String.format("%02d", sec);
-            totalSeconds = (Integer.parseInt(totalTimeString.split(":")[0]) * 60) + Integer.parseInt(totalTimeString.split(":")[1]);
-            frameRate = (Float) map.get("mp3.framerate.fps");
-            frameLength = (int) map.get("mp3.framesize.bytes");
-            invokeOnOpened(totalTimeString, totalSeconds);
-        }
+    public void initPlayer() {
+        queuePaths = new ArrayList<>();
+        currentSong = null;
+        currentSongPosition = 0;
+        playlistPlaying = false;
+        SessionConstants.sync = new Sync();
+        volume = 1.0f;
+        SessionConstants.sync.setCurrentVolume(volume);
+    }    
+    
+    
 
-        @Override
-        public void progress(int i, long l, byte[] bytes, Map map) {
-            Long duration1 = (Long) map.get("mp3.position.microseconds");
-            int mili = (int) (duration1 / 1000);
-            int sec = (int) (mili / 1000) % 60;
-            int min = (int) (mili / 1000) / 60;
-            elapsedTimeString = min + ":" + String.format("%02d", sec);
-            currentSecond = (Integer.parseInt(elapsedTimeString.split(":")[0]) * 60) + Integer.parseInt(elapsedTimeString.split(":")[1]);
-            invokeOnProgress(elapsedTimeString, currentSecond);
-        }
-
-        @Override
-        public void stateUpdated(BasicPlayerEvent event) {
-            //display("stateUpdated : " + event.toString());
-            Operation request = new Operation();
-            request.setOperationType(OperationType.SYNC);
-            request.setUserId(SessionConstants.USER_ID);
-            switch (event.getCode()) {
-
-                case BasicPlayerEvent.PLAYING:
-                    invokeOnPlaying(currentSong.getTitle(), currentSong.getArtist());
-                    SessionConstants.sync.setCurrentSongId(currentSong.getId());
-                    SessionConstants.sync.setCurrentSongName(currentSong.getTitle());
-                    SessionConstants.sync.setCurrentSongArtist(currentSong.getArtist());
-                    SessionConstants.sync.setCurrentSongDuration(currentSong.getDuration());
-                    SessionConstants.sync.setCurrentVolume((int) player.getGainValue());
-                    SessionConstants.sync.setIsPlaying(true);
-                    SessionConstants.sync.setIsPaused(false);
-                    request.setSync(SessionConstants.sync);
-                    TCPController.sendJSRequest(request);
-                    paused = false;
-                    invokeOnPlayed();
-                    break;
-
-                case BasicPlayerEvent.PAUSED:
-                    SessionConstants.sync.setIsPlaying(false);
-                    SessionConstants.sync.setIsPaused(true);
-                    request.setSync(SessionConstants.sync);
-                    TCPController.sendJSRequest(request);
-                    paused = true;
-                    invokeOnPaused();
-                    break;
-
-                case BasicPlayerEvent.RESUMED:
-                    SessionConstants.sync.setIsPlaying(true);
-                    SessionConstants.sync.setIsPaused(false);
-                    request.setSync(SessionConstants.sync);
-                    TCPController.sendJSRequest(request);
-                    paused = false;
-                    invokeOnPlayed();
-                    break;
-
-                case BasicPlayerEvent.EOM:
-                    next();
-                    break;
-
-                case BasicPlayerEvent.GAIN:
-                    SessionConstants.sync.setCurrentVolume(volume);
-                    if (SessionConstants.VOLUME_FROM_USER) {
-                        Operation volumeRequest = new Operation();
-                        volumeRequest.setOperationType(OperationType.SET_VOLUME);
-                        volumeRequest.setUserId(SessionConstants.USER_ID);
-                        volumeRequest.setSync(SessionConstants.sync);
-                        volumeRequest.setValue(volume);
-                        TCPController.sendJSRequest(volumeRequest);
-                    }
-                    break;
-            }
-        }
-
-        @Override
-        public void setController(BasicController controller) {
-        }
-    };
+//    public PlayerController() {
+//        this.basicPlayerListener = new BasicPlayerListener() {
+//            @Override
+//            public void opened(Object o, Map map) {
+//                Long duration = (Long) map.get("duration");
+//                int mili = (int) (duration / 1000);
+//                int sec = (int) (mili / 1000) % 60;
+//                int min = (int) (mili / 1000) / 60;
+//                totalTimeString = min + ":" + String.format("%02d", sec);
+//                totalSeconds = (Integer.parseInt(totalTimeString.split(":")[0]) * 60) + Integer.parseInt(totalTimeString.split(":")[1]);
+//                frameRate = (Float) map.get("mp3.framerate.fps");
+//                frameLength = (int) map.get("mp3.framesize.bytes");
+//                invokeOnOpened(totalTimeString, totalSeconds);
+//            }
+//            
+//            @Override
+//            public void progress(int i, long l, byte[] bytes, Map map) {
+//                Long duration1 = (Long) map.get("mp3.position.microseconds");
+//                int mili = (int) (duration1 / 1000);
+//                int sec = (int) (mili / 1000) % 60;
+//                int min = (int) (mili / 1000) / 60;
+//                elapsedTimeString = min + ":" + String.format("%02d", sec);
+//                currentSecond = (Integer.parseInt(elapsedTimeString.split(":")[0]) * 60) + Integer.parseInt(elapsedTimeString.split(":")[1]);
+//                invokeOnProgress(elapsedTimeString, currentSecond);
+//            }
+//            
+//            @Override
+//            public void stateUpdated(BasicPlayerEvent event) {
+//                //display("stateUpdated : " + event.toString());
+//                Operation request = new Operation();
+//                request.setOperationType(OperationType.SYNC);
+//                request.setUserId(SessionConstants.USER_ID);
+//                switch (event.getCode()) {
+//                    
+//                    case BasicPlayerEvent.PLAYING:
+//                        invokeOnPlaying(currentSong.getTitle(), currentSong.getArtist());
+//                        SessionConstants.sync.setCurrentSongId(currentSong.getId());
+//                        SessionConstants.sync.setCurrentSongName(currentSong.getTitle());
+//                        SessionConstants.sync.setCurrentSongArtist(currentSong.getArtist());
+//                        SessionConstants.sync.setCurrentSongDuration(currentSong.getDuration());
+//                        SessionConstants.sync.setCurrentVolume((int) player.getVolume());
+//                        SessionConstants.sync.setIsPlaying(true);
+//                        SessionConstants.sync.setIsPaused(false);
+//                        request.setSync(SessionConstants.sync);
+//                        TCPController.sendJSRequest(request);
+//                        paused = false;
+//                        invokeOnPlayed();
+//                        break;
+//                        
+//                    case BasicPlayerEvent.PAUSED:
+//                        SessionConstants.sync.setIsPlaying(false);
+//                        SessionConstants.sync.setIsPaused(true);
+//                        request.setSync(SessionConstants.sync);
+//                        TCPController.sendJSRequest(request);
+//                        paused = true;
+//                        invokeOnPaused();
+//                        break;
+//                        
+//                    case BasicPlayerEvent.RESUMED:
+//                        SessionConstants.sync.setIsPlaying(true);
+//                        SessionConstants.sync.setIsPaused(false);
+//                        request.setSync(SessionConstants.sync);
+//                        TCPController.sendJSRequest(request);
+//                        paused = false;
+//                        invokeOnPlayed();
+//                        break;
+//                        
+//                    case BasicPlayerEvent.EOM:
+//                        next();
+//                        break;
+//                        
+//                    case BasicPlayerEvent.GAIN:
+//                        SessionConstants.sync.setCurrentVolume(volume);
+//                        if (SessionConstants.VOLUME_FROM_USER) {
+//                            Operation volumeRequest = new Operation();
+//                            volumeRequest.setOperationType(OperationType.SET_VOLUME);
+//                            volumeRequest.setUserId(SessionConstants.USER_ID);
+//                            volumeRequest.setSync(SessionConstants.sync);
+//                            volumeRequest.setValue(volume);
+//                            TCPController.sendJSRequest(volumeRequest);
+//                        }
+//                        break;
+//                }
+//            }
+//            
+//            @Override
+//            public void setController(BasicController controller) {
+//            }
+//        };
+//    }
 
     public void addListener(PlayerListener listener) {
         listeners.add(listener);
@@ -252,11 +282,19 @@ public class PlayerController {
     public void play(String track, boolean playedFromPlaylist) {
         try {
             Track t = new Gson().fromJson(track, Track.class);
-            System.out.println(t.getPath());
             currentSong = t;
-            control.open(new File(t.getPath()));
-            control.play();
-            control.setGain(volume);
+            Path pathToFile = Paths.get(t.getPath());
+            Media media = new Media(pathToFile.toUri().toString());
+            if (player != null) {
+                player.stop();
+            }
+            player = new MediaPlayer(media);
+            player.setVolume(3);
+            player.setOnReady(onReady);
+            player.setOnPlaying(onPlaying);
+            player.setOnPaused(onPaused);            
+            player.currentTimeProperty().addListener(valueListener);
+            player.play();
             if (playedFromPlaylist) {
                 getPosition(t);
             }
@@ -269,9 +307,9 @@ public class PlayerController {
     public void playSong(Track t, boolean playedFromPlaylist) {
         try {
             currentSong = t;
-            control.open(new File(t.getPath()));
-            control.play();
-            control.setGain(volume);            
+//            control.open(new File(t.getPath()));
+//            control.play();
+//            control.setGain(volume);            
             
             if (playedFromPlaylist) {
                 getPosition(t);
@@ -333,28 +371,24 @@ public class PlayerController {
     }
 
     public void resume() {
-        try {
-            control.resume();
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
+        if(player != null) {
+            player.play();
         }
     }
 
     public void pause() {
-        try {
-            control.pause();
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
+        if(player != null) {
+            player.pause();
         }
     }
 
     public void stop() {
-        try {
-            control.stop();
-            invokeOnStopped();
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            control.stop();
+//            invokeOnStopped();
+//        } catch (BasicPlayerException ex) {
+//            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public void next() {
@@ -378,13 +412,13 @@ public class PlayerController {
     }
 
     public void setVolumeFromValue(double value, boolean fromUser) {
-        try {
-            SessionConstants.VOLUME_FROM_USER = fromUser;
-            control.setGain(value);
-            volume = (float)value;
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            SessionConstants.VOLUME_FROM_USER = fromUser;
+//            control.setGain(value);
+//            volume = (float)value;
+//        } catch (BasicPlayerException ex) {
+//            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public void enqueueSong(String song) {
@@ -428,22 +462,62 @@ public class PlayerController {
         TCPController.sendJSRequest(request);
     }
     
-    public void initPlayer() {
-        player = new BasicPlayer();
-        player.addBasicPlayerListener(basicPlayerListener);
-        control = (BasicController) player;
-        try {
-            control.setGain(1.0);
-        } catch (BasicPlayerException ex) {
-            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
+//    public void initPlayer() {
+//        player = new BasicPlayer();
+//        player.addBasicPlayerListener(basicPlayerListener);
+//        control = (BasicController) player;
+//        try {
+//            control.setGain(1.0);
+//        } catch (BasicPlayerException ex) {
+//            Logger.getLogger(PlayerController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        queuePaths = new ArrayList<>();
+//        currentSong = null;
+//        currentSongPosition = 0;
+//        playlistPlaying = false;
+//        SessionConstants.sync = new Sync();
+//        volume = 1.0f;
+//        SessionConstants.sync.setCurrentVolume(volume);
+//    }
+
+    
+    private static String formatTime(Duration elapsed, Duration duration) {
+        int intElapsed = (int) Math.floor(elapsed.toSeconds());
+        int elapsedHours = intElapsed / (60 * 60);
+        if (elapsedHours > 0) {
+            intElapsed -= elapsedHours * 60 * 60;
         }
-        queuePaths = new ArrayList<>();
-        currentSong = null;
-        currentSongPosition = 0;
-        playlistPlaying = false;
-        SessionConstants.sync = new Sync();
-        volume = 1.0f;
-        SessionConstants.sync.setCurrentVolume(volume);
+        int elapsedMinutes = intElapsed / 60;
+        int elapsedSeconds = intElapsed - elapsedHours * 60 * 60
+                - elapsedMinutes * 60;
+
+        if (duration.greaterThan(Duration.ZERO)) {
+            int intDuration = (int) Math.floor(duration.toSeconds());
+            int durationHours = intDuration / (60 * 60);
+            if (durationHours > 0) {
+                intDuration -= durationHours * 60 * 60;
+            }
+            int durationMinutes = intDuration / 60;
+            int durationSeconds = intDuration - durationHours * 60 * 60
+                    - durationMinutes * 60;
+            if (durationHours > 0) {
+                return String.format("%d:%02d:%02d",
+                        elapsedHours, elapsedMinutes, elapsedSeconds,
+                        durationHours, durationMinutes, durationSeconds);
+            } else {
+                return String.format("%2d:%02d",
+                        elapsedMinutes, elapsedSeconds, durationMinutes,
+                        durationSeconds);
+            }
+        } else {
+            if (elapsedHours > 0) {
+                return String.format("%d:%02d:%02d", elapsedHours,
+                        elapsedMinutes, elapsedSeconds);
+            } else {
+                return String.format("%02d:%02d", elapsedMinutes,
+                        elapsedSeconds);
+            }
+        }
     }
 
 }
