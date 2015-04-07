@@ -184,13 +184,17 @@ body {
 	max-height: 95px;
 	min-height: 95px;
 	background-color: rgb(57, 6, 57);
+
     display: table-row;	
 }
 
 .bottom-gap {
 	width: 100%;
-	height: 5px;
-	background-color: rgb(38, 0 ,38);
+/*	height: 5px;*/
+	/*background-color: rgb(38, 0 ,38);*/
+	-webkit-box-shadow: 0px -5px 21px 2px rgba(0, 0, 0, 0.79);
+	z-index: 999;
+	position: relative;
 }
 
 
@@ -220,6 +224,12 @@ body {
 
 #search-btn {
 	padding-top: 1px;
+}
+
+#shf-btn {
+	border-left: 1px solid;
+	border-color: rgb(57, 6, 57);
+	padding-left: 10px;
 }
 #back-btn, #next-btn, #stop-btn, #play-btn, #pause-btn {
 	height: 23px;
@@ -263,7 +273,7 @@ body {
 .volume-slider {
 	margin-top: 10px;
 	float: left;
-	width: 120px;
+	width: 163px;
 }
 
 input[type=range] {
@@ -590,18 +600,18 @@ a.list-group-item > p{
 	cursor: default;
 }
 
-/*a.list-group-item.playing {
+a.list-group-item.playing {
 	cursor: pointer;
 	pointer-events: none;
-	background-color: rgb(204, 0, 51) !important;
+	/*background-color: rgb() !important;*/
 	font-family: "ShudderFont";
 	font-size: 15px;
-    color: rgb(57, 6, 57) !important;
+    color: white !important;
     margin-bottom: 5px;
     margin-right: 5px;
     margin-left: 5px;
     border: none !important;
-}*/
+}
 
 a.list-group-item:hover {
     background-color: rgb(28, 0, 28);
@@ -702,18 +712,16 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 .check-box {
-	width: 40px;
+	width: 47px;
 	height: 47px;
 	float: left;
-	background-color: rgb(204, 0 , 51);
-	margin-left: -40px;
+	margin-left: -46px;
 }
 
 
 .check-box img{
-	display: block;
-	margin: auto auto;
-	margin-top: 6px;
+	width: 47px;
+	height: 47px;
 }
 
 .active-content {

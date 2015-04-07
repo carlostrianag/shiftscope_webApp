@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Random;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.scene.media.Media;
@@ -31,10 +32,13 @@ public class PlayerController {
     private boolean playlistPlaying;
     private boolean paused;
     private ArrayList<Track> queuePaths;
+    private ArrayList<Track> shuffleQueue;
+    private boolean shuffle = false;
     public Track currentSong;
     private float volume;
     private MediaPlayer player;
     private Duration duration;
+    
     private Runnable onReady = new Runnable() {
 
         @Override
@@ -104,6 +108,7 @@ public class PlayerController {
     
     public void initPlayer() {
         queuePaths = new ArrayList<>();
+        shuffleQueue = new ArrayList<>();
         currentSong = null;
         currentSongPosition = 0;
         playlistPlaying = false;
@@ -262,6 +267,10 @@ public class PlayerController {
         }
     }
     
+    public void shuffle() {
+        shuffle = !shuffle;
+    }
+    
     public void seek(float percentage) {
         if (player != null) {
             player.seek(duration.multiply(percentage));
@@ -270,10 +279,26 @@ public class PlayerController {
 
     public void next() {
         if (playlistPlaying) {
-            if (currentSongPosition < queuePaths.size() - 1) {
-                currentSongPosition++;
-                currentSong = queuePaths.get(currentSongPosition);
-                playSong(currentSong, true);
+            if(shuffle) {
+                int position;
+                System.out.println("1: " + shuffleQueue.size() + " 2: " + queuePaths.size() );
+                do {
+                    Random r = new Random();
+                    position = r.nextInt(queuePaths.size()-1-0) + 0;
+                    System.out.println(position);                    
+                } while(shuffleQueue.contains(queuePaths.get(position)) && shuffleQueue.size() != queuePaths.size());
+                if(shuffleQueue.size() != queuePaths.size()) {
+                    shuffleQueue.add(queuePaths.get(position));
+                    currentSong = queuePaths.get(position);
+                    currentSongPosition = position;
+                    playSong(currentSong, true);
+                }
+            } else {
+                if (currentSongPosition < queuePaths.size() - 1) {
+                    currentSongPosition++;
+                    currentSong = queuePaths.get(currentSongPosition);
+                    playSong(currentSong, true);
+                }                
             }
         }
     }
