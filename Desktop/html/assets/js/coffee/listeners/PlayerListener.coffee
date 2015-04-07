@@ -45,7 +45,7 @@ OnQueueChanged = (addedTrack, deletedTrack) ->
 	return
 
 OnPlaying = (songName, artistName) ->
-	$('#song-name-text').text songName.toUpperCase() + " - " + artistName.toUpperCase()
+	$('#song-name-text').text songName.toUpperCase() + " by " + artistName.toUpperCase()
 	$.each($('.playing'), (i, item)->
 		$(item).removeClass 'playing'
 		return)

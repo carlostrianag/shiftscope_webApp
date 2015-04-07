@@ -197,7 +197,7 @@ body {
 
 .player-actions {
 	padding-left: 48px;
-	margin-top: 20px;
+	margin-top: 10px;
 	float: left;
 }
 
@@ -218,6 +218,9 @@ body {
 	display: none;
 }
 
+#search-btn {
+	padding-top: 1px;
+}
 #back-btn, #next-btn, #stop-btn, #play-btn, #pause-btn {
 	height: 23px;
 	margin-right: 7px;
@@ -260,7 +263,7 @@ body {
 .volume-slider {
 	margin-top: 10px;
 	float: left;
-	width: 83px;
+	width: 120px;
 }
 
 input[type=range] {
@@ -270,7 +273,8 @@ input[type=range] {
 }
 
 .song-name {
-	max-width: 400px;
+	max-width: 415px;
+	min-height: 32px;
 }
 
 .song-name p {
@@ -411,6 +415,11 @@ input[type=range] {
 .search-input-bar {
 	height: 20px;
 	width: 100%;
+	display: -webkit-flex;
+}
+
+.search-input-bar input{
+	-webkit-flex: 1;
 }
 
 .search-bar {

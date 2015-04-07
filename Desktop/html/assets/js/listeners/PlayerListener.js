@@ -49,7 +49,7 @@ OnQueueChanged = function(addedTrack, deletedTrack) {
 };
 
 OnPlaying = function(songName, artistName) {
-  $('#song-name-text').text(songName.toUpperCase() + " - " + artistName.toUpperCase());
+  $('#song-name-text').text(songName.toUpperCase() + " by " + artistName.toUpperCase());
   $.each($('.playing'), function(i, item) {
     $(item).removeClass('playing');
   });
