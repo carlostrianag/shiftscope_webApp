@@ -301,7 +301,9 @@ public class PlayerController {
                     System.out.println("Agreg: " + currentSongPosition + queuePaths.get(currentSongPosition).getTitle());
                     shuffleQueue.add(queuePaths.get(currentSongPosition));
                     System.out.println("QUEUE: " + shuffleQueue.size() + " SHU: " + queuePaths.size());
-                    shuffleTracking.add(currentSongPosition);                     
+                    if(shuffleQueue.size() != queuePaths.size()) {
+                        shuffleTracking.add(currentSongPosition);
+                    }             
 //                    shuffleQueue.add(queuePaths.get(position));
                     currentSong = queuePaths.get(position);
                     currentSongPosition = position;
