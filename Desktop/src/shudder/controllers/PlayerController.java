@@ -33,6 +33,7 @@ public class PlayerController {
     private boolean paused;
     private ArrayList<Track> queuePaths;
     private ArrayList<Track> shuffleQueue;
+    private ArrayList<Integer> shuffleTracking;
     private boolean shuffle = false;
     public Track currentSong;
     private float volume;
@@ -109,6 +110,7 @@ public class PlayerController {
     public void initPlayer() {
         queuePaths = new ArrayList<>();
         shuffleQueue = new ArrayList<>();
+        shuffleTracking = new ArrayList<>();
         currentSong = null;
         currentSongPosition = 0;
         playlistPlaying = false;
@@ -270,9 +272,10 @@ public class PlayerController {
     public void shuffle() {
         shuffle = !shuffle;
         if(shuffle) {
-            if(playlistPlaying && currentSong != null) {
-                shuffleQueue.add(queuePaths.get(currentSongPosition));
-            }            
+//            if(playlistPlaying && currentSong != null) {
+//                shuffleQueue.add(queuePaths.get(currentSongPosition));
+//                shuffleTracking.add(currentSongPosition);
+//            }            
         } else {
             shuffleQueue.clear();
         }
@@ -291,11 +294,15 @@ public class PlayerController {
                 do {
                     Random r = new Random();
                     position = r.nextInt(queuePaths.size()-0) + 0;
-                    System.out.println("Salio " + position);
-                } while(shuffleQueue.contains(queuePaths.get(position)) && shuffleQueue.size() != queuePaths.size());
+                    System.out.println(position);
+                } while((shuffleQueue.contains(queuePaths.get(position)) || (position == currentSongPosition) && shuffleQueue.size() != queuePaths.size()-1) && (shuffleQueue.size() != queuePaths.size()));
+                System.out.println("POSICION: " + position);
                 if(shuffleQueue.size() != queuePaths.size() ) {
-                    System.out.println("agrego" + shuffleQueue.size());
-                    shuffleQueue.add(queuePaths.get(position));
+                    System.out.println("Agreg: " + currentSongPosition + queuePaths.get(currentSongPosition).getTitle());
+                    shuffleQueue.add(queuePaths.get(currentSongPosition));
+                    System.out.println("QUEUE: " + shuffleQueue.size() + " SHU: " + queuePaths.size());
+                    shuffleTracking.add(currentSongPosition);                     
+//                    shuffleQueue.add(queuePaths.get(position));
                     currentSong = queuePaths.get(position);
                     currentSongPosition = position;
                     playSong(currentSong, true);
@@ -312,7 +319,16 @@ public class PlayerController {
 
     public void back() {
         if (playlistPlaying) {
-            if (currentSongPosition > 0) {
+            if(shuffle) {
+                int last = shuffleTracking.size()-1;
+                if (last != -1) {
+                    currentSongPosition = shuffleTracking.get(last);
+                    shuffleTracking.remove(last);
+                    currentSong = queuePaths.get(currentSongPosition);
+                    shuffleQueue.remove(currentSong);
+                    playSong(currentSong, true);
+                }
+            } else if (currentSongPosition > 0) {
                 currentSongPosition--;
                 currentSong = queuePaths.get(currentSongPosition);
                 playSong(currentSong, true);

@@ -116,6 +116,7 @@ $(document).ready(function() {
   FolderController.getFolderContentById(JSON.stringify({
     id: -1
   }));
+  $('img', this).on('mouseover', function(e) {});
   window.location.href += "#error";
 });
 

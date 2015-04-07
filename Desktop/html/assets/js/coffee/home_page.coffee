@@ -112,6 +112,11 @@ $(document).ready ->
 		return)
 	FolderController.getFolderContentById(JSON.stringify({id: -1}))
 
+	$('img', this).on('mouseover', (e)->
+		# if $(this).data('source')
+			# this.src = "images/ic_" + $(this).data('source') + "_over.png"
+		return)
+
 	window.location.href += "#error"
 	return
 
@@ -120,3 +125,4 @@ $(window).resize ->
 	$('#playlist-list').height($(window).height() - MAX_Y)
 	$('.tab-content').height($(window).height() - MAX_Y)
 	return
+
