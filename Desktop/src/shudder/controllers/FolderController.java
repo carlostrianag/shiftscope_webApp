@@ -30,7 +30,6 @@ import shudder.criteria.FolderCriteria;
 import shudder.dto.FolderCreationDTO;
 import shudder.dto.FolderDTO;
 import shudder.listeners.FolderListener;
-import shudder.listeners.LoginListener;
 import shudder.model.Folder;
 import shudder.model.Track;
 import shudder.netservices.HTTPService;
@@ -163,6 +162,8 @@ public class FolderController {
         new FolderWorker(Events.BUILD_FOLDER_HIERARCHY, files).execute();
     }
     
+    
+    
     public void buildFolderHierarchy(File[] files){
             totalFiles = 0;
             currentFileScanned = 0;
@@ -195,6 +196,10 @@ public class FolderController {
     
     public void search(String text) {
         new FolderWorker(Events.ON_SEARCH, text).execute();
+    }
+    
+    public void refreshActualContent() {
+        new FolderWorker(Events.ON_CONTENT_FETCHED).execute();
     }
     
     private void buildFolderOptimized(File folder, int parentId) {

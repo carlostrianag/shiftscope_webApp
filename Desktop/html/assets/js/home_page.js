@@ -63,12 +63,12 @@ $(document).ready(function() {
     PlayerController.shuffle();
   });
   $('input[name=query]').keyup(function(e) {
-    if (e.keyCode === 27) {
+    if (e.keyCode === 27 || $(this).val() === "") {
       $(this).val("");
+      FolderController.refreshActualContent();
     } else {
-
+      FolderController.search($(this).val());
     }
-    FolderController.search($(this).val());
   });
   $('#back-btn').click(function(e) {
     PlayerController.back();
