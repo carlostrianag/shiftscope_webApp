@@ -59,6 +59,9 @@ $(document).ready(function() {
     $('#artist-checkbox').removeClass('checkbox-selected');
     FolderController.orderTracksBySongName();
   });
+  $('#shf-btn').click(function(e) {
+    PlayerController.shuffle();
+  });
   $('input[name=query]').keyup(function(e) {
     if (e.keyCode === 27) {
       $(this).val("");

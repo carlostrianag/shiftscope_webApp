@@ -54,6 +54,10 @@ $(document).ready ->
 		FolderController.orderTracksBySongName()
 		return)
 
+	$('#shf-btn').click((e)->
+		PlayerController.shuffle()
+		return)	
+
 	$('input[name=query]').keyup((e)->
 		if e.keyCode is 27
 			$(this).val("")

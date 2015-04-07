@@ -192,8 +192,7 @@ body {
 	width: 100%;
 /*	height: 5px;*/
 	/*background-color: rgb(38, 0 ,38);*/
-	-webkit-box-shadow: 0px -5px 21px 2px rgba(0, 0, 0, 0.79);
-	z-index: 999;
+	-webkit-box-shadow: 0px 0px 14px 2px rgba(0, 0, 0, 0.55);
 	position: relative;
 }
 
@@ -230,6 +229,11 @@ body {
 	border-left: 1px solid;
 	border-color: rgb(57, 6, 57);
 	padding-left: 10px;
+	cursor: pointer;	
+}
+
+#rpt-btn {
+	cursor: pointer;	
 }
 #back-btn, #next-btn, #stop-btn, #play-btn, #pause-btn {
 	height: 23px;
@@ -327,6 +331,7 @@ input[type=range] {
 
 .song-wrapper div:nth-child(2) {
 	-webkit-flex: 2;
+	/*AQUI ES*/
 }
 
 .song-wrapper div:nth-child(2) > p {

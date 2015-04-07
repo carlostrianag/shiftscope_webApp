@@ -269,6 +269,13 @@ public class PlayerController {
     
     public void shuffle() {
         shuffle = !shuffle;
+        if(shuffle) {
+            if(playlistPlaying && currentSong != null) {
+                shuffleQueue.add(queuePaths.get(currentSongPosition));
+            }            
+        } else {
+            shuffleQueue.clear();
+        }
     }
     
     public void seek(float percentage) {
@@ -281,13 +288,13 @@ public class PlayerController {
         if (playlistPlaying) {
             if(shuffle) {
                 int position;
-                System.out.println("1: " + shuffleQueue.size() + " 2: " + queuePaths.size() );
                 do {
                     Random r = new Random();
-                    position = r.nextInt(queuePaths.size()-1-0) + 0;
-                    System.out.println(position);                    
+                    position = r.nextInt(queuePaths.size()-0) + 0;
+                    System.out.println("Salio " + position);
                 } while(shuffleQueue.contains(queuePaths.get(position)) && shuffleQueue.size() != queuePaths.size());
-                if(shuffleQueue.size() != queuePaths.size()) {
+                if(shuffleQueue.size() != queuePaths.size() ) {
+                    System.out.println("agrego" + shuffleQueue.size());
                     shuffleQueue.add(queuePaths.get(position));
                     currentSong = queuePaths.get(position);
                     currentSongPosition = position;
