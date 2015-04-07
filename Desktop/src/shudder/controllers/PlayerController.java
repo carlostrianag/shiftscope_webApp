@@ -271,13 +271,9 @@ public class PlayerController {
     
     public void shuffle() {
         shuffle = !shuffle;
-        if(shuffle) {
-//            if(playlistPlaying && currentSong != null) {
-//                shuffleQueue.add(queuePaths.get(currentSongPosition));
-//                shuffleTracking.add(currentSongPosition);
-//            }            
-        } else {
+        if(!shuffle) {
             shuffleQueue.clear();
+            shuffleTracking.clear();        
         }
     }
     
@@ -303,8 +299,7 @@ public class PlayerController {
                     System.out.println("QUEUE: " + shuffleQueue.size() + " SHU: " + queuePaths.size());
                     if(shuffleQueue.size() != queuePaths.size()) {
                         shuffleTracking.add(currentSongPosition);
-                    }             
-//                    shuffleQueue.add(queuePaths.get(position));
+                    }
                     currentSong = queuePaths.get(position);
                     currentSongPosition = position;
                     playSong(currentSong, true);

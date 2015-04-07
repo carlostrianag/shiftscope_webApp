@@ -36,5 +36,6 @@ public class OperationType {
     public static final int SET_VOLUME = 25;
     public static final int REMOVE_FROM_PLAYLIST = 26;
     public static final int REMOVE_FOLDER = 27;
+    public static final int SHUFFLE = 28;
     
 }

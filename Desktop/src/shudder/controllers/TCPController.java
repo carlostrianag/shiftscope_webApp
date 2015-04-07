@@ -204,7 +204,14 @@ public class TCPController {
                             });                            
                             break;
                             
-                        
+                        case OperationType.SHUFFLE:
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MainView.mainBrowser.execute("PlayerController.shuffle() ;");      
+                                }
+                            });                            
+                            break;
                     }
                 }
 
