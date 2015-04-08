@@ -1,0 +1,37 @@
+body {
+	background-color: rgb(57, 6, 57);
+	overflow-x: hidden;
+
+}
+
+.row {
+	margin-bottom: 20%;
+	/*display: none;*/
+}
+
+.ease-transition {
+	-webkit-transition: -webkit-transform 0.6s;
+}
+
+.container {
+	/*background-color: blue;*/
+}
+
+img {
+	margin: 0 auto;
+	display: block;
+}
+
+#local {
+	overflow: hidden;
+}
+
+#logo:target {
+	display: block;
+
+}
+
+#happiness:target {
+	display: block;
+
+}
