@@ -4,17 +4,20 @@
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:paddingRight="10dp"
-    android:paddingLeft="10dp">
+    android:paddingLeft="10dp"
+    android:background="@color/lighter_purple">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView2"
-        android:src="@drawable/ic_action_volume_on_gray"/>
+        android:src="@drawable/ic_volume_up"/>
 
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/volumeSeekBar"
+        android:progressDrawable="@drawable/red_progress"
+        android:thumb="@drawable/red_scrubber"
         android:max="100"/>
 </LinearLayout><!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/layout/dialog_volume.xml -->

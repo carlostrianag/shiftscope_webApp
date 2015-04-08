@@ -25,6 +25,11 @@
     <color name="abc_search_url_text_selected">@android:color/black</color>
     <color name="accent_material_dark">@color/material_deep_teal_200</color>
     <color name="accent_material_light">@color/material_deep_teal_500</color>
+    <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/colors_apptheme.xml -->
+    <eat-comment/>
+    <color name="apptheme_color">#cc0033</color>
+    <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
+    <eat-comment/>
     <color name="background_floating_material_dark">#ff424242</color>
     <color name="background_floating_material_light">#ffeeeeee</color>
     <color name="background_material_dark">#ff303030</color>
@@ -217,6 +222,9 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
 
     </style>
+    <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/themes_apptheme.xml -->
+    <eat-comment/>
+    <style name="AppTheme2" parent="@style/_AppTheme"/>
     <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/res/values/values.xml -->
     <eat-comment/>
     <style name="Base.TextAppearance.AppCompat" parent="android:TextAppearance">
@@ -1156,6 +1164,13 @@
     <style name="RtlOverlay.Widget.AppCompat.SearchView.MagIcon" parent="android:Widget">
         <item name="android:layout_marginLeft">@dimen/abc_dropdownitem_text_padding_left</item>
     </style>
+    <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/styles_apptheme.xml -->
+    <eat-comment/>
+    <style name="SeekBarAppTheme" parent="android:Widget.Holo.Light.SeekBar">
+      <item name="android:progressDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:thumb">@drawable/apptheme_scrubber_control_selector_holo_light</item>
+  </style>
     <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/themes.xml -->
     <eat-comment/>
     <style name="ShudderActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
@@ -1320,4 +1335,11 @@
     <style name="Widget.AppCompat.Spinner.DropDown.ActionBar" parent="Base.Widget.AppCompat.Spinner.DropDown.ActionBar"/>
     <style name="Widget.AppCompat.Toolbar" parent="Base.Widget.AppCompat.Toolbar"/>
     <style name="Widget.AppCompat.Toolbar.Button.Navigation" parent="Base.Widget.AppCompat.Toolbar.Button.Navigation"/>
+    <!-- From: file:/D:/Repositories/Shudder/Android/ShiftScope/app/src/main/res/values/themes_apptheme.xml -->
+    <eat-comment/>
+    <style name="_AppTheme" parent="android:Theme.Holo.Light">
+
+    <item name="android:seekBarStyle">@style/SeekBarAppTheme</item>
+
+  </style>
 </resources>
