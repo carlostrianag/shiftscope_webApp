@@ -4,22 +4,22 @@ html, body {
 
 }
 
-.row {
-	/*margin-bottom: 20%;*/
-	/*display: none;*/
-}
 
 .ease-transition {
-	-webkit-transition: -webkit-transform 0.05s;
+	-webkit-transition: -webkit-transform 0.1s;
 }
 
-.container {
-	/*background-color: blue;*/
-}
+
+
 
 img {
 	margin: 0 auto;
 	display: block;
+}
+
+
+#how-it-works-bars img:nth-child(2){
+	margin-top: -40px;
 }
 
 #local {
@@ -36,5 +36,4 @@ img {
 #happiness{
 	display: block;
 	/*background-color: green;*/
-
 }

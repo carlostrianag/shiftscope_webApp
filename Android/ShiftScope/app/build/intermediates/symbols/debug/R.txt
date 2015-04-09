@@ -405,9 +405,12 @@ int drawable logo_shudder 0x7f020058
 int drawable radius_corners 0x7f020059
 int drawable radius_corners_darker 0x7f02005a
 int drawable radius_corners_fluor_pink 0x7f02005b
-int drawable red_progress 0x7f02005c
-int drawable red_scrubber 0x7f02005d
-int drawable shudder_icon 0x7f02005e
+int drawable rectangle 0x7f02005c
+int drawable rectangle_darker 0x7f02005d
+int drawable rectangle_fluor_pink 0x7f02005e
+int drawable red_progress 0x7f02005f
+int drawable red_scrubber 0x7f020060
+int drawable shudder_icon 0x7f020061
 int id action_bar 0x7f090037
 int id action_bar_activity_content 0x7f090000
 int id action_bar_container 0x7f090036
