@@ -1,16 +1,16 @@
-body {
+html, body {
 	background-color: rgb(57, 6, 57);
 	overflow-x: hidden;
 
 }
 
 .row {
-	margin-bottom: 20%;
+	/*margin-bottom: 20%;*/
 	/*display: none;*/
 }
 
 .ease-transition {
-	-webkit-transition: -webkit-transform 0.6s;
+	-webkit-transition: -webkit-transform 0.05s;
 }
 
 .container {
@@ -24,14 +24,17 @@ img {
 
 #local {
 	overflow: hidden;
+	/*background-color: yellow;*/
 }
 
-#logo:target {
+#logo{
 	display: block;
+	/*background-color: blue;*/
 
 }
 
-#happiness:target {
+#happiness{
 	display: block;
+	/*background-color: green;*/
 
 }

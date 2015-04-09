@@ -6,32 +6,31 @@ $(document).ready(function() {
 	WINDOW_WIDTH = window.innerWidth
 	$('.row').height(WINDOW_HEIGHT)
 	$('.shudder-container').each(function(i, item) {
-		$(item).css('padding-top', ((WINDOW_HEIGHT/2)-$(item).height()/2)+'px')
+		$(item).css('padding-top', ((WINDOW_HEIGHT/2)-$(item).find('img').height()/2)+'px')
 	})
 
-	$('#happiness').css('-webkit-transform', 'translate3d('+(-WINDOW_WIDTH)+'px, 0, 0)')
-	$('#local').css('-webkit-transform', 'translate3d('+(WINDOW_WIDTH)+'px, 0, 0)')
+	$('#happiness').css('-webkit-transform', 'translateX('+(-WINDOW_WIDTH)+'px)')
+	$('#local').css('-webkit-transform', 'translateX('+(WINDOW_WIDTH*2)+'px)')
 	$('#happiness').addClass('ease-transition')
-
-	WINDOW_WIDTH = window.width
-	// $('#local').addClass('ease-transition')
+	$('#local').addClass('ease-transition')
 
 	$(this).on('scroll', function() {
 		scrollTop = $('body').scrollTop()
-		if(scrollTop > WINDOW_HEIGHT/2) {
-			$('#happiness').css('-webkit-transform', 'translate3d('+((WINDOW_WIDTH/2)-($(this).width()/2))+'px, 0, 0)')
-		} 
+		percentage = scrollTop/(WINDOW_HEIGHT)
+		console.log(percentage)
 
-		if(scrollTop > (2*(WINDOW_HEIGHT/2))) {
-			console.log('entr')
-			// $('#local').css('-webkit-transform', 'translate3d('+((WINDOW_WIDTH/2)-($(this).width()/2))+'px, 0, 0)')
+		if(percentage < 1) {
+			$('#happiness').css('-webkit-transform', 'translate3d('+((WINDOW_WIDTH/2)-($(this).width()/2)/percentage)+'px, 0, 0)')
+		} else if(percentage < 2) {
+			newPercentage = percentage-1
+			$('#local').css('-webkit-transform', 'translate3d('+((WINDOW_WIDTH)-($(this).width())*newPercentage)+'px, 0, 0)')
 		}
-
 	})
 })
 
 $(window).resize(function() {
 	WINDOW_HEIGHT = window.innerHeight
+	WINDOW_WIDTH = window.innerWidth
 	$('.row').height(WINDOW_HEIGHT)
 	$('.shudder-container').each(function(i, item) {
 		$(item).css('padding-top', ((WINDOW_HEIGHT/2)-$(item).height()/2)+'px')
